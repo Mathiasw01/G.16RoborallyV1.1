@@ -57,6 +57,8 @@ public class Board extends Subject {
 
     private boolean stepMode;
 
+    private int counter=0;
+
     public Board(int width, int height, @NotNull String boardName) {
         this.boardName = boardName;
         this.width = width;
@@ -96,6 +98,14 @@ public class Board extends Subject {
         } else {
             return null;
         }
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        this.counter = counter;
     }
 
     public int getPlayersNumber() {
