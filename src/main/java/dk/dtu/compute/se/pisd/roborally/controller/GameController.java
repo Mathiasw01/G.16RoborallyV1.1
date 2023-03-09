@@ -189,6 +189,21 @@ public class GameController {
                 case FAST_FORWARD:
                     this.fastForward(player);
                     break;
+                case MOVE_THREE:
+                    this.fastForward(player);
+                    break;
+                case UTURN:
+                    this.uturn(player);
+                    break;
+                case POWERUP:
+                    this.powerup(player);
+                    break;
+                case MOVE_BACK:
+                    this.backup(player);
+                    break;
+                case AGAIN:
+                    this.again(player);
+                    break;
                 default:
                     // DO NOTHING (for now)
             }
@@ -212,6 +227,19 @@ public class GameController {
 
     // TODO Assignment V2
     public void turnLeft(@NotNull Player player) {
+
+    }
+
+    public void uturn(@NotNull Player player){
+
+    }
+    public void powerup (@NotNull Player player){
+
+    }
+    public void backup (@NotNull Player player){
+
+    }
+    public void again (@NotNull Player player){
 
     }
 
