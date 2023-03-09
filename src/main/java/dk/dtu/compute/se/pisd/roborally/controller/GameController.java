@@ -249,13 +249,27 @@ public class GameController {
     }
 
     public void uturn(@NotNull Player player){
-
+        player.setHeading(player.getHeading().next());
+        player.setHeading(player.getHeading().next());
     }
     public void powerup (@NotNull Player player){
-
+        player.setEnergy(player.getEnergy()+1);
     }
     public void backup (@NotNull Player player){
-
+        Space currentSpace=player.getSpace();
+        int x=currentSpace.x;
+        int y=currentSpace.y;
+        // Husk outofbounds fejl
+        switch (player.getHeading()){
+            case EAST -> {x--;}
+            case WEST -> {x++;}
+            case NORTH -> {y++;}
+            case SOUTH -> {y--;}
+        }
+        System.out.println(x+ " " +y);
+        if(board.getSpace(x,y) != null) {
+            moveCurrentPlayerToSpace(board.getSpace(x, y));
+        } else System.out.println("OUT OF BOUNDS");
     }
     public void again (@NotNull Player player){
 

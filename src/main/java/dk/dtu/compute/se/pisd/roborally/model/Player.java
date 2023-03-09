@@ -48,6 +48,8 @@ public class Player extends Subject {
     private CommandCardField[] program;
     private CommandCardField[] cards;
 
+    private int energyCubes = 0;
+
     public Player(@NotNull Board board, String color, @NotNull String name) {
         this.board = board;
         this.name = name;
@@ -123,6 +125,13 @@ public class Player extends Subject {
                 space.playerChanged();
             }
         }
+    }
+
+    public void setEnergy(int cubes){
+        energyCubes = cubes;
+    }
+    public int getEnergy(){
+        return energyCubes;
     }
 
     public CommandCardField getProgramField(int i) {
