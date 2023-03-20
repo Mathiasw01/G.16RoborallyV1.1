@@ -219,7 +219,7 @@ public class GameController {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
         int y=currentSpace.y;
-// Husk outofbounds fejl
+        // Husk outofbounds fejl
         switch (player.getHeading()){
             case EAST -> {x++;}
             case WEST -> {x--;}
@@ -272,7 +272,12 @@ public class GameController {
         } else System.out.println("OUT OF BOUNDS");
     }
     public void again (@NotNull Player player){
-
+        int step = board.getStep()-1;
+        if (step > -1) {
+            CommandCard card = player.getProgramField(step).getCard();
+            Command command = card.command;
+            executeCommand(player, command);
+        }
     }
 
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
