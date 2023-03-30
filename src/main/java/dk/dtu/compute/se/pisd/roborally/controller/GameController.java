@@ -39,19 +39,12 @@ public class GameController {
     }
 
     /**
-     * This is just some dummy controller operation to make a simple move to see something
-     * happening on the board. This method should eventually be deleted!
-     *
-     * @param space the space to which the current player should move
+     * Moves current player to space if possible
+     * <p>
+     * Moves current player to the parsed space if the space is empty
+     * TODO If the field is occupied, push the the player
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
-        // TODO Assignment V1: method should be implemented by the students:
-        //   - the current player should be moved to the given space
-        //     (if it is free()
-        //   - and the current player should be set to the player
-        //     following the current player
-        //   - the counter of moves in the game should be increased by one
-        //     if the player is moved
         if (space.getPlayer() == null) {
             board.getCurrentPlayer().setSpace(space);
             board.setCounter(board.getCounter() + 1);
@@ -59,7 +52,12 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * Start programming phase
+     * <p>
+     * Sets the current phase to programming phase and sets current player and step index to 0
+     * Removes all the cards in the command card fields and replaces them with new, random command cards
+     */
     public void startProgrammingPhase() {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
@@ -89,7 +87,13 @@ public class GameController {
         return new CommandCard(commands[random]);
     }
 
-    // XXX: V2
+    /**
+     * Finish programming phase and start activation phase
+     * <p>
+     * Finished programming phase by locking the progam fields and makes the programmed card invisble except for
+     * the card in register 0. Afterwards changes the game phase to acivation phase and sets the current
+     * player and step to index 0
+     */
     public void finishProgrammingPhase() {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
@@ -120,26 +124,46 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * Disables step mode and executes the programs
+     * <p>
+     * Disables step mode and runs the programs programmed by the player.
+     */
     public void executePrograms() {
         board.setStepMode(false);
         continuePrograms();
     }
 
-    // XXX: V2
+    /**
+     * Executes the next step
+     * <p>
+     * Execute the card in the current step for the current player and doesn't continue execution afterwards.
+     */
     public void executeStep() {
         board.setStepMode(true);
         continuePrograms();
     }
 
-    // XXX: V2
+    /**
+     * Executes the players programs continuously
+     * <p>
+     * This method executes all the programmed cards. It executes the next step and the cards programmed in each step
+     * by the individual players, until the phase is no longer the activation phase or the game is not in step mode.
+     */
     private void continuePrograms() {
         do {
             executeNextStep();
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
     }
 
-    // XXX: V2
+    /**
+     * Execute the programmed cards next step
+     * <p>
+     * This method executes the next card. After executing the card, it sets the turn to the
+     * next player, and if all the players have executed their cards programmed in the current step, it will
+     * increase the step by one. If the step is larger than the number of registers the players have, the
+     * method will change the game's phase to the programing phase.
+     */
     private void executeNextStep() {
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
@@ -177,7 +201,13 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * Execute a command on a player
+     * <p>
+     * This method executed the parsed command on the parsed player.
+     * @param  player  The player on which the command should be executed
+     * @param  command The command that should be executed on the player.
+     */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
             // XXX This is a very simplistic way of dealing with some basic cards and
@@ -220,7 +250,12 @@ public class GameController {
         }
     }
 
-    // TODO Assignment V2
+    /**
+     * Moves the player one spaces forward
+     * <p>
+     * This method moves the player one spaces forward, if the target space is valid.
+     * @param  player  the player which will be moved.
+     */
     public void moveForward(@NotNull Player player) {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
@@ -238,29 +273,66 @@ public class GameController {
         } else System.out.println("OUT OF BOUNDS");
     }
 
-    // TODO Assignment V2
+    /**
+     * Moves the player two spaces forward
+     * <p>
+     * This method moves the player two spaces forward
+     * @param  player  the player which will be moved.
+     */
     public void fastForward(@NotNull Player player) {
         moveForward(player);
         moveForward(player);
     }
 
-    // TODO Assignment V2
+    /**
+     * Turns the player right.
+     * <p>
+     * This method rotates the 90 degrees right, relative to the players heading.
+     * @param  player  the player which will be rotated.
+     */
     public void turnRight(@NotNull Player player) {
         player.setHeading(player.getHeading().next());
     }
 
-    // TODO Assignment V2
+    /**
+     * Turns the player left.
+     * <p>
+     * This method rotates the 90 degrees left, relative to the players heading.
+     * @param  player  the player which will be rotated.
+     */
     public void turnLeft(@NotNull Player player) {
         player.setHeading(player.getHeading().prev());
     }
 
+
+    /**
+     * Turns the player to the opposition direction.
+     * <p>
+     * This method rotates the player 180 degrees.
+     * @param  player  the player which will be rotated.
+     */
     public void uturn(@NotNull Player player){
         player.setHeading(player.getHeading().next());
         player.setHeading(player.getHeading().next());
     }
+
+    /**
+     * Adds one energy to the player's energy balance
+     * <p>
+     * This method adds one energy to the player's energy balance
+     * @param  player  the player which energy balance will be increased with one.
+     */
     public void powerup (@NotNull Player player){
         player.setEnergy(player.getEnergy()+1);
     }
+
+    /**
+     * Moves the player one slot back.
+     * <p>
+     * This method executes moves the player one position in the opposite the direction,
+     * that the player is facing. If the destination space is not valid, the player will not move.
+     * @param  player  the player which will move one space back.
+     */
     public void backup (@NotNull Player player){
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
@@ -277,6 +349,14 @@ public class GameController {
             moveCurrentPlayerToSpace(board.getSpace(x, y));
         } else System.out.println("OUT OF BOUNDS");
     }
+
+    /**
+     * Repeats last command card
+     * <p>
+     * This method executes the players last used command card.
+     * If there was no program field before the current field, no card will execute.
+     * @param  player  the player which will repeat and execute the last card
+     */
     public void again (@NotNull Player player){
         int step = board.getStep()-1;
         if (step > -1) {
@@ -287,6 +367,17 @@ public class GameController {
     }
 
 
+    /**
+     * Moves a card from one card field to another
+     * <p>
+     * This method moves a card from a card field to an empty card field
+     * If the source card field is empty or the target card field occupied,
+     * the method will return false, indicating the move operation was invalid.
+     * The method will return true, if the card is moved successfully.
+     * @param  source  the source command card field
+     * @param  target  the target command card field
+     * @return boolean, if the move operation was successful.
+     */
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
         CommandCard sourceCard = source.getCard();
         CommandCard targetCard = target.getCard();
@@ -299,6 +390,16 @@ public class GameController {
         }
     }
 
+
+    /**
+     * Executes a command that is selected by the player and resumes execution afterwards.
+     * <p>
+     * This method always executes the parsed command given by the command parameter.
+     * Afterwards the method continues execution of the rest of the registers by
+     * setting the phase to ACTIVATION_PHASE. The game continues execution with/without
+     * step mode as when the card interaction card was reached.
+     * @param  command  the player-chosen command
+     */
     public void executeCommandOptionAndContinue(Command command){
         executeCommand(board.getCurrentPlayer(),command);
         board.setPhase(Phase.ACTIVATION);
@@ -320,13 +421,6 @@ public class GameController {
         continuePrograms();
     }
 
-    /**
-     * A method called when no corresponding controller operation is implemented yet. This
-     * should eventually be removed.
-     */
-    public void notImplemented() {
-        // XXX just for now to indicate that the actual method is not yet implemented
-        assert false;
-    }
+
 
 }

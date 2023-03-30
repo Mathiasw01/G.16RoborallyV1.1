@@ -59,6 +59,12 @@ public class AppController implements Observer {
         this.roboRally = roboRally;
     }
 
+    /**
+     * New game
+     * <p>
+     * Initialises a new game. Asks the user for desired number of players, initialises board and and
+     * draws UI elements.
+     */
     public void newGame() {
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
         dialog.setTitle("Player number");
@@ -93,10 +99,20 @@ public class AppController implements Observer {
         }
     }
 
+    /**
+     * Save game
+     * <p>
+     * TODO - implement
+     */
     public void saveGame() {
         // XXX needs to be implemented eventually
     }
 
+    /**
+     * Load game
+     * <p>
+     * TODO - implement
+     */
     public void loadGame() {
         // XXX needs to be implemented eventually
         // for now, we just create a new game
@@ -127,6 +143,12 @@ public class AppController implements Observer {
         return false;
     }
 
+    /**
+     * Exits game
+     * <p>
+     * Asks the player if the player really wants to exit the game. If confirmed,
+     * the program is exited.
+     */
     public void exit() {
         if (gameController != null) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -146,6 +168,12 @@ public class AppController implements Observer {
         }
     }
 
+    /**
+     * Returns if the games i running or not
+     * <p>
+     * Returns a bool representing if the game is running
+     * @return boolean, game is running
+     */
     public boolean isGameRunning() {
         return gameController != null;
     }
