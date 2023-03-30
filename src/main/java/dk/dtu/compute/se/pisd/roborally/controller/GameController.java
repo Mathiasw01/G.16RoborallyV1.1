@@ -148,6 +148,10 @@ public class GameController {
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
                 if (card != null) {
                     Command command = card.command;
+                    if (command.isInteractive()){
+                        board.setPhase(Phase.PLAYER_INTERACTION);
+                        return;
+                    }
                     executeCommand(currentPlayer, command);
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
@@ -207,6 +211,8 @@ public class GameController {
                     break;
                 case AGAIN:
                     this.again(player);
+                    break;
+                case CHOOSETURN:
                     break;
                 default:
                     // DO NOTHING (for now)
@@ -280,6 +286,7 @@ public class GameController {
         }
     }
 
+
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
         CommandCard sourceCard = source.getCard();
         CommandCard targetCard = target.getCard();
@@ -290,6 +297,27 @@ public class GameController {
         } else {
             return false;
         }
+    }
+
+    public void executeCommandOptionAndContinue(Command command){
+        executeCommand(board.getCurrentPlayer(),command);
+        board.setPhase(Phase.ACTIVATION);
+        int step = board.getStep();
+        int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;
+        if (nextPlayerNumber < board.getPlayersNumber()) {
+            board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
+        } else {
+            step++;
+            if (step < Player.NO_REGISTERS) {
+                makeProgramFieldsVisible(step);
+                board.setStep(step);
+                board.setCurrentPlayer(board.getPlayer(0));
+            } else {
+                startProgrammingPhase();
+                return;
+            }
+        }
+        continuePrograms();
     }
 
     /**
