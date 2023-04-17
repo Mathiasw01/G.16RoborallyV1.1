@@ -23,6 +23,8 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 
+import java.awt.*;
+
 /**
  * ...
  *
@@ -37,12 +39,14 @@ public class Space extends Subject {
     public final int y;
 
     private Player player;
+    private Object objects;
 
     public Space(Board board, int x, int y) {
         this.board = board;
         this.x = x;
         this.y = y;
         player = null;
+        objects = new List();
     }
 
     public Player getPlayer() {
@@ -63,6 +67,14 @@ public class Space extends Subject {
             }
             notifyChange();
         }
+    }
+
+    public void setObjects(Object object){
+        objects = object;
+    }
+
+    public Object getObjects() {
+        return objects;
     }
 
     void playerChanged() {

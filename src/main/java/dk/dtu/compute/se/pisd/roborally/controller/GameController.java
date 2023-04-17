@@ -24,6 +24,8 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 /**
  * ...
  *
@@ -45,11 +47,28 @@ public class GameController {
      * TODO If the field is occupied, push the the player
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
-        if (space.getPlayer() == null) {
-            board.getCurrentPlayer().setSpace(space);
-            board.setCounter(board.getCounter() + 1);
 
+        if (!(space.getObjects() instanceof Wall)) {
+            if (space.getPlayer() == null) {
+                board.getCurrentPlayer().setSpace(space);
+            } else {
+                Player player2 = space.getPlayer();
+
+                int x = space.x;
+                int y = space.y;
+                switch (board.getCurrentPlayer().getHeading()){
+                    case EAST -> {x++;}
+                    case WEST -> {x--;}
+                    case NORTH -> {y--;}
+                    case SOUTH -> {y++;}
+                }
+                player2.setSpace(board.getSpace(x,y));
+                board.getCurrentPlayer().setSpace(space);
+            }
+        } else {
+            board.setCounter(board.getCounter() + 1);
         }
+
     }
 
     /**
