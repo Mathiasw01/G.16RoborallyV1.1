@@ -22,14 +22,12 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.model.Heading;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
-import dk.dtu.compute.se.pisd.roborally.model.Wall;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
@@ -127,7 +125,29 @@ public class SpaceView extends StackPane implements ViewObserver {
 
             this.getChildren().add(wallGfx);
         }
+
+
+        //Checkpoints
+        CheckpointField checkpoint = (CheckpointField) space.findObjectOfType(CheckpointField.class);
+        if(checkpoint != null){
+            Circle cpGfx = new Circle();
+            cpGfx.setRadius(15);
+            cpGfx.setFill(Color.CORAL);
+            this.getChildren().add(cpGfx);
+        }
+
+        //Finish
+        FinishField finishField = (FinishField) space.findObjectOfType(FinishField.class);
+
+        if(finishField != null){
+            Circle cpGfx = new Circle();
+            cpGfx.setRadius(16);
+            cpGfx.setFill(Color.RED);
+            this.getChildren().add(cpGfx);
+        }
+
     }
+
 
     @Override
     public void updateView(Subject subject) {
