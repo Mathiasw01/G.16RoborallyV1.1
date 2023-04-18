@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -265,6 +266,20 @@ public class GameController {
                 default:
                     // DO NOTHING (for now)
             }
+            executeBoardElement(player);
+        }
+    }
+
+    public void executeBoardElement(Player player) {
+        for (FieldObject object : player.getSpace().getObjects()) {
+            if (object instanceof Conveyor) {
+                if (((Conveyor) object).getColor().equals(Color.BLUE)) {
+                    moveBoardElement(player, object);
+                    moveBoardElement(player, object);
+                } else if (((Conveyor) object).getColor().equals(Color.GREEN)) {
+                    moveBoardElement(player, object);
+                }
+            }
         }
     }
 
@@ -280,6 +295,23 @@ public class GameController {
         int y=currentSpace.y;
         // Husk outofbounds fejl
         switch (player.getHeading()){
+            case EAST -> {x++;}
+            case WEST -> {x--;}
+            case NORTH -> {y--;}
+            case SOUTH -> {y++;}
+        }
+        System.out.println(x+ " " +y);
+        if(board.getSpace(x,y) != null) {
+            moveCurrentPlayerToSpace(board.getSpace(x, y));
+        } else System.out.println("OUT OF BOUNDS");
+    }
+
+    public void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
+        Space currentSpace=player.getSpace();
+        int x=currentSpace.x;
+        int y=currentSpace.y;
+        // Husk outofbounds fejl
+        switch (((MovementField)fieldObject).getDirection()){
             case EAST -> {x++;}
             case WEST -> {x--;}
             case NORTH -> {y--;}

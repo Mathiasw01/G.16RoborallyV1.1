@@ -22,10 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.model.Heading;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
-import dk.dtu.compute.se.pisd.roborally.model.Wall;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
@@ -101,6 +98,7 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     private void drawFieldObjects(){
         Wall wall = (Wall)space.findObjectOfType(Wall.class);
+        Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
         if( wall != null) {
             Rectangle wallGfx = new Rectangle();
             wallGfx.setWidth(45);
@@ -127,7 +125,31 @@ public class SpaceView extends StackPane implements ViewObserver {
 
             this.getChildren().add(wallGfx);
         }
-    }
+        if (conveyor != null) {
+                Rectangle conveyorGfx = new Rectangle();
+                conveyorGfx.setWidth(25);
+                conveyorGfx.setHeight(45);
+                switch (conveyor.getDirection()) {
+                    case SOUTH:
+                        break;
+                    case NORTH:
+                        break;
+                    case EAST:
+                        conveyorGfx.setRotate(90);
+                        break;
+                    case WEST:
+                        conveyorGfx.setRotate(90);
+                        break;
+                }
+            if (conveyor.getColor().equals(Color.BLUE)) {
+                conveyorGfx.setFill(Color.BLUE);
+            }else {
+                conveyorGfx.setFill(Color.GREEN);
+            }
+            this.getChildren().add(conveyorGfx);
+            }
+        }
+
 
     @Override
     public void updateView(Subject subject) {

@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -75,6 +76,12 @@ public class Board extends Subject {
                 if(a.nextFloat() < 0.2f){
                     space.addObjects(new Wall(Heading.WEST));
                 }
+                if(a.nextFloat()>0.99f){
+                    space.addObjects(new Conveyor(Color.GREEN,Heading.EAST));
+                } if(a.nextFloat()<0.30f && a.nextFloat()>0.29f){
+                    space.addObjects(new Conveyor(Color.BLUE,Heading.EAST));
+                }
+
 
             }
         }
