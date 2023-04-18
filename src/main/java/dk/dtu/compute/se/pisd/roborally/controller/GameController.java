@@ -46,7 +46,7 @@ public class GameController {
      * Moves current player to the parsed space if the space is empty
      * TODO If the field is occupied, push the the player
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space) {
+    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag) {
         board.setCounter(board.getCounter() + 1);
         Wall wall = (Wall) space.findObjectOfType(Wall.class);
         Player currentPlayer = board.getCurrentPlayer();
@@ -70,12 +70,24 @@ public class GameController {
                 Player player2 = space.getPlayer();
                 int x = space.x;
                 int y = space.y;
-                switch (currentPlayer.getHeading()){
-                    case EAST -> {x++;}
-                    case WEST -> {x--;}
-                    case NORTH -> {y--;}
-                    case SOUTH -> {y++;}
+
+                if (backupflag) {
+                    switch (currentPlayer.getHeading()){
+                        case EAST -> {x--;}
+                        case WEST -> {x++;}
+                        case NORTH -> {y++;}
+                        case SOUTH -> {y--;}
+                    }
+                } else {
+                    switch (currentPlayer.getHeading()){
+                        case EAST -> {x++;}
+                        case WEST -> {x--;}
+                        case NORTH -> {y--;}
+                        case SOUTH -> {y++;}
+                    }
                 }
+
+
                 player2.setSpace(board.getSpace(x,y));
                 currentPlayer.setSpace(space);
             }
@@ -298,7 +310,8 @@ public class GameController {
         }
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y));
+            boolean backupflag = false;
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -376,7 +389,8 @@ public class GameController {
         }
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y));
+            boolean backupflag = true;
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
         } else System.out.println("OUT OF BOUNDS");
     }
 
