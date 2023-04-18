@@ -48,6 +48,9 @@ public class Board extends Subject {
 
     private final Space[][] spaces;
 
+    private ArrayList<CheckpointField> checkpoints = new ArrayList<>();
+    private FinishField finish;
+
     private final List<Player> players = new ArrayList<>();
 
     private Player current;
@@ -231,6 +234,15 @@ public class Board extends Subject {
         return "Phase: " + getPhase().name() +
                 ", Player = " + getCurrentPlayer().getName() +
                 ", Step: " + getStep();
+    }
+
+
+    public void AddCheckpoint(CheckpointField checkpoint){
+        checkpoints.add(checkpoint);
+    }
+
+    public void AddFinish(FinishField finish){
+        this.finish = finish;
     }
 
 
