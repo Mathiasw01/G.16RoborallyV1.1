@@ -73,7 +73,7 @@ public class Board extends Subject {
 
                 //TEST ADD WALL
                 if(a.nextFloat() < 0.2f){
-                    space.addObjects(new Wall(Heading.WEST));
+                    space.addObjects(new Wall(Heading.SOUTH));
                 }
 
             }
