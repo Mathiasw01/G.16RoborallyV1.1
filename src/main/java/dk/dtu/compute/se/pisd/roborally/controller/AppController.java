@@ -169,7 +169,7 @@ public class AppController implements Observer {
     }
 
     /**
-     * Returns if the games i running or not
+     * Returns if the games is running or not
      * <p>
      * Returns a bool representing if the game is running
      * @return boolean, game is running

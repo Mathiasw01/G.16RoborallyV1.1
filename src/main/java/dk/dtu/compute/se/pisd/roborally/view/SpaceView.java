@@ -25,11 +25,13 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.model.Heading;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.Wall;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 import org.jetbrains.annotations.NotNull;
 
@@ -65,6 +67,8 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.setStyle("-fx-background-color: black;");
         }
 
+
+
         // updatePlayer();
 
         // This space view should listen to changes of the space
@@ -74,6 +78,7 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     private void updatePlayer() {
         this.getChildren().clear();
+
 
         Player player = space.getPlayer();
         if (player != null) {
@@ -87,7 +92,40 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
 
             arrow.setRotate((90*player.getHeading().ordinal())%360);
+
             this.getChildren().add(arrow);
+        }
+
+    }
+
+
+    private void drawFieldObjects(){
+        Wall wall = (Wall)space.findObjectOfType(Wall.class);
+        if( wall != null) {
+            Rectangle wallGfx = new Rectangle();
+            wallGfx.setWidth(45);
+            wallGfx.setHeight(10);
+
+            switch (wall.getDir()) {
+                case SOUTH:
+                    wallGfx.setTranslateY(20);
+                    break;
+                case NORTH:
+                    wallGfx.setTranslateY(-20);
+                    break;
+                case EAST:
+                    wallGfx.setRotate(90);
+                    wallGfx.setTranslateX(20);
+                    break;
+                case WEST:
+                    wallGfx.setRotate(90);
+                    wallGfx.setTranslateX(-20);
+                    break;
+            }
+
+            wallGfx.setFill(Color.MEDIUMPURPLE);
+
+            this.getChildren().add(wallGfx);
         }
     }
 
@@ -96,6 +134,8 @@ public class SpaceView extends StackPane implements ViewObserver {
         if (subject == this.space) {
             updatePlayer();
         }
+
+        drawFieldObjects();
     }
 
 }

@@ -26,6 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
 
@@ -68,6 +69,13 @@ public class Board extends Subject {
             for(int y = 0; y < height; y++) {
                 Space space = new Space(this, x, y);
                 spaces[x][y] = space;
+                Random a = new Random();
+
+                //TEST ADD WALL
+                if(a.nextFloat() < 0.2f){
+                    space.addObjects(new Wall(Heading.WEST));
+                }
+
             }
         }
         this.stepMode = false;
