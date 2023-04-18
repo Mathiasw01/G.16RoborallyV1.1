@@ -146,6 +146,16 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.getChildren().add(cpGfx);
         }
 
+        //Start
+        StartField startField = (StartField) space.findObjectOfType(StartField.class);
+
+        if(startField != null){
+            Circle cpGfx = new Circle();
+            cpGfx.setRadius(16);
+            cpGfx.setFill(Color.GOLD);
+            this.getChildren().add(cpGfx);
+        }
+
     }
 
 

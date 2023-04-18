@@ -62,7 +62,7 @@ public class Board extends Subject {
     private boolean stepMode;
 
     private int counter=0;
-    private SpaceReader spaceReader = new SpaceReader("src/main/java/dk/dtu/compute/se/pisd/roborally/view/DizzyHighway");
+    private final SpaceReader spaceReader = new SpaceReader("src/main/java/dk/dtu/compute/se/pisd/roborally/view/DizzyHighway");
 
     public Board(int width, int height, @NotNull String boardName) {
         this.boardName = boardName;
@@ -71,16 +71,8 @@ public class Board extends Subject {
         spaces = new Space[width][height];
         for (int x = 0; x < width; x++) {
             for(int y = 0; y < height; y++) {
-
                 Space space = new Space(this, x, y);
                 spaces[x][y] = space;
-                Random a = new Random();
-                /*
-                //TEST ADD WALL
-                if(a.nextFloat() < 0.2f){
-                    space.addObjects(new Wall(Heading.SOUTH));
-                }
-                 */
 
             }
         }

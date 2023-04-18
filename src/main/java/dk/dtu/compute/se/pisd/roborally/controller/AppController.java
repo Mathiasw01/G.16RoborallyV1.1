@@ -29,6 +29,7 @@ import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 
+import dk.dtu.compute.se.pisd.roborally.model.SpaceReader;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -54,6 +55,8 @@ public class AppController implements Observer {
     final private RoboRally roboRally;
 
     private GameController gameController;
+    private final SpaceReader spaceReader = new SpaceReader("src/main/java/dk/dtu/compute/se/pisd/roborally/view/DizzyHighway");
+
 
     public AppController(@NotNull RoboRally roboRally) {
         this.roboRally = roboRally;
@@ -85,11 +88,13 @@ public class AppController implements Observer {
             Board board = new Board(13,10);
             gameController = new GameController(board);
             int no = result.get();
+
             for (int i = 0; i < no; i++) {
                 Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
                 board.addPlayer(player);
-                player.setSpace(board.getSpace(i % board.width, i));
+                spaceReader.initPlayers(board,player, i);
             }
+
 
             // XXX: V2
             // board.setCurrentPlayer(board.getPlayer(0));
