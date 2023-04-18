@@ -342,8 +342,9 @@ public class GameController {
             case SOUTH -> {y++;}
         }
         System.out.println(x+ " " +y);
+        boolean backupflag = false;
         if(board.getSpace(x,y) != null) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y));
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
         } else System.out.println("OUT OF BOUNDS");
     }
 
