@@ -24,6 +24,8 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * ...
@@ -39,14 +41,14 @@ public class Space extends Subject {
     public final int y;
 
     private Player player;
-    private Object objects;
+    private ArrayList<FieldObject> objects;
 
     public Space(Board board, int x, int y) {
         this.board = board;
         this.x = x;
         this.y = y;
         player = null;
-        objects = new List();
+        objects = new ArrayList<>();
     }
 
     public Player getPlayer() {
@@ -69,12 +71,18 @@ public class Space extends Subject {
         }
     }
 
-    public void setObjects(Object object){
-        objects = object;
+    public void addObjects(FieldObject object){
+        objects.add(object);
     }
 
-    public Object getObjects() {
+    public ArrayList<FieldObject> getObjects() {
         return objects;
+    }
+    public FieldObject findObjectOfType(Class<?> objectType){
+        for (FieldObject object: objects) {
+            if (object.getClass() == objectType) return object;
+        }
+        return null;
     }
 
     void playerChanged() {

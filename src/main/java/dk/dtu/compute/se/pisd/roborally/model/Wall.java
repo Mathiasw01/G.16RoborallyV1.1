@@ -1,7 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
-public class Wall {
-    private Heading dir;
+public class Wall extends FieldObject{
+    private final Heading dir;
     public Wall(Heading dir){
         this.dir = dir;
 

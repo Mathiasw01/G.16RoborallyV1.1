@@ -48,12 +48,11 @@ public class GameController {
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space) {
 
-        if (!(space.getObjects() instanceof Wall)) {
+        if (space.findObjectOfType(Wall.class) == null) {
             if (space.getPlayer() == null) {
                 board.getCurrentPlayer().setSpace(space);
             } else {
                 Player player2 = space.getPlayer();
-
                 int x = space.x;
                 int y = space.y;
                 switch (board.getCurrentPlayer().getHeading()){
@@ -244,10 +243,10 @@ public class GameController {
                     this.turnLeft(player);
                     break;
                 case FAST_FORWARD:
-                    this.fastForward(player);
+                    this.fastForward(player, 2);
                     break;
                 case MOVE_THREE:
-                    this.fastForward(player);
+                    this.fastForward(player, 3);
                     break;
                 case UTURN:
                     this.uturn(player);
@@ -298,9 +297,10 @@ public class GameController {
      * This method moves the player two spaces forward
      * @param  player  the player which will be moved.
      */
-    public void fastForward(@NotNull Player player) {
-        moveForward(player);
-        moveForward(player);
+    public void fastForward(@NotNull Player player, int moves) {
+        for (int i = 0; i < moves; i++) {
+            moveForward(player);
+        }
     }
 
     /**
