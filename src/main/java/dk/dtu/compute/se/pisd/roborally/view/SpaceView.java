@@ -75,8 +75,6 @@ public class SpaceView extends StackPane implements ViewObserver {
     }
 
     private void updatePlayer() {
-        this.getChildren().clear();
-
 
         Player player = space.getPlayer();
         if (player != null) {
@@ -161,11 +159,14 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     @Override
     public void updateView(Subject subject) {
+        this.getChildren().clear();
+
+        drawFieldObjects();
+
         if (subject == this.space) {
             updatePlayer();
         }
 
-        drawFieldObjects();
     }
 
 }
