@@ -71,7 +71,7 @@ public class GameController {
                 int x = space.x;
                 int y = space.y;
 
-                if (backupflag==true) {
+                if (backupflag) {
                     switch (currentPlayer.getHeading()){
                         case EAST -> {x--;}
                         case WEST -> {x++;}
@@ -86,6 +86,7 @@ public class GameController {
                         case SOUTH -> {y++;}
                     }
                 }
+
 
                 player2.setSpace(board.getSpace(x,y));
                 currentPlayer.setSpace(space);
