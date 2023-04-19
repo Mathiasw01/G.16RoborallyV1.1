@@ -12,4 +12,4 @@ Wall;6;3;NORTH
 Wall;6;6;WEST
 Wall;9;3;EAST
 Wall;9;6;SOUTH
-CheckPoint;12;3
+CheckPoint;12;3;1

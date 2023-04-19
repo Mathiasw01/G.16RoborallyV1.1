@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 public class CheckpointField extends FieldObject{
     private ArrayList<Player> playersObtained;
+    private int checkpointNumber;
 
-    public CheckpointField(){
+    public CheckpointField(int checkpointNumber){
         playersObtained = new ArrayList<>();
+        this.checkpointNumber = checkpointNumber;
     }
 
     public boolean addPlayerIfUnobtained(Player player){
@@ -20,6 +22,10 @@ public class CheckpointField extends FieldObject{
 
     public boolean playerHasCheckpoint(Player player){
         return playersObtained.contains(player);
+    }
+
+    public int getCheckpointNumber(){
+        return this.checkpointNumber;
     }
 
 }

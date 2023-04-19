@@ -50,7 +50,6 @@ public class Board extends Subject {
     private final Space[][] spaces;
 
     private ArrayList<CheckpointField> checkpoints = new ArrayList<>();
-    private FinishField finish;
 
     private final List<Player> players = new ArrayList<>();
 
@@ -77,9 +76,12 @@ public class Board extends Subject {
                 Random a = new Random();
 
                 //TEST ADD WALL
+                /*
                 if(a.nextFloat() < 0.2f){
                     space.addObjects(new Wall(Heading.WEST));
                 }
+                */
+
                 if(a.nextFloat()>0.99f){
                     space.addObjects(new Conveyor(Color.GREEN,Heading.EAST));
                 } if(a.nextFloat()<0.30f && a.nextFloat()>0.29f){
@@ -243,13 +245,15 @@ public class Board extends Subject {
     }
 
 
-    public void AddCheckpoint(CheckpointField checkpoint){
+    public void addCheckpoint(CheckpointField checkpoint){
         checkpoints.add(checkpoint);
     }
 
-    public void AddFinish(FinishField finish){
-        this.finish = finish;
+
+    public ArrayList<CheckpointField> getCheckpoints(){
+        return this.checkpoints;
     }
+
 
 
 }

@@ -31,6 +31,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -133,17 +134,12 @@ public class SpaceView extends StackPane implements ViewObserver {
             cpGfx.setRadius(15);
             cpGfx.setFill(Color.CORAL);
             this.getChildren().add(cpGfx);
+
+            Text numText = new Text();
+            numText.setText(String.valueOf(checkpoint.getCheckpointNumber()));
+            this.getChildren().add(numText);
         }
 
-        //Finish
-        FinishField finishField = (FinishField) space.findObjectOfType(FinishField.class);
-
-        if(finishField != null){
-            Circle cpGfx = new Circle();
-            cpGfx.setRadius(16);
-            cpGfx.setFill(Color.RED);
-            this.getChildren().add(cpGfx);
-        }
 
         //Start
         StartField startField = (StartField) space.findObjectOfType(StartField.class);
@@ -153,7 +149,10 @@ public class SpaceView extends StackPane implements ViewObserver {
             cpGfx.setRadius(16);
             cpGfx.setFill(Color.GOLD);
             this.getChildren().add(cpGfx);
+
         }
+
+        //Conveyor
         if (conveyor != null) {
             Rectangle conveyorGfx = new Rectangle();
             conveyorGfx.setWidth(25);

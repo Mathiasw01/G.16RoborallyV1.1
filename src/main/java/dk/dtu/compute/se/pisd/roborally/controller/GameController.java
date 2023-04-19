@@ -25,6 +25,7 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -303,6 +304,23 @@ public class GameController {
                     moveBoardElement(player, object);
                 }
             }
+
+            if(object instanceof CheckpointField cp){
+                if(cp.playerHasCheckpoint(player)){
+                    return;
+                }
+                ArrayList<CheckpointField> cps = board.getCheckpoints();
+                int obtainedCheckpoints = (int)cps.stream().filter(c -> c.playerHasCheckpoint(player)).count();
+
+                if(cp.getCheckpointNumber()-1 == obtainedCheckpoints){
+                    cp.addPlayerIfUnobtained(player);
+
+                    if(obtainedCheckpoints+1 == cps.size()){
+                        //Player won!
+                        System.out.println(player.getName() + " won!");
+                    }
+                }
+            }
         }
     }
 
@@ -497,6 +515,9 @@ public class GameController {
         }
         continuePrograms();
     }
+
+
+
 
 
 

@@ -24,16 +24,16 @@ public class SpaceReader {
                 String data = myReader.nextLine();
                 String[] result = data.split(";");
                 Space space = board.getSpace(Integer.parseInt(result[1]),Integer.parseInt(result[2]));
-                switch (result[0]){
-                    case "P":
-                        space.addObjects(new StartField());
-                        break;
-                    case "Wall":
+                switch (result[0]) {
+                    case "P" -> space.addObjects(new StartField());
+                    case "Wall" -> {
                         space.addObjects(new Wall(Heading.valueOf(result[3])));
-                        break;
-                    case "CheckPoint":
-                        space.addObjects(new CheckpointField());
-                        break;
+                    }
+                    case "CheckPoint" -> {
+                        CheckpointField newCheckpoint = new CheckpointField(Integer.parseInt(result[3]));
+                        space.addObjects(newCheckpoint);
+                        board.addCheckpoint(newCheckpoint);
+                    }
                 }
             }
         } catch (FileNotFoundException e){
