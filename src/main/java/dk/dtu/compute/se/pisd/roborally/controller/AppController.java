@@ -64,8 +64,9 @@ public class AppController implements Observer {
     /**
      * New game
      * <p>
-     * Initialises a new game. Asks the user for desired number of players, initialises board and and
+     * Initialises a new game. Asks the user for desired number of players, initialises board and
      * draws UI elements.
+     * @param map the map that the user chose
      */
     public void newGame(String map) {
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
