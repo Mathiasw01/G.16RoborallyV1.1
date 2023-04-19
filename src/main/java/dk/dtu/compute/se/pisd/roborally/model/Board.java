@@ -74,19 +74,6 @@ public class Board extends Subject {
             for(int y = 0; y < height; y++) {
                 Space space = new Space(this, x, y);
                 spaces[x][y] = space;
-                Random a = new Random();
-
-                //TEST ADD WALL
-                if(a.nextFloat() < 0.2f){
-                    space.addObjects(new Wall(Heading.WEST));
-                }
-                if(a.nextFloat()>0.99f){
-                    space.addObjects(new Conveyor(Color.GREEN,Heading.EAST));
-                } if(a.nextFloat()<0.30f && a.nextFloat()>0.29f){
-                    space.addObjects(new Conveyor(Color.BLUE,Heading.EAST));
-                }
-
-
             }
         }
         spaceReader = new SpaceReader(map);

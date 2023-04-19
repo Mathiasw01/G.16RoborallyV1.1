@@ -1,0 +1,67 @@
+P;1;1
+P;0;3
+P;1;4
+P;1;5
+P;0;6
+P;1;8
+#;Walls
+#;
+Wall;1;2;NORTH
+Wall;2;4;EAST
+Wall;2;5;EAST
+Wall;1;7;SOUTH
+Wall;6;3;NORTH
+Wall;6;6;WEST
+Wall;9;3;EAST
+Wall;9;6;SOUTH
+#;Checkpoints
+CheckPoint;12;3
+#;Conveyor belts
+GreenCon;2;0;EAST
+GreenCon;2;9;EAST
+#;Line 3
+BlueCon;3;7;EAST
+BlueCon;3;8;EAST
+#;Line 4
+BlueCon;4;0;SOUTH
+BlueCon;4;1;SOUTH
+BlueCon;4;2;SOUTH
+BlueCon;4;3;SOUTH
+BlueCon;4;4;SOUTH
+BlueCon;4;5;SOUTH
+BlueCon;4;6;SOUTH
+BlueCon;4;7;SOUTH
+BlueCon;4;8;EAST
+#;Line 5
+BlueCon;5;0;SOUTH
+BlueCon;5;1;WEST
+BlueCon;5;8;EAST
+#;Line 6
+BlueCon;6;1;WEST
+BlueCon;6;8;EAST
+#;Line 7
+BlueCon;7;1;WEST
+BlueCon;7;8;EAST
+#;Line 8
+BlueCon;8;1;WEST
+BlueCon;8;8;EAST
+#;Line 9
+BlueCon;9;1;WEST
+BlueCon;9;8;EAST
+#;Line 10
+BlueCon;10;1;WEST
+BlueCon;10;8;EAST
+BlueCon;10;9;NORTH
+#;Line 11
+BlueCon;11;1;WEST
+BlueCon;11;2;NORTH
+BlueCon;11;3;NORTH
+BlueCon;11;4;NORTH
+BlueCon;11;5;NORTH
+BlueCon;11;6;NORTH
+BlueCon;11;7;NORTH
+BlueCon;11;8;NORTH
+BlueCon;11;9;NORTH
+#;Line 12
+BlueCon;12;1;WEST
+BlueCon;12;2;WEST

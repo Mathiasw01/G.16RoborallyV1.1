@@ -100,7 +100,7 @@ public class SpaceView extends StackPane implements ViewObserver {
         Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
         if( wall != null) {
             Rectangle wallGfx = new Rectangle();
-            wallGfx.setWidth(45);
+            wallGfx.setWidth(47);
             wallGfx.setHeight(10);
 
             switch (wall.getDir()) {
@@ -157,17 +157,24 @@ public class SpaceView extends StackPane implements ViewObserver {
         if (conveyor != null) {
             Rectangle conveyorGfx = new Rectangle();
             conveyorGfx.setWidth(25);
-            conveyorGfx.setHeight(45);
+            conveyorGfx.setHeight(47);
+            Circle convCircleGfx = new Circle();
+            convCircleGfx.setRadius(2);
+            convCircleGfx.setFill(Color.YELLOW);
             switch (conveyor.getDirection()) {
                 case SOUTH:
+                    convCircleGfx.setTranslateY(15);
                     break;
                 case NORTH:
+                    convCircleGfx.setTranslateY(-15);
                     break;
                 case EAST:
                     conveyorGfx.setRotate(90);
+                    convCircleGfx.setTranslateX(15);
                     break;
                 case WEST:
                     conveyorGfx.setRotate(90);
+                    convCircleGfx.setTranslateX(-15);
                     break;
             }
             if (conveyor.getColor().equals(Color.BLUE)) {
@@ -175,7 +182,9 @@ public class SpaceView extends StackPane implements ViewObserver {
             }else {
                 conveyorGfx.setFill(Color.GREEN);
             }
+
             this.getChildren().add(conveyorGfx);
+            this.getChildren().add(convCircleGfx);
         }
     }
 

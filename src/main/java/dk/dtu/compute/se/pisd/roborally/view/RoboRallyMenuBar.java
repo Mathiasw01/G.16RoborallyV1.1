@@ -58,15 +58,21 @@ public class RoboRallyMenuBar extends MenuBar {
         controlMenu = new Menu("File");
         this.getMenus().add(controlMenu);
 
-        mapMenu = new Menu("Map");
+        mapMenu = new Menu("Select Map");
         this.getMenus().add(mapMenu);
 
-        testMap = new MenuItem("test map");
-        testMap.setOnAction(e -> this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap");
+        testMap = new MenuItem("Test Map");
+        testMap.setOnAction(e -> {
+            this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap";
+            mapMenu.setText("Test Map");
+        });
         mapMenu.getItems().add(testMap);
 
         dizzy = new MenuItem("Dizzy Highway");
-        dizzy.setOnAction(e -> this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/view/DizzyHighway");
+        dizzy.setOnAction(e -> {
+            mapMenu.setText("Dizzy Highway");
+            this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/DizzyHighway";
+        });
         mapMenu.getItems().add(dizzy);
 
         newGame = new MenuItem("New Game");
