@@ -382,6 +382,22 @@ public class GameController {
         }
     }
 
+    //----- Gear ----//
+    public void Gears(@NotNull Player player, boolean OnGear){
+        //If the robot resting on them
+        Space currentSpace=player.getSpace();
+
+        // The robot should turn 90 degrees.
+        if(OnGear){
+            //to the left.
+            player.setHeading(player.getHeading().prev());
+        }
+        else{
+            //to the right.
+            player.setHeading(player.getHeading().next());
+        }
+    }
+
     /**
      * Turns the player right.
      * <p>
