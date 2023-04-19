@@ -55,8 +55,7 @@ public class AppController implements Observer {
     final private RoboRally roboRally;
 
     private GameController gameController;
-    private final SpaceReader spaceReader = new SpaceReader("src/main/java/dk/dtu/compute/se/pisd/roborally/view/DizzyHighway");
-
+    private SpaceReader spaceReader;
 
     public AppController(@NotNull RoboRally roboRally) {
         this.roboRally = roboRally;
@@ -68,11 +67,12 @@ public class AppController implements Observer {
      * Initialises a new game. Asks the user for desired number of players, initialises board and and
      * draws UI elements.
      */
-    public void newGame() {
+    public void newGame(String map) {
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
         dialog.setTitle("Player number");
         dialog.setHeaderText("Select number of players");
         Optional<Integer> result = dialog.showAndWait();
+        spaceReader = new SpaceReader(map);
 
         if (result.isPresent()) {
             if (gameController != null) {
@@ -85,7 +85,7 @@ public class AppController implements Observer {
 
             // XXX the board should eventually be created programmatically or loaded from a file
             //     here we just create an empty board with the required number of players.
-            Board board = new Board(13,10);
+            Board board = new Board(13,10, map);
             gameController = new GameController(board);
             int no = result.get();
 
@@ -122,7 +122,7 @@ public class AppController implements Observer {
         // XXX needs to be implemented eventually
         // for now, we just create a new game
         if (gameController == null) {
-            newGame();
+            //newGame();
         }
     }
 
