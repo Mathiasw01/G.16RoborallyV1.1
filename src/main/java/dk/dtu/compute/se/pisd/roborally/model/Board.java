@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -62,9 +63,9 @@ public class Board extends Subject {
     private boolean stepMode;
 
     private int counter=0;
-    private final SpaceReader spaceReader = new SpaceReader("src/main/java/dk/dtu/compute/se/pisd/roborally/view/DizzyHighway");
+    private SpaceReader spaceReader;
 
-    public Board(int width, int height, @NotNull String boardName) {
+    public Board(int width, int height, String map, @NotNull String boardName) {
         this.boardName = boardName;
         this.width = width;
         this.height = height;
@@ -73,15 +74,28 @@ public class Board extends Subject {
             for(int y = 0; y < height; y++) {
                 Space space = new Space(this, x, y);
                 spaces[x][y] = space;
+                Random a = new Random();
+
+                //TEST ADD WALL
+                if(a.nextFloat() < 0.2f){
+                    space.addObjects(new Wall(Heading.WEST));
+                }
+                if(a.nextFloat()>0.99f){
+                    space.addObjects(new Conveyor(Color.GREEN,Heading.EAST));
+                } if(a.nextFloat()<0.30f && a.nextFloat()>0.29f){
+                    space.addObjects(new Conveyor(Color.BLUE,Heading.EAST));
+                }
+
 
             }
         }
+        spaceReader = new SpaceReader(map);
         spaceReader.initMap(this);
         this.stepMode = false;
     }
 
-    public Board(int width, int height) {
-        this(width, height, "defaultboard");
+    public Board(int width, int height, String map) {
+        this(width, height, map,  "defaultboard");
     }
 
     public Integer getGameId() {

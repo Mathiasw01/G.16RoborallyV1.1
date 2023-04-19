@@ -75,8 +75,6 @@ public class SpaceView extends StackPane implements ViewObserver {
     }
 
     private void updatePlayer() {
-        this.getChildren().clear();
-
 
         Player player = space.getPlayer();
         if (player != null) {
@@ -99,6 +97,7 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     private void drawFieldObjects(){
         Wall wall = (Wall)space.findObjectOfType(Wall.class);
+        Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
         if( wall != null) {
             Rectangle wallGfx = new Rectangle();
             wallGfx.setWidth(45);
@@ -155,17 +154,44 @@ public class SpaceView extends StackPane implements ViewObserver {
             cpGfx.setFill(Color.GOLD);
             this.getChildren().add(cpGfx);
         }
-
+        if (conveyor != null) {
+            Rectangle conveyorGfx = new Rectangle();
+            conveyorGfx.setWidth(25);
+            conveyorGfx.setHeight(45);
+            switch (conveyor.getDirection()) {
+                case SOUTH:
+                    break;
+                case NORTH:
+                    break;
+                case EAST:
+                    conveyorGfx.setRotate(90);
+                    break;
+                case WEST:
+                    conveyorGfx.setRotate(90);
+                    break;
+            }
+            if (conveyor.getColor().equals(Color.BLUE)) {
+                conveyorGfx.setFill(Color.BLUE);
+            }else {
+                conveyorGfx.setFill(Color.GREEN);
+            }
+            this.getChildren().add(conveyorGfx);
+        }
     }
+
+
 
 
     @Override
     public void updateView(Subject subject) {
+        this.getChildren().clear();
+
+        drawFieldObjects();
+
         if (subject == this.space) {
             updatePlayer();
         }
 
-        drawFieldObjects();
     }
 
 }
