@@ -29,6 +29,7 @@ import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 
+import dk.dtu.compute.se.pisd.roborally.model.SpaceReader;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -54,6 +55,7 @@ public class AppController implements Observer {
     final private RoboRally roboRally;
 
     private GameController gameController;
+    private SpaceReader spaceReader;
 
     public AppController(@NotNull RoboRally roboRally) {
         this.roboRally = roboRally;
@@ -65,11 +67,12 @@ public class AppController implements Observer {
      * Initialises a new game. Asks the user for desired number of players, initialises board and and
      * draws UI elements.
      */
-    public void newGame() {
+    public void newGame(String map) {
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
         dialog.setTitle("Player number");
         dialog.setHeaderText("Select number of players");
         Optional<Integer> result = dialog.showAndWait();
+        spaceReader = new SpaceReader(map);
 
         if (result.isPresent()) {
             if (gameController != null) {
@@ -82,14 +85,16 @@ public class AppController implements Observer {
 
             // XXX the board should eventually be created programmatically or loaded from a file
             //     here we just create an empty board with the required number of players.
-            Board board = new Board(13,10);
+            Board board = new Board(13,10, map);
             gameController = new GameController(board);
             int no = result.get();
+
             for (int i = 0; i < no; i++) {
                 Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
                 board.addPlayer(player);
-                player.setSpace(board.getSpace(i % board.width, i));
+                spaceReader.initPlayers(board,player, i);
             }
+
 
             // XXX: V2
             // board.setCurrentPlayer(board.getPlayer(0));
@@ -117,7 +122,7 @@ public class AppController implements Observer {
         // XXX needs to be implemented eventually
         // for now, we just create a new game
         if (gameController == null) {
-            newGame();
+            //newGame();
         }
     }
 
@@ -169,7 +174,7 @@ public class AppController implements Observer {
     }
 
     /**
-     * Returns if the games i running or not
+     * Returns if the games is running or not
      * <p>
      * Returns a bool representing if the game is running
      * @return boolean, game is running

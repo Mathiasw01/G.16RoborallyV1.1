@@ -22,8 +22,11 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.control.Alert;
+import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -46,29 +49,52 @@ public class GameController {
      * Moves current player to the parsed space if the space is empty
      * TODO If the field is occupied, push the the player
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space) {
+    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag) {
+        board.setCounter(board.getCounter() + 1);
+        Wall wall = (Wall) space.findObjectOfType(Wall.class);
+        Player currentPlayer = board.getCurrentPlayer();
+        Wall currentSpaceWall = (Wall) currentPlayer.getSpace().findObjectOfType(Wall.class);
 
-        if (space.findObjectOfType(Wall.class) == null) {
+        if (wall != null ){
+            if (wall.getDir() == currentPlayer.getHeading().next().next()){
+                return;
+            }
+        }
+
+        if (currentSpaceWall != null){
+            if (currentSpaceWall.getDir() == currentPlayer.getHeading()){
+                return;
+            }
+        }
+
             if (space.getPlayer() == null) {
-                board.getCurrentPlayer().setSpace(space);
+                currentPlayer.setSpace(space);
             } else {
                 Player player2 = space.getPlayer();
                 int x = space.x;
                 int y = space.y;
-                switch (board.getCurrentPlayer().getHeading()){
-                    case EAST -> {x++;}
-                    case WEST -> {x--;}
-                    case NORTH -> {y--;}
-                    case SOUTH -> {y++;}
-                }
-                player2.setSpace(board.getSpace(x,y));
-                board.getCurrentPlayer().setSpace(space);
-            }
-        } else {
-            board.setCounter(board.getCounter() + 1);
-        }
 
-    }
+                if (backupflag) {
+                    switch (currentPlayer.getHeading()){
+                        case EAST -> {x--;}
+                        case WEST -> {x++;}
+                        case NORTH -> {y++;}
+                        case SOUTH -> {y--;}
+                    }
+                } else {
+                    switch (currentPlayer.getHeading()){
+                        case EAST -> {x++;}
+                        case WEST -> {x--;}
+                        case NORTH -> {y--;}
+                        case SOUTH -> {y++;}
+                    }
+                }
+
+
+                player2.setSpace(board.getSpace(x,y));
+                currentPlayer.setSpace(space);
+            }
+        }
 
     /**
      * Start programming phase
@@ -265,6 +291,40 @@ public class GameController {
                 default:
                     // DO NOTHING (for now)
             }
+            executeBoardElement(player);
+        }
+    }
+
+    public void executeBoardElement(Player player) {
+        for (FieldObject object : player.getSpace().getObjects()) {
+            if (object instanceof Conveyor) {
+                if (((Conveyor) object).getColor().equals(Color.BLUE)) {
+                    moveBoardElement(player, object);
+                    moveBoardElement(player, object);
+                } else if (((Conveyor) object).getColor().equals(Color.GREEN)) {
+                    moveBoardElement(player, object);
+                }
+            }
+
+            if(object instanceof CheckpointField cp){
+                if(cp.playerHasCheckpoint(player)){
+                    return;
+                }
+                ArrayList<CheckpointField> cps = board.getCheckpoints();
+                int obtainedCheckpoints = (int)cps.stream().filter(c -> c.playerHasCheckpoint(player)).count();
+
+                if(cp.getCheckpointNumber()-1 == obtainedCheckpoints){
+                    cp.addPlayerIfUnobtained(player);
+
+                    if(obtainedCheckpoints+1 == cps.size()){
+                        //Player won!
+                        System.out.println(player.getName() + " won!");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,player.getName() + " won!" );
+                        alert.show();
+
+                    }
+                }
+            }
         }
     }
 
@@ -287,7 +347,26 @@ public class GameController {
         }
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y));
+            boolean backupflag = false;
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
+        } else System.out.println("OUT OF BOUNDS");
+    }
+
+    public void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
+        Space currentSpace=player.getSpace();
+        int x=currentSpace.x;
+        int y=currentSpace.y;
+        // Husk outofbounds fejl
+        switch (((MovementField)fieldObject).getDirection()){
+            case EAST -> {x++;}
+            case WEST -> {x--;}
+            case NORTH -> {y--;}
+            case SOUTH -> {y++;}
+        }
+        System.out.println(x+ " " +y);
+        boolean backupflag = false;
+        if(board.getSpace(x,y) != null) {
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -381,7 +460,8 @@ public class GameController {
         }
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y));
+            boolean backupflag = true;
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -455,6 +535,9 @@ public class GameController {
         }
         continuePrograms();
     }
+
+
+
 
 
 

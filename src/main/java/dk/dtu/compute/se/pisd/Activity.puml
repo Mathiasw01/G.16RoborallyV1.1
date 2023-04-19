@@ -1,0 +1,10 @@
+@startuml
+'https://plantuml.com/activity-diagram-be
+(*) -->"Draw action cards"
+ --> "Program robot"
+--> "Execute program"
+--> [Robot moves] "Interact with field"
+--> (*)
+
+
+@enduml

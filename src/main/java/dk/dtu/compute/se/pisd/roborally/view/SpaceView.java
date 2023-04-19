@@ -22,15 +22,16 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.model.Heading;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
-import dk.dtu.compute.se.pisd.roborally.model.Space;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -65,6 +66,8 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.setStyle("-fx-background-color: black;");
         }
 
+
+
         // updatePlayer();
 
         // This space view should listen to changes of the space
@@ -73,7 +76,6 @@ public class SpaceView extends StackPane implements ViewObserver {
     }
 
     private void updatePlayer() {
-        this.getChildren().clear();
 
         Player player = space.getPlayer();
         if (player != null) {
@@ -87,15 +89,120 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
 
             arrow.setRotate((90*player.getHeading().ordinal())%360);
+
             this.getChildren().add(arrow);
+        }
+
+    }
+
+
+    private void drawFieldObjects(){
+        Wall wall = (Wall)space.findObjectOfType(Wall.class);
+        Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
+        if( wall != null) {
+            Rectangle wallGfx = new Rectangle();
+            wallGfx.setWidth(40);
+            wallGfx.setHeight(8);
+
+            switch (wall.getDir()) {
+                case SOUTH:
+                    wallGfx.setTranslateY(20);
+                    break;
+                case NORTH:
+                    wallGfx.setTranslateY(-20);
+                    break;
+                case EAST:
+                    wallGfx.setRotate(90);
+                    wallGfx.setTranslateX(20);
+                    break;
+                case WEST:
+                    wallGfx.setRotate(90);
+                    wallGfx.setTranslateX(-20);
+                    break;
+            }
+
+            wallGfx.setFill(Color.GOLD);
+
+
+            this.getChildren().add(wallGfx);
+        }
+
+
+        //Checkpoints
+        CheckpointField checkpoint = (CheckpointField) space.findObjectOfType(CheckpointField.class);
+        if(checkpoint != null){
+            Circle cpGfx = new Circle();
+            cpGfx.setRadius(15);
+            cpGfx.setFill(Color.CORAL);
+            this.getChildren().add(cpGfx);
+
+            Text numText = new Text();
+            numText.setText(String.valueOf(checkpoint.getCheckpointNumber()));
+            this.getChildren().add(numText);
+        }
+
+
+        //Start
+        StartField startField = (StartField) space.findObjectOfType(StartField.class);
+
+        if(startField != null){
+            Circle cpGfx = new Circle();
+            cpGfx.setRadius(16);
+            cpGfx.setFill(Color.GOLD);
+            this.getChildren().add(cpGfx);
+
+        }
+
+        //Conveyor
+        if (conveyor != null) {
+            Rectangle conveyorGfx = new Rectangle();
+            conveyorGfx.setWidth(25);
+            conveyorGfx.setHeight(47);
+            Circle convCircleGfx = new Circle();
+            convCircleGfx.setRadius(2);
+            convCircleGfx.setFill(Color.YELLOW);
+            switch (conveyor.getDirection()) {
+                case SOUTH:
+                    convCircleGfx.setTranslateY(15);
+                    break;
+                case NORTH:
+                    convCircleGfx.setTranslateY(-15);
+                    break;
+                case EAST:
+                    conveyorGfx.setRotate(90);
+                    convCircleGfx.setTranslateX(15);
+                    break;
+                case WEST:
+                    conveyorGfx.setRotate(90);
+                    convCircleGfx.setTranslateX(-15);
+                    break;
+            }
+            if (conveyor.getColor().equals(Color.BLUE)) {
+                conveyorGfx.setFill(Color.ROYALBLUE);
+            }else {
+                conveyorGfx.setFill(Color.FORESTGREEN);
+            }
+
+
+
+            this.getChildren().add(conveyorGfx);
+            this.getChildren().add(convCircleGfx);
         }
     }
 
+
+
+
     @Override
     public void updateView(Subject subject) {
+        this.getChildren().clear();
+
+        drawFieldObjects();
+
         if (subject == this.space) {
             updatePlayer();
         }
+
     }
 
 }
