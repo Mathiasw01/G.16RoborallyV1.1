@@ -10,12 +10,22 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
+/**
+ * Class that reads a map file and places down opbjects on the board
+ *
+ */
+
 public class SpaceReader {
     String fileName;
 
     public SpaceReader(String fileName){
         this.fileName = fileName;
     }
+
+    /**
+     * Initializes the map by reading a map file and places down objects to the board
+     * @param board the board where the objects are placed
+     */
 
     public void initMap(Board board){
         try{
@@ -56,6 +66,12 @@ public class SpaceReader {
         }
     }
 
+    /**
+     * Initializes the player by placing them on the start fields
+     * @param board the board where the players are placed
+     * @param player the player which receives a space from the map file
+     * @param playerNum the players number which determines their order
+     */
     public void initPlayers(Board board, Player player, int playerNum){
         try{
             String data = Files.readAllLines(Paths.get(fileName)).get(playerNum);
