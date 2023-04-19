@@ -193,6 +193,13 @@ public class SpaceView extends StackPane implements ViewObserver {
 
 
 
+    /**
+     * Update view
+     * <p>
+     * This method updates the graphical view of the space.
+     * It redraws the objects on the field and the players.
+     * Note that the method deletes graphical objects on the space and redraws.
+     */
     @Override
     public void updateView(Subject subject) {
         this.getChildren().clear();

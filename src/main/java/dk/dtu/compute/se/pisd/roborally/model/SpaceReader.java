@@ -9,7 +9,11 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Scanner;
-
+/**
+ * Space Reader
+ *<p>
+ * Write here!!
+ */
 /**
  * Class that reads a map file and places down opbjects on the board
  *
