@@ -22,6 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
@@ -318,6 +319,9 @@ public class GameController {
                     if(obtainedCheckpoints+1 == cps.size()){
                         //Player won!
                         System.out.println(player.getName() + " won!");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,player.getName() + " won!" );
+                        alert.show();
+
                     }
                 }
             }

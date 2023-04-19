@@ -81,12 +81,14 @@ public class Board extends Subject {
                     space.addObjects(new Wall(Heading.WEST));
                 }
                 */
-
+                /*
                 if(a.nextFloat()>0.99f){
                     space.addObjects(new Conveyor(Color.GREEN,Heading.EAST));
                 } if(a.nextFloat()<0.30f && a.nextFloat()>0.29f){
                     space.addObjects(new Conveyor(Color.BLUE,Heading.EAST));
                 }
+                */
+
 
 
             }
@@ -253,6 +255,8 @@ public class Board extends Subject {
     public ArrayList<CheckpointField> getCheckpoints(){
         return this.checkpoints;
     }
+
+
 
 
 

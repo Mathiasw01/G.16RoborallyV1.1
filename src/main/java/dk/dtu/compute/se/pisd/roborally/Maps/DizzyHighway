@@ -15,7 +15,7 @@ Wall;6;6;WEST
 Wall;9;3;EAST
 Wall;9;6;SOUTH
 #;Checkpoints
-CheckPoint;12;3
+CheckPoint;12;3;1
 #;Conveyor belts
 GreenCon;2;0;EAST
 GreenCon;2;9;EAST
