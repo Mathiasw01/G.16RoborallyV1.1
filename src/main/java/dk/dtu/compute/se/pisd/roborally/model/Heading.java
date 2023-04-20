@@ -22,8 +22,9 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 /**
- * ...
- *
+ * A heading which represents a direction.
+ * <p>
+ * Represents a cardinal direction, up/down/left/right.
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */

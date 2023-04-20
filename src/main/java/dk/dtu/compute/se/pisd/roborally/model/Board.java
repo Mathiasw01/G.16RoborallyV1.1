@@ -50,7 +50,6 @@ public class Board extends Subject {
     private final Space[][] spaces;
 
     private ArrayList<CheckpointField> checkpoints = new ArrayList<>();
-    private FinishField finish;
 
     private final List<Player> players = new ArrayList<>();
 
@@ -63,9 +62,18 @@ public class Board extends Subject {
     private boolean stepMode;
 
     private int counter=0;
-    private final SpaceReader spaceReader = new SpaceReader("src/main/java/dk/dtu/compute/se/pisd/roborally/view/DizzyHighway");
+    private SpaceReader spaceReader;
 
-    public Board(int width, int height, @NotNull String boardName) {
+    /**
+     * Creates a new board
+     * <p>
+     * Creates a new board by instantiating spaces.
+     * @param width the width of the board in blocks
+     * @param height the height of the board in blocks
+     * @param boardName The name of the board
+     * @param map the map name to be loaded from the resources folder
+     */
+    public Board(int width, int height, String map, @NotNull String boardName) {
         this.boardName = boardName;
         this.width = width;
         this.height = height;
@@ -74,33 +82,44 @@ public class Board extends Subject {
             for(int y = 0; y < height; y++) {
                 Space space = new Space(this, x, y);
                 spaces[x][y] = space;
-                Random a = new Random();
-
-                //TEST ADD WALL
-                if(a.nextFloat() < 0.2f){
-                    space.addObjects(new Wall(Heading.WEST));
-                }
-                if(a.nextFloat()>0.99f){
-                    space.addObjects(new Conveyor(Color.GREEN,Heading.EAST));
-                } if(a.nextFloat()<0.30f && a.nextFloat()>0.29f){
-                    space.addObjects(new Conveyor(Color.BLUE,Heading.EAST));
-                }
-
 
             }
         }
+        spaceReader = new SpaceReader(map);
         spaceReader.initMap(this);
         this.stepMode = false;
     }
 
-    public Board(int width, int height) {
-        this(width, height, "defaultboard");
+    /**
+     * Creates a new default board
+     * <p>
+     * Creates a new board by instantiating spaces.
+     * @param width the width of the board in blocks
+     * @param height the height of the board in blocks
+     * @param map the map name to be loaded from the resources folder
+     */
+    public Board(int width, int height, String map) {
+        this(width, height, map,  "defaultboard");
     }
 
+
+    /**
+     * Get game id
+     * <p>
+     * Returns game ID
+     * @return Integer gameID
+     */
     public Integer getGameId() {
         return gameId;
     }
 
+
+    /**
+     * Set game id
+     * <p>
+     * Sets the current game ID
+     * @param gameId the id to be assigned this game
+     */
     public void setGameId(int gameId) {
         if (this.gameId == null) {
             this.gameId = gameId;
@@ -111,6 +130,14 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Get space
+     * <p>
+     * Returns the space at the given location
+     * @param x x-coordinate
+     * @param y y-coordinate
+     * @return Space object
+     */
     public Space getSpace(int x, int y) {
         if (x >= 0 && x < width &&
                 y >= 0 && y < height) {
@@ -119,19 +146,41 @@ public class Board extends Subject {
             return null;
         }
     }
-
+    /**
+     * Get counter
+     * <p>
+     * Returns the board counter
+     * @return int board counter
+     */
     public int getCounter() {
         return counter;
     }
 
+    /**
+     * Set counter
+     * <p>
+     * Sets the board counter
+     * @param counter the value to be assigned to the counter
+     */
     public void setCounter(int counter) {
         this.counter = counter;
     }
 
+    /**
+     * Get number of players
+     * <p>
+     * @return int number of players
+     */
     public int getPlayersNumber() {
         return players.size();
     }
 
+    /**
+     * Add player
+     * <p>
+     * Adds a player to the board
+     * @param player The player to be added
+     */
     public void addPlayer(@NotNull Player player) {
         if (player.board == this && !players.contains(player)) {
             players.add(player);
@@ -139,6 +188,12 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Get player by index
+     * <p>
+     * Returns player based on the index
+     * @param i player index
+     */
     public Player getPlayer(int i) {
         if (i >= 0 && i < players.size()) {
             return players.get(i);
@@ -147,10 +202,22 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Get current player
+     * <p>
+     * Returns the player who has the current turn
+     * @return player object
+     */
     public Player getCurrentPlayer() {
         return current;
     }
 
+    /**
+     * Set current player
+     * <p>
+     * Sets the current player
+     * @param player the player who will get its turn
+     */
     public void setCurrentPlayer(Player player) {
         if (player != this.current && players.contains(player)) {
             this.current = player;
@@ -158,10 +225,22 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Get phase
+     * <p>
+     * Get current board phase
+     * @return phase enum object
+     */
     public Phase getPhase() {
         return phase;
     }
 
+    /**
+     * Set game phase
+     * <p>
+     * Set current board phase
+     * @param phase phase enum to be the new phase
+     */
     public void setPhase(Phase phase) {
         if (phase != this.phase) {
             this.phase = phase;
@@ -169,10 +248,22 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Get step
+     * <p>
+     * Get the current game step
+     * @return integer representing the current step
+     */
     public int getStep() {
         return step;
     }
 
+    /**
+     * Set step
+     * <p>
+     * Set the current game step
+     * @param step the new step value
+     */
     public void setStep(int step) {
         if (step != this.step) {
             this.step = step;
@@ -180,10 +271,22 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Is step
+     * <p>
+     * Returns whether the game is in step mode
+     * @return boolean, if the game is in stepmode
+     */
     public boolean isStepMode() {
         return stepMode;
     }
 
+    /**
+     * Setstep
+     * <p>
+     * Sets step mode
+     * @param stepMode whether stepMode should be on or not
+     */
     public void setStepMode(boolean stepMode) {
         if (stepMode != this.stepMode) {
             this.stepMode = stepMode;
@@ -191,6 +294,13 @@ public class Board extends Subject {
         }
     }
 
+    /**
+     * Get player number
+     * <p>
+     * Returns a players index in the players array
+     * @param player The player of which the index will be returned
+     * @return integer, index of the player
+     */
     public int getPlayerNumber(@NotNull Player player) {
         if (player.board == this) {
             return players.indexOf(player);
@@ -242,13 +352,17 @@ public class Board extends Subject {
     }
 
 
-    public void AddCheckpoint(CheckpointField checkpoint){
+    public void addCheckpoint(CheckpointField checkpoint){
         checkpoints.add(checkpoint);
     }
 
-    public void AddFinish(FinishField finish){
-        this.finish = finish;
+
+    public ArrayList<CheckpointField> getCheckpoints(){
+        return this.checkpoints;
     }
+
+
+
 
 
 }

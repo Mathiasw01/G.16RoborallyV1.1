@@ -22,9 +22,11 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
@@ -45,7 +47,6 @@ public class GameController {
      * Moves current player to space if possible
      * <p>
      * Moves current player to the parsed space if the space is empty
-     * TODO If the field is occupied, push the the player
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag) {
         board.setCounter(board.getCounter() + 1);
@@ -293,7 +294,8 @@ public class GameController {
         }
     }
 
-    public void executeBoardElement(Player player) {
+
+    private void executeBoardElement(Player player) {
         for (FieldObject object : player.getSpace().getObjects()) {
             if (object instanceof Conveyor) {
                 if (((Conveyor) object).getColor().equals(Color.BLUE)) {
@@ -301,6 +303,33 @@ public class GameController {
                     moveBoardElement(player, object);
                 } else if (((Conveyor) object).getColor().equals(Color.GREEN)) {
                     moveBoardElement(player, object);
+                }
+            }
+
+            if(object instanceof CheckpointField cp){
+                if(cp.playerHasCheckpoint(player)){
+                    return;
+                }
+                ArrayList<CheckpointField> cps = board.getCheckpoints();
+                int obtainedCheckpoints = (int)cps.stream().filter(c -> c.playerHasCheckpoint(player)).count();
+
+                if(cp.getCheckpointNumber()-1 == obtainedCheckpoints){
+                    cp.addPlayerIfUnobtained(player);
+
+                    if(obtainedCheckpoints+1 == cps.size()){
+                        //Player won!
+                        System.out.println(player.getName() + " won!");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,player.getName() + " won!" );
+                        alert.show();
+
+                    }
+                }
+            }
+            if (object instanceof Gear gear){
+                if (gear.getDirection() == Direction.LEFT){
+                    turnLeft(player);
+                } else if (gear.getDirection() == Direction.RIGHT) {
+                    turnRight(player);
                 }
             }
         }
@@ -330,7 +359,7 @@ public class GameController {
         } else System.out.println("OUT OF BOUNDS");
     }
 
-    public void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
+    private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
         int y=currentSpace.y;
@@ -357,6 +386,22 @@ public class GameController {
     public void fastForward(@NotNull Player player, int moves) {
         for (int i = 0; i < moves; i++) {
             moveForward(player);
+        }
+    }
+
+    //----- Gear ----//
+    private void Gears(@NotNull Player player, boolean OnGear){
+        //If the robot resting on them
+        Space currentSpace=player.getSpace();
+
+        // The robot should turn 90 degrees.
+        if(OnGear){
+            //to the left.
+            player.setHeading(player.getHeading().prev());
+        }
+        else{
+            //to the right.
+            player.setHeading(player.getHeading().next());
         }
     }
 
@@ -497,6 +542,9 @@ public class GameController {
         }
         continuePrograms();
     }
+
+
+
 
 
 
