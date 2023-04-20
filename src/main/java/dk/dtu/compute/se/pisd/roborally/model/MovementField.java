@@ -1,6 +1,8 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Movement field
  *<p>
@@ -9,6 +11,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
  */
 
 public abstract class MovementField extends FieldObject {
+    @Expose
     private Heading direction;
 
     public MovementField(Heading direction) {

@@ -146,11 +146,11 @@ public class SpaceView extends StackPane implements ViewObserver {
         StartField startField = (StartField) space.findObjectOfType(StartField.class);
 
         if(startField != null){
-            Circle cpGfx = new Circle();
-            cpGfx.setRadius(16);
-            cpGfx.setFill(Color.GOLD);
-            this.getChildren().add(cpGfx);
-
+            Circle startGfx = new Circle();
+            startGfx.setRadius(20);
+            Image starfield = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/startfield.png");
+            startGfx.setFill(new ImagePattern(starfield,0,0,1,1,true));
+            this.getChildren().add(startGfx);
         }
 
         //Conveyor
@@ -196,6 +196,7 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
             this.getChildren().add(gearGfx);
         }
+        /*
         PushPanel pushPanel = (PushPanel) space.findObjectOfType(PushPanel.class);
         if (pushPanel != null) {
             Rectangle pushpannelGfx = new Rectangle();
@@ -224,7 +225,9 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
             this.getChildren().add(pushpannelGfx);
             this.getChildren().add(pushpannelGfx);
+
         }
+         */
     }
 
 

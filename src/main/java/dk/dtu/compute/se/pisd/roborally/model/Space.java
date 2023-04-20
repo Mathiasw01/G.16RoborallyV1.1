@@ -21,6 +21,7 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import javafx.scene.image.Image;
 
@@ -40,10 +41,15 @@ public class Space extends Subject {
 
     public final Board board;
 
+    @Expose
     public final int x;
+    @Expose
     public final int y;
 
+    @Expose
     private Player player;
+
+    @Expose
     private ArrayList<FieldObject> objects;
 
     public Space(Board board, int x, int y) {

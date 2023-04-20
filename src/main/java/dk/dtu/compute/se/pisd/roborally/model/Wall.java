@@ -1,6 +1,8 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 
+import com.google.gson.annotations.Expose;
+
 /**
  * Wall object
  *<p>
@@ -8,6 +10,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
  * the wall is placed.
  */
 public class Wall extends FieldObject{
+    @Expose
     private final Heading dir;
     public Wall(Heading dir){
         this.dir = dir;
