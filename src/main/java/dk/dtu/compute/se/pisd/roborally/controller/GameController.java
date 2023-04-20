@@ -27,6 +27,7 @@ import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -227,8 +228,7 @@ public class GameController {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
                     for (Player player : players) {
-                        System.out.println(player);
-                        executeBoardElement(player);
+                        executeBoardElement(player,step);
                     }
                     step++;
                     if (step < Player.NO_REGISTERS) {
@@ -299,7 +299,7 @@ public class GameController {
     }
 
 
-    private void executeBoardElement(Player player) {
+    private void executeBoardElement(Player player, int step) {
         for (FieldObject object : player.getSpace().getObjects()) {
             if (object instanceof Conveyor) {
                 if (((Conveyor) object).getColor().equals(Color.BLUE)) {
@@ -334,6 +334,13 @@ public class GameController {
                     turnLeft(player);
                 } else if (gear.getDirection() == Direction.RIGHT) {
                     turnRight(player);
+                }
+            }
+            if (object instanceof PushPanel pp){
+                for (int i=0;i<pp.getActivation().length;i++){
+                    if (step==pp.getActivation()[i]){
+                        moveBoardElement(player,pp);
+                    }
                 }
             }
         }

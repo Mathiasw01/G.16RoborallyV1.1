@@ -193,6 +193,35 @@ public class SpaceView extends StackPane implements ViewObserver {
             cpGfx.setFill(Color.OLIVEDRAB);
             this.getChildren().add(cpGfx);
         }
+        PushPanel pushPanel = (PushPanel) space.findObjectOfType(PushPanel.class);
+        if (pushPanel != null) {
+            Rectangle pushpannelGfx = new Rectangle();
+            pushpannelGfx.setWidth(25);
+            pushpannelGfx.setHeight(47);
+            switch (pushPanel.getDirection()) {
+                case SOUTH:
+                    pushpannelGfx.setTranslateY(20);
+                    break;
+                case NORTH:
+                    pushpannelGfx.setTranslateY(-20);
+                    break;
+                case EAST:
+                    pushpannelGfx.setRotate(90);
+                    pushpannelGfx.setTranslateX(20);
+                    break;
+                case WEST:
+                    pushpannelGfx.setRotate(90);
+                    pushpannelGfx.setTranslateX(-20);
+                    break;
+            }
+            if (conveyor.getColor().equals(Color.BLUE)) {
+                pushpannelGfx.setFill(Color.ROYALBLUE);
+            }else {
+                pushpannelGfx.setFill(Color.FORESTGREEN);
+            }
+            this.getChildren().add(pushpannelGfx);
+            this.getChildren().add(pushpannelGfx);
+        }
     }
 
 
