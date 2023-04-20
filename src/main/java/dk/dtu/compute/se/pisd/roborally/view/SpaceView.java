@@ -23,8 +23,11 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -33,6 +36,9 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * ...
@@ -47,10 +53,8 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     public final Space space;
 
-
     public SpaceView(@NotNull Space space) {
         this.space = space;
-
         // XXX the following styling should better be done with styles
         this.setPrefWidth(SPACE_WIDTH);
         this.setMinWidth(SPACE_WIDTH);
@@ -60,15 +64,12 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.setMinHeight(SPACE_HEIGHT);
         this.setMaxHeight(SPACE_HEIGHT);
 
-        if ((space.x + space.y) % 2 == 0) {
-            this.setStyle("-fx-background-color: white;");
-        } else {
-            this.setStyle("-fx-background-color: black;");
-        }
+        // Create an ImageView object and set its image to the desired picture
+        Image image = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/Tile.png");
+        ImageView imageView = new ImageView(image);
 
-
-
-        // updatePlayer();
+        // Set the background of the SpaceView to the ImageView object
+        this.setBackground(new Background(new BackgroundImage(imageView.getImage(), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(SPACE_WIDTH, SPACE_HEIGHT, false, false, false, false))));
 
         // This space view should listen to changes of the space
         space.attach(this);
