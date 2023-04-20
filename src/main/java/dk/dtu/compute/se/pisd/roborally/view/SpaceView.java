@@ -196,7 +196,7 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
             this.getChildren().add(gearGfx);
         }
-        
+        /*
         PushPanel pushPanel = (PushPanel) space.findObjectOfType(PushPanel.class);
         if (pushPanel != null) {
             Rectangle pushpannelGfx = new Rectangle();
@@ -225,7 +225,9 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
             this.getChildren().add(pushpannelGfx);
             this.getChildren().add(pushpannelGfx);
+
         }
+         */
     }
 
 
