@@ -30,6 +30,7 @@ import javafx.scene.layout.*;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
@@ -101,9 +102,11 @@ public class SpaceView extends StackPane implements ViewObserver {
         Wall wall = (Wall)space.findObjectOfType(Wall.class);
         Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
         if( wall != null) {
+            Image wallSprite = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/wall.png");
             Rectangle wallGfx = new Rectangle();
             wallGfx.setWidth(40);
-            wallGfx.setHeight(8);
+            wallGfx.setHeight(10);
+            wallGfx.setFill(new ImagePattern(wallSprite,0,0,1,1,true));
 
             switch (wall.getDir()) {
                 case SOUTH:
@@ -121,9 +124,6 @@ public class SpaceView extends StackPane implements ViewObserver {
                     wallGfx.setTranslateX(-20);
                     break;
             }
-
-            wallGfx.setFill(Color.GOLD);
-
 
             this.getChildren().add(wallGfx);
         }
@@ -156,42 +156,45 @@ public class SpaceView extends StackPane implements ViewObserver {
         //Conveyor
         if (conveyor != null) {
             Rectangle conveyorGfx = new Rectangle();
-            conveyorGfx.setWidth(25);
-            conveyorGfx.setHeight(47);
-            Circle convCircleGfx = new Circle();
-            convCircleGfx.setRadius(2);
-            convCircleGfx.setFill(Color.YELLOW);
+            conveyorGfx.setWidth(40);
+            conveyorGfx.setHeight(45);
             switch (conveyor.getDirection()) {
                 case SOUTH:
-                    convCircleGfx.setTranslateY(15);
+                    conveyorGfx.setRotate(180);
                     break;
                 case NORTH:
-                    convCircleGfx.setTranslateY(-15);
                     break;
                 case EAST:
                     conveyorGfx.setRotate(90);
-                    convCircleGfx.setTranslateX(15);
                     break;
                 case WEST:
-                    conveyorGfx.setRotate(90);
-                    convCircleGfx.setTranslateX(-15);
+                    conveyorGfx.setRotate(-90);
                     break;
             }
             if (conveyor.getColor().equals(Color.BLUE)) {
-                conveyorGfx.setFill(Color.ROYALBLUE);
+                Image blueCon = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/blueConveyor.png");
+                conveyorGfx.setFill(new ImagePattern(blueCon,0,0,1,1,true));
             }else {
-                conveyorGfx.setFill(Color.FORESTGREEN);
+                Image orangeCon = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/orangeConveyor.png");
+                conveyorGfx.setFill(new ImagePattern(orangeCon,0,0,1,1,true));
             }
             this.getChildren().add(conveyorGfx);
-            this.getChildren().add(convCircleGfx);
+
         }
         Gear gear = (Gear) space.findObjectOfType(Gear.class);
         //Gears
         if (gear != null){
-            Circle cpGfx = new Circle();
-            cpGfx.setRadius(20);
-            cpGfx.setFill(Color.OLIVEDRAB);
-            this.getChildren().add(cpGfx);
+            Rectangle gearGfx = new Rectangle();
+            gearGfx.setWidth(45);
+            gearGfx.setHeight(45);
+            if (gear.getDirection() == Direction.RIGHT){
+                Image greenGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rightGear.png");
+                gearGfx.setFill(new ImagePattern(greenGear,0,0,1,1,true));
+            } else {
+                Image redGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rightGear.png");
+                gearGfx.setFill(new ImagePattern(redGear,0,0,1,1,true));
+            }
+            this.getChildren().add(gearGfx);
         }
         PushPanel pushPanel = (PushPanel) space.findObjectOfType(PushPanel.class);
         if (pushPanel != null) {
