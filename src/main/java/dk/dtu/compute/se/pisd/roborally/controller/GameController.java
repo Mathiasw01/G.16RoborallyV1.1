@@ -22,8 +22,12 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.control.Alert;
+import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -44,42 +48,40 @@ public class GameController {
      * Moves current player to space if possible
      * <p>
      * Moves current player to the parsed space if the space is empty
-     * TODO If the field is occupied, push the the player
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag) {
+    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player) {
         board.setCounter(board.getCounter() + 1);
         Wall wall = (Wall) space.findObjectOfType(Wall.class);
-        Player currentPlayer = board.getCurrentPlayer();
-        Wall currentSpaceWall = (Wall) currentPlayer.getSpace().findObjectOfType(Wall.class);
+        Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
 
         if (wall != null ){
-            if (wall.getDir() == currentPlayer.getHeading().next().next()){
+            if (wall.getDir() == player.getHeading().next().next()){
                 return;
             }
         }
 
         if (currentSpaceWall != null){
-            if (currentSpaceWall.getDir() == currentPlayer.getHeading()){
+            if (currentSpaceWall.getDir() == player.getHeading()){
                 return;
             }
         }
 
             if (space.getPlayer() == null) {
-                currentPlayer.setSpace(space);
+                player.setSpace(space);
             } else {
                 Player player2 = space.getPlayer();
                 int x = space.x;
                 int y = space.y;
 
                 if (backupflag) {
-                    switch (currentPlayer.getHeading()){
+                    switch (player.getHeading()){
                         case EAST -> {x--;}
                         case WEST -> {x++;}
                         case NORTH -> {y++;}
                         case SOUTH -> {y--;}
                     }
                 } else {
-                    switch (currentPlayer.getHeading()){
+                    switch (player.getHeading()){
                         case EAST -> {x++;}
                         case WEST -> {x--;}
                         case NORTH -> {y--;}
@@ -89,7 +91,7 @@ public class GameController {
 
 
                 player2.setSpace(board.getSpace(x,y));
-                currentPlayer.setSpace(space);
+                player.setSpace(space);
             }
         }
 
@@ -206,6 +208,7 @@ public class GameController {
      * method will change the game's phase to the programing phase.
      */
     private void executeNextStep() {
+        List<Player> players = board.getPlayers();
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
@@ -223,6 +226,10 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
+                    for (Player player : players) {
+                        System.out.println(player);
+                        executeBoardElement(player);
+                    }
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -291,6 +298,47 @@ public class GameController {
         }
     }
 
+
+    private void executeBoardElement(Player player) {
+        for (FieldObject object : player.getSpace().getObjects()) {
+            if (object instanceof Conveyor) {
+                if (((Conveyor) object).getColor().equals(Color.BLUE)) {
+                    moveBoardElement(player, object);
+                    moveBoardElement(player, object);
+                } else if (((Conveyor) object).getColor().equals(Color.GREEN)) {
+                    moveBoardElement(player, object);
+                }
+            }
+
+            if(object instanceof CheckpointField cp){
+                if(cp.playerHasCheckpoint(player)){
+                    return;
+                }
+                ArrayList<CheckpointField> cps = board.getCheckpoints();
+                int obtainedCheckpoints = (int)cps.stream().filter(c -> c.playerHasCheckpoint(player)).count();
+
+                if(cp.getCheckpointNumber()-1 == obtainedCheckpoints){
+                    cp.addPlayerIfUnobtained(player);
+
+                    if(obtainedCheckpoints+1 == cps.size()){
+                        //Player won!
+                        System.out.println(player.getName() + " won!");
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION,player.getName() + " won!" );
+                        alert.show();
+
+                    }
+                }
+            }
+            if (object instanceof Gear gear){
+                if (gear.getDirection() == Direction.LEFT){
+                    turnLeft(player);
+                } else if (gear.getDirection() == Direction.RIGHT) {
+                    turnRight(player);
+                }
+            }
+        }
+    }
+
     /**
      * Moves the player one spaces forward
      * <p>
@@ -311,7 +359,25 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = false;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player);
+        } else System.out.println("OUT OF BOUNDS");
+    }
+
+    private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
+        Space currentSpace=player.getSpace();
+        int x=currentSpace.x;
+        int y=currentSpace.y;
+        // Husk outofbounds fejl
+        switch (((MovementField)fieldObject).getDirection()){
+            case EAST -> {x++;}
+            case WEST -> {x--;}
+            case NORTH -> {y--;}
+            case SOUTH -> {y++;}
+        }
+        System.out.println(x+ " " +y);
+        boolean backupflag = false;
+        if(board.getSpace(x,y) != null) {
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player);
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -324,6 +390,22 @@ public class GameController {
     public void fastForward(@NotNull Player player, int moves) {
         for (int i = 0; i < moves; i++) {
             moveForward(player);
+        }
+    }
+
+    //----- Gear ----//
+    private void Gears(@NotNull Player player, boolean OnGear){
+        //If the robot resting on them
+        Space currentSpace=player.getSpace();
+
+        // The robot should turn 90 degrees.
+        if(OnGear){
+            //to the left.
+            player.setHeading(player.getHeading().prev());
+        }
+        else{
+            //to the right.
+            player.setHeading(player.getHeading().next());
         }
     }
 
@@ -390,7 +472,7 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = true;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player);
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -464,6 +546,9 @@ public class GameController {
         }
         continuePrograms();
     }
+
+
+
 
 
 

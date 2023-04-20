@@ -37,6 +37,9 @@ public class RoboRallyMenuBar extends MenuBar {
     private AppController appController;
 
     private Menu controlMenu;
+    private Menu mapMenu;
+    private MenuItem testMap;
+    private MenuItem dizzy;
 
     private MenuItem saveGame;
 
@@ -47,6 +50,7 @@ public class RoboRallyMenuBar extends MenuBar {
     private MenuItem stopGame;
 
     private MenuItem exitApp;
+    private String map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap";
 
     public RoboRallyMenuBar(AppController appController) {
         this.appController = appController;
@@ -54,8 +58,25 @@ public class RoboRallyMenuBar extends MenuBar {
         controlMenu = new Menu("File");
         this.getMenus().add(controlMenu);
 
+        mapMenu = new Menu("Select Map");
+        this.getMenus().add(mapMenu);
+
+        testMap = new MenuItem("Test Map");
+        testMap.setOnAction(e -> {
+            this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap";
+            mapMenu.setText("Test Map");
+        });
+        mapMenu.getItems().add(testMap);
+
+        dizzy = new MenuItem("Dizzy Highway");
+        dizzy.setOnAction(e -> {
+            mapMenu.setText("Dizzy Highway");
+            this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/DizzyHighway";
+        });
+        mapMenu.getItems().add(dizzy);
+
         newGame = new MenuItem("New Game");
-        newGame.setOnAction( e -> this.appController.newGame());
+        newGame.setOnAction( e -> this.appController.newGame(map));
         controlMenu.getItems().add(newGame);
 
         stopGame = new MenuItem("Stop Game");

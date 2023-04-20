@@ -23,15 +23,22 @@ package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.*;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * ...
@@ -46,10 +53,8 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     public final Space space;
 
-
     public SpaceView(@NotNull Space space) {
         this.space = space;
-
         // XXX the following styling should better be done with styles
         this.setPrefWidth(SPACE_WIDTH);
         this.setMinWidth(SPACE_WIDTH);
@@ -59,15 +64,12 @@ public class SpaceView extends StackPane implements ViewObserver {
         this.setMinHeight(SPACE_HEIGHT);
         this.setMaxHeight(SPACE_HEIGHT);
 
-        if ((space.x + space.y) % 2 == 0) {
-            this.setStyle("-fx-background-color: white;");
-        } else {
-            this.setStyle("-fx-background-color: black;");
-        }
+        // Create an ImageView object and set its image to the desired picture
+        Image image = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/Tile.png");
+        ImageView imageView = new ImageView(image);
 
-
-
-        // updatePlayer();
+        // Set the background of the SpaceView to the ImageView object
+        this.setBackground(new Background(new BackgroundImage(imageView.getImage(), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(SPACE_WIDTH, SPACE_HEIGHT, false, false, false, false))));
 
         // This space view should listen to changes of the space
         space.attach(this);
@@ -75,8 +77,6 @@ public class SpaceView extends StackPane implements ViewObserver {
     }
 
     private void updatePlayer() {
-        this.getChildren().clear();
-
 
         Player player = space.getPlayer();
         if (player != null) {
@@ -99,10 +99,11 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     private void drawFieldObjects(){
         Wall wall = (Wall)space.findObjectOfType(Wall.class);
+        Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
         if( wall != null) {
             Rectangle wallGfx = new Rectangle();
-            wallGfx.setWidth(45);
-            wallGfx.setHeight(10);
+            wallGfx.setWidth(40);
+            wallGfx.setHeight(8);
 
             switch (wall.getDir()) {
                 case SOUTH:
@@ -121,7 +122,8 @@ public class SpaceView extends StackPane implements ViewObserver {
                     break;
             }
 
-            wallGfx.setFill(Color.MEDIUMPURPLE);
+            wallGfx.setFill(Color.GOLD);
+
 
             this.getChildren().add(wallGfx);
         }
@@ -134,28 +136,85 @@ public class SpaceView extends StackPane implements ViewObserver {
             cpGfx.setRadius(15);
             cpGfx.setFill(Color.CORAL);
             this.getChildren().add(cpGfx);
+
+            Text numText = new Text();
+            numText.setText(String.valueOf(checkpoint.getCheckpointNumber()));
+            this.getChildren().add(numText);
         }
 
-        //Finish
-        FinishField finishField = (FinishField) space.findObjectOfType(FinishField.class);
+        //Start
+        StartField startField = (StartField) space.findObjectOfType(StartField.class);
 
-        if(finishField != null){
+        if(startField != null){
             Circle cpGfx = new Circle();
             cpGfx.setRadius(16);
-            cpGfx.setFill(Color.RED);
+            cpGfx.setFill(Color.GOLD);
             this.getChildren().add(cpGfx);
+
         }
 
+        //Conveyor
+        if (conveyor != null) {
+            Rectangle conveyorGfx = new Rectangle();
+            conveyorGfx.setWidth(25);
+            conveyorGfx.setHeight(47);
+            Circle convCircleGfx = new Circle();
+            convCircleGfx.setRadius(2);
+            convCircleGfx.setFill(Color.YELLOW);
+            switch (conveyor.getDirection()) {
+                case SOUTH:
+                    convCircleGfx.setTranslateY(15);
+                    break;
+                case NORTH:
+                    convCircleGfx.setTranslateY(-15);
+                    break;
+                case EAST:
+                    conveyorGfx.setRotate(90);
+                    convCircleGfx.setTranslateX(15);
+                    break;
+                case WEST:
+                    conveyorGfx.setRotate(90);
+                    convCircleGfx.setTranslateX(-15);
+                    break;
+            }
+            if (conveyor.getColor().equals(Color.BLUE)) {
+                conveyorGfx.setFill(Color.ROYALBLUE);
+            }else {
+                conveyorGfx.setFill(Color.FORESTGREEN);
+            }
+            this.getChildren().add(conveyorGfx);
+            this.getChildren().add(convCircleGfx);
+        }
+        Gear gear = (Gear) space.findObjectOfType(Gear.class);
+        //Gears
+        if (gear != null){
+            Circle cpGfx = new Circle();
+            cpGfx.setRadius(20);
+            cpGfx.setFill(Color.OLIVEDRAB);
+            this.getChildren().add(cpGfx);
+        }
     }
 
 
+
+
+    /**
+     * Update view
+     * <p>
+     * This method updates the graphical view of the space.
+     * It redraws the objects on the field and the players.
+     * Note that the method deletes graphical objects on the space and redraws.
+     */
     @Override
     public void updateView(Subject subject) {
+        this.getChildren().clear();
+
+        drawFieldObjects();
+
         if (subject == this.space) {
             updatePlayer();
         }
 
-        drawFieldObjects();
     }
 
 }

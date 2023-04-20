@@ -24,11 +24,16 @@ package dk.dtu.compute.se.pisd.roborally.model;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import org.jetbrains.annotations.NotNull;
 
+import static dk.dtu.compute.se.pisd.roborally.model.Heading.EAST;
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
 /**
- * ...
- *
+ * A player
+ *<p>
+ * A player has a name and a color, and a space.
+ * The player also has a direction which is represented by a @Heading .
+ * A player has a number of command cards in his hand which is represented by the @cards variable.
+ * The current programmed program also consists of command cards, but as the @program variable.
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
@@ -43,7 +48,7 @@ public class Player extends Subject {
     private String color;
 
     private Space space;
-    private Heading heading = SOUTH;
+    private Heading heading = EAST;
 
     private CommandCardField[] program;
     private CommandCardField[] cards;

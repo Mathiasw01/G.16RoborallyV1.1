@@ -18,7 +18,7 @@ class GameControllerTest {
 
     @BeforeEach
     void setUp() {
-        Board board = new Board(TEST_WIDTH, TEST_HEIGHT);
+        Board board = new Board(TEST_WIDTH, TEST_HEIGHT, "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap");
         gameController = new GameController(board);
         for (int i = 0; i < 6; i++) {
             Player player = new Player(board, null,"Player " + i);
@@ -40,7 +40,7 @@ class GameControllerTest {
         Player player1 = board.getPlayer(0);
         Player player2 = board.getPlayer(1);
         boolean backupflag = false;
-        gameController.moveCurrentPlayerToSpace(board.getSpace(0, 4), backupflag);
+        gameController.moveCurrentPlayerToSpace(board.getSpace(0, 4), backupflag, player1);
 
         Assertions.assertEquals(player1, board.getSpace(0, 4).getPlayer(), "Player " + player1.getName() + " should beSpace (0,4)!");
         Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
