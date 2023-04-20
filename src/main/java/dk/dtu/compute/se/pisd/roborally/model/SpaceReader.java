@@ -11,11 +11,8 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 /**
  * Space Reader
- *<p>
- * Write here!!
- */
-/**
- * Class that reads a map file and places down opbjects on the board
+ * <p>
+ * Class that reads a map file and places down objects on the board
  *
  */
 

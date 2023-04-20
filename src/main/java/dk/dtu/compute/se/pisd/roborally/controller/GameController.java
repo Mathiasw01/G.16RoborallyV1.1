@@ -47,7 +47,6 @@ public class GameController {
      * Moves current player to space if possible
      * <p>
      * Moves current player to the parsed space if the space is empty
-     * TODO If the field is occupied, push the the player
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag) {
         board.setCounter(board.getCounter() + 1);
@@ -295,7 +294,8 @@ public class GameController {
         }
     }
 
-    public void executeBoardElement(Player player) {
+
+    private void executeBoardElement(Player player) {
         for (FieldObject object : player.getSpace().getObjects()) {
             if (object instanceof Conveyor) {
                 if (((Conveyor) object).getColor().equals(Color.BLUE)) {
@@ -352,7 +352,7 @@ public class GameController {
         } else System.out.println("OUT OF BOUNDS");
     }
 
-    public void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
+    private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
         int y=currentSpace.y;
@@ -383,7 +383,7 @@ public class GameController {
     }
 
     //----- Gear ----//
-    public void Gears(@NotNull Player player, boolean OnGear){
+    private void Gears(@NotNull Player player, boolean OnGear){
         //If the robot resting on them
         Space currentSpace=player.getSpace();
 
