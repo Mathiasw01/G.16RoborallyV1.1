@@ -27,6 +27,7 @@ import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -48,40 +49,39 @@ public class GameController {
      * <p>
      * Moves current player to the parsed space if the space is empty
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag) {
+    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player) {
         board.setCounter(board.getCounter() + 1);
         Wall wall = (Wall) space.findObjectOfType(Wall.class);
-        Player currentPlayer = board.getCurrentPlayer();
-        Wall currentSpaceWall = (Wall) currentPlayer.getSpace().findObjectOfType(Wall.class);
+        Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
 
         if (wall != null ){
-            if (wall.getDir() == currentPlayer.getHeading().next().next()){
+            if (wall.getDir() == player.getHeading().next().next()){
                 return;
             }
         }
 
         if (currentSpaceWall != null){
-            if (currentSpaceWall.getDir() == currentPlayer.getHeading()){
+            if (currentSpaceWall.getDir() == player.getHeading()){
                 return;
             }
         }
 
             if (space.getPlayer() == null) {
-                currentPlayer.setSpace(space);
+                player.setSpace(space);
             } else {
                 Player player2 = space.getPlayer();
                 int x = space.x;
                 int y = space.y;
 
                 if (backupflag) {
-                    switch (currentPlayer.getHeading()){
+                    switch (player.getHeading()){
                         case EAST -> {x--;}
                         case WEST -> {x++;}
                         case NORTH -> {y++;}
                         case SOUTH -> {y--;}
                     }
                 } else {
-                    switch (currentPlayer.getHeading()){
+                    switch (player.getHeading()){
                         case EAST -> {x++;}
                         case WEST -> {x--;}
                         case NORTH -> {y--;}
@@ -91,7 +91,7 @@ public class GameController {
 
 
                 player2.setSpace(board.getSpace(x,y));
-                currentPlayer.setSpace(space);
+                player.setSpace(space);
             }
         }
 
@@ -208,6 +208,7 @@ public class GameController {
      * method will change the game's phase to the programing phase.
      */
     private void executeNextStep() {
+        List<Player> players = board.getPlayers();
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
@@ -225,6 +226,10 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
+                    for (Player player : players) {
+                        System.out.println(player);
+                        executeBoardElement(player);
+                    }
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -290,7 +295,6 @@ public class GameController {
                 default:
                     // DO NOTHING (for now)
             }
-            executeBoardElement(player);
         }
     }
 
@@ -355,7 +359,7 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = false;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player);
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -373,7 +377,7 @@ public class GameController {
         System.out.println(x+ " " +y);
         boolean backupflag = false;
         if(board.getSpace(x,y) != null) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player);
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -468,7 +472,7 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = true;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player);
         } else System.out.println("OUT OF BOUNDS");
     }
 
