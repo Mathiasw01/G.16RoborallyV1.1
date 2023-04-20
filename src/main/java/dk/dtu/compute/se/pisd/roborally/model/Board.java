@@ -21,6 +21,7 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
@@ -39,27 +40,37 @@ import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
  */
 public class Board extends Subject {
 
+    @Expose
     public final int width;
 
+    @Expose
     public final int height;
 
+    @Expose
     public final String boardName;
 
+    @Expose
     private Integer gameId;
 
+    @Expose
     private final Space[][] spaces;
 
+    @Expose
     private ArrayList<CheckpointField> checkpoints = new ArrayList<>();
 
 
+    @Expose
     private final List<Player> players = new ArrayList<>();
 
+    @Expose
     private Player current;
 
+    @Expose
     private Phase phase = INITIALISATION;
 
     private int step = 0;
 
+    @Expose
     private boolean stepMode;
 
     private int counter=0;

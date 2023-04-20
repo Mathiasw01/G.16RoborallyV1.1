@@ -1,5 +1,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 
 
@@ -11,7 +13,12 @@ import java.util.ArrayList;
  * A checkpoint can only be obtained once. If a player obtains all checkpoints, the player will win the game.
  */
 public class CheckpointField extends FieldObject{
+
+
+    @Expose
     private ArrayList<Player> playersObtained;
+
+    @Expose
     private int checkpointNumber;
 
     public CheckpointField(int checkpointNumber){
