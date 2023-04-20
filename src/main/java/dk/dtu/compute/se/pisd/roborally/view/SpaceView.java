@@ -141,7 +141,6 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.getChildren().add(numText);
         }
 
-
         //Start
         StartField startField = (StartField) space.findObjectOfType(StartField.class);
 
@@ -182,11 +181,16 @@ public class SpaceView extends StackPane implements ViewObserver {
             }else {
                 conveyorGfx.setFill(Color.FORESTGREEN);
             }
-
-
-
             this.getChildren().add(conveyorGfx);
             this.getChildren().add(convCircleGfx);
+        }
+        Gear gear = (Gear) space.findObjectOfType(Gear.class);
+        //Gears
+        if (gear != null){
+            Circle cpGfx = new Circle();
+            cpGfx.setRadius(20);
+            cpGfx.setFill(Color.OLIVEDRAB);
+            this.getChildren().add(cpGfx);
         }
     }
 

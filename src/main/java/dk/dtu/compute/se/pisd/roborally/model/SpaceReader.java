@@ -59,7 +59,9 @@ public class SpaceReader {
                     case "GreenCon":
                         space.addObjects(new Conveyor(Color.GREEN,Heading.valueOf(result[3])));
                         break;
-
+                    case "Gear":
+                        space.addObjects(new Gear(Direction.valueOf(result[3])));
+                        break;
                 }
             }
         } catch (FileNotFoundException e){

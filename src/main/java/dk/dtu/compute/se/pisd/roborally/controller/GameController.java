@@ -325,6 +325,13 @@ public class GameController {
                     }
                 }
             }
+            if (object instanceof Gear gear){
+                if (gear.getDirection() == Direction.LEFT){
+                    turnLeft(player);
+                } else if (gear.getDirection() == Direction.RIGHT) {
+                    turnRight(player);
+                }
+            }
         }
     }
 
