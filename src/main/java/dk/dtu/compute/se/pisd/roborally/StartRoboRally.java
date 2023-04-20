@@ -33,6 +33,7 @@ package dk.dtu.compute.se.pisd.roborally;
 public class StartRoboRally {
 
     public static void main(String[] args) {
+        System.out.println(System.getProperty("user.dir"));
         RoboRally.main(args);
     }
 
