@@ -21,6 +21,7 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
@@ -38,7 +39,9 @@ import java.util.Objects;
  */
 public class GameController {
 
+    @Expose
     final public Board board;
+
 
     public GameController(@NotNull Board board) {
         this.board = board;
