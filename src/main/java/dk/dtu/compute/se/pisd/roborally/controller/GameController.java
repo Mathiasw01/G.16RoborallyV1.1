@@ -55,13 +55,13 @@ public class GameController {
         Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
 
         if (wall != null ){
-            if (wall.getDir() == player.getHeading().next().next()){
+            if (wall.getDir() == player.getHeading().next().next() || wall.getDir() == player.getHeading()){
                 return;
             }
         }
 
         if (currentSpaceWall != null){
-            if (currentSpaceWall.getDir() == player.getHeading()){
+            if (currentSpaceWall.getDir() == player.getHeading() || currentSpaceWall.getDir() == player.getHeading().next().next()){
                 return;
             }
         }
