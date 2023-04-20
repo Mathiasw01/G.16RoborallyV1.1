@@ -51,6 +51,7 @@ public class Board extends Subject {
 
     private ArrayList<CheckpointField> checkpoints = new ArrayList<>();
 
+
     private final List<Player> players = new ArrayList<>();
 
     private Player current;
@@ -361,8 +362,9 @@ public class Board extends Subject {
         return this.checkpoints;
     }
 
-
-
+    public List<Player> getPlayers() {
+        return players;
+    }
 
 
 }
