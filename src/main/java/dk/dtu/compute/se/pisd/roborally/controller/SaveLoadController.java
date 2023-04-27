@@ -11,17 +11,23 @@ import java.io.*;
 
 public class SaveLoadController {
 
-    public static void serializeAndSave(GameController gc, String filePath) throws IOException {
-        int width = gc.board.width;
-        int height = gc.board.height;
+    private static final RuntimeTypeAdapterFactory<FieldObject> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
+            .of(FieldObject.class, "type")
+            .registerSubtype(Wall.class, "wall")
+            .registerSubtype(StartField.class, "startField")
+            .registerSubtype(CheckpointField.class, "checkPoint")
+            .registerSubtype(Gear.class, "gear")
+            .registerSubtype(Conveyor.class, "conveyor");
 
-        RuntimeTypeAdapterFactory<FieldObject> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
-                .of(FieldObject.class, "type")
-                .registerSubtype(Wall.class, "wall")
-                .registerSubtype(StartField.class, "startField")
-                .registerSubtype(CheckpointField.class, "checkPoint")
-                .registerSubtype(Gear.class, "gear")
-                .registerSubtype(Conveyor.class, "conveyor");
+    private static Gson gson = new GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .setPrettyPrinting()
+            .registerTypeAdapterFactory(runtimeTypeAdapterFactory)
+            .create();
+    public static void serializeAndSave(GameController gc, String filePath) throws IOException {
+
+
+
 
 
         Gson gson = new GsonBuilder()
@@ -38,12 +44,39 @@ public class SaveLoadController {
             }
         }
          */
+        String jso = gson.toJson(gc);
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-        writer.write(gson.toJson(gc));
+        writer.write(jso);
         writer.close();
+        System.out.println("Saved game to " + filePath);
 
-        writer.close();
+    }
+
+    public static GameController deserializeAndLoad(String filePath){
+
+
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
+            StringBuilder sb = new StringBuilder();
+            String line = br.readLine();
+
+            while (line != null) {
+                sb.append(line);
+                sb.append(System.lineSeparator());
+                line = br.readLine();
+            }
+            String everything = sb.toString();
+            br.close();
+
+            GameController fromJson = gson.fromJson(everything, GameController.class);
+            return fromJson;
+        }catch (IOException ioe){
+            System.out.println("Couldnt load file.. ");
+        }
+        return null;
+
+
 
     }
 }

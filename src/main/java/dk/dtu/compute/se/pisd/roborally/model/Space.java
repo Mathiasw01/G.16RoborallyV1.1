@@ -46,7 +46,7 @@ public class Space extends Subject {
     @Expose
     public final int y;
 
-    @Expose
+
     private Player player;
 
     @Expose
