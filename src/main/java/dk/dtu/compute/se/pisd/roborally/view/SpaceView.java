@@ -155,7 +155,6 @@ public class SpaceView extends StackPane implements ViewObserver {
             Image checkpoints = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/checkpoints.jpg");
             if (checkpoint.getCheckpointNumber() <= 4) {
                 cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 0, 4, 2, true));
-
             } else {
                 cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 1, 4, 2, true));
             }

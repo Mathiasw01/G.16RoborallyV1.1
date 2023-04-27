@@ -28,6 +28,11 @@ import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ...
@@ -227,6 +232,7 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
+                    multiThreadExecute(step);
 
                     step++;
                     if (step < Player.NO_REGISTERS) {
@@ -296,6 +302,19 @@ public class GameController {
         }
     }
 
+    public void multiThreadExecute(int step){
+        ExecutorService executor = Executors.newFixedThreadPool(board.getPlayers().size());
+
+        for (Player player : board.getPlayers()) {
+            executor.execute(() -> executeBoardElement(player, step));
+        }
+        executor.shutdown();
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            System.out.println("Exception: " + e);
+        }
+    }
 
     private void executeBoardElement(Player player, int step) {
         for (FieldObject object : player.getSpace().getObjects()) {
