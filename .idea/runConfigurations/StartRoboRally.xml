@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="StartRoboRally" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="dk.dtu.compute.se.pisd.roborally.StartRoboRally" />
-    <module name="roborally" />
+    <module name="G.16RoborallyV1.1" />
     <option name="VM_PARAMETERS" value="--module-path ${JAVAFX_PATH} --add-modules javafx.controls,javafx.fxml" />
     <method v="2">
       <option name="Make" enabled="true" />

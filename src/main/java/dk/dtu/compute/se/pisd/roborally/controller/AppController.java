@@ -33,11 +33,14 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextInputDialog;
+import javafx.stage.FileChooser;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -91,6 +94,7 @@ public class AppController implements Observer {
             gameController = new GameController(board);
             int no = result.get();
 
+
             for (int i = 0; i < no; i++) {
                 Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
                 board.addPlayer(player);
@@ -114,7 +118,17 @@ public class AppController implements Observer {
     public void saveGame() {
 
         try {
-            SaveLoadController.serializeAndSave(gameController, "savegame_01");
+            TextInputDialog dialog = new TextInputDialog("savegame_01");
+            dialog.setTitle("Save game");
+            dialog.setHeaderText("Save game");
+            dialog.setContentText("Please enter the name of the save file");
+
+
+            Optional<String> result = dialog.showAndWait();
+            if (!result.isPresent()){
+                return;
+            }
+            SaveLoadController.serializeAndSave(gameController, result.get());
         } catch (IOException ioe){
             System.out.println("Couldn't save game as file doesnt exist!!!");
         }
@@ -128,11 +142,58 @@ public class AppController implements Observer {
      * TODO - implement
      */
     public void loadGame() {
+        /*
         // XXX needs to be implemented eventually
         // for now, we just create a new game
         if (gameController == null) {
             //newGame();
         }
+
+         */
+        TextInputDialog dialog = new TextInputDialog("savegame_01");
+        dialog.setTitle("Load game");
+        dialog.setHeaderText("Load save");
+        dialog.setContentText("Please enter the name of the save file");
+
+
+        Optional<String> result = dialog.showAndWait();
+        if (!result.isPresent()){
+            return;
+        }
+
+        GameController g = SaveLoadController.deserializeAndLoad(result.get());
+        if(g == null){
+            return;
+        }
+        if (gameController != null) {
+            // The UI should not allow this, but in case this happens anyway.
+            // give the user the option to save the game or abort this operation!
+           stopGame();
+        }
+        Board board = new Board(g.board.width,g.board.height, g.board);
+        gameController = new GameController(board);
+        int cp = 0;
+        for (int i = 0; i < g.board.getPlayersNumber(); i++) {
+            Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
+            player.setHeading(g.board.getPlayer(i).getHeading());
+            board.addPlayer(player);
+            Space pSpace = g.board.getPlayer(i).getSpace();
+            board.getSpace(pSpace.x,pSpace.y).setPlayer(player);
+            if(Objects.equals(g.board.getPlayers().get(i).getName(), g.board.getCurrentPlayer().getName())){
+                cp = i;
+            }
+        }
+
+
+        // XXX: V2
+         board.setCurrentPlayer(board.getPlayer(cp));
+
+        gameController.startProgrammingPhase();
+
+        roboRally.createBoardView(gameController);
+
+
+
     }
 
     /**

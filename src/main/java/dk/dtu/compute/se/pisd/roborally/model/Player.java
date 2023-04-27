@@ -52,6 +52,7 @@ public class Player extends Subject {
     @Expose
     private String color;
 
+    @Expose
     private Space space;
 
     @Expose
