@@ -126,6 +126,37 @@ public class Board extends Subject {
     }
 
 
+    public Board(int width, int height, Board savedBoard) {
+        this.boardName = savedBoard.boardName;
+        this.width = savedBoard.width;
+        this.height = savedBoard.height;
+        spaces = new Space[width][height];
+        for (Space[] sr : savedBoard.spaces){
+            for(Space s : sr){
+                spaces[s.x][s.y] = new Space(this, s.x, s.y);
+                for(FieldObject fo : s.getObjects()){
+                    if(fo instanceof Conveyor conveyor){
+                        spaces[s.x][s.y].addObjects(new Conveyor(Color.BLUE, conveyor.getDirection()));
+                    } else if (fo instanceof  StartField sf) {
+                        spaces[s.x][s.y].addObjects(new StartField());
+                    }  else if (fo instanceof  CheckpointField cp) {
+                        spaces[s.x][s.y].addObjects(new CheckpointField(cp.getCheckpointNumber()));
+                    }  else if (fo instanceof  Gear gear) {
+                        spaces[s.x][s.y].addObjects(new Gear(gear.getDirection()));
+                    }   else if (fo instanceof  Wall wall) {
+                        spaces[s.x][s.y].addObjects(new Wall(wall.getDir()));
+                    }
+
+
+
+
+                }
+            }
+        }
+        this.stepMode = false;
+    }
+
+
     /**
      * Set game id
      * <p>

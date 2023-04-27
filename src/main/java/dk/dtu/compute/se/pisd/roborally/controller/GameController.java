@@ -54,7 +54,7 @@ public class GameController {
      * <p>
      * Moves current player to the parsed space if the space is empty
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player) {
+    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading) {
         board.setCounter(board.getCounter() + 1);
         Wall wall = (Wall) space.findObjectOfType(Wall.class);
         Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
@@ -82,24 +82,31 @@ public class GameController {
             int x = space.x;
             int y = space.y;
 
-            if (backupflag) {
-                switch (player.getHeading()){
-                    case EAST -> {x--;}
-                    case WEST -> {x++;}
-                    case NORTH -> {y++;}
-                    case SOUTH -> {y--;}
+                if (backupflag) {
+                    switch (player.getHeading()){
+                        case EAST -> {x--;}
+                        case WEST -> {x++;}
+                        case NORTH -> {y++;}
+                        case SOUTH -> {y--;}
+                    }
+                } else if (conveyorHeading == null){
+                    switch (player.getHeading()){
+                        case EAST -> {x++;}
+                        case WEST -> {x--;}
+                        case NORTH -> {y--;}
+                        case SOUTH -> {y++;}
+                    }
+                } else {
+                    switch (conveyorHeading){
+                        case EAST -> {x++;}
+                        case WEST -> {x--;}
+                        case NORTH -> {y--;}
+                        case SOUTH -> {y++;}
+                    }
+                } if (board.getSpace(x,y) != null) {
+                    player2.setSpace(board.getSpace(x, y));
+                    player.setSpace(space);
                 }
-            } else {
-                switch (player.getHeading()){
-                    case EAST -> {x++;}
-                    case WEST -> {x--;}
-                    case NORTH -> {y--;}
-                    case SOUTH -> {y++;}
-                }
-            }
-
-            player2.setSpace(board.getSpace(x,y));
-            player.setSpace(space);
             }
         }
 
@@ -322,7 +329,9 @@ public class GameController {
             if (object instanceof Conveyor) {
                 if (((Conveyor) object).getColor().equals(Color.BLUE)) {
                     moveBoardElement(player, object);
-                    moveBoardElement(player, object);
+                    for (FieldObject object2 : player.getSpace().getObjects()) {
+                        moveBoardElement(player, object2);
+                    }
                 } else if (((Conveyor) object).getColor().equals(Color.GREEN)) {
                     moveBoardElement(player, object);
                 }
@@ -384,7 +393,7 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = false;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, null);
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -402,7 +411,7 @@ public class GameController {
         System.out.println(x+ " " +y);
         boolean backupflag = false;
         if(board.getSpace(x,y) != null) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection());
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -415,22 +424,6 @@ public class GameController {
     public void fastForward(@NotNull Player player, int moves) {
         for (int i = 0; i < moves; i++) {
             moveForward(player);
-        }
-    }
-
-    //----- Gear ----//
-    private void Gears(@NotNull Player player, boolean OnGear){
-        //If the robot resting on them
-        Space currentSpace=player.getSpace();
-
-        // The robot should turn 90 degrees.
-        if(OnGear){
-            //to the left.
-            player.setHeading(player.getHeading().prev());
-        }
-        else{
-            //to the right.
-            player.setHeading(player.getHeading().next());
         }
     }
 
@@ -497,7 +490,7 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = true;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player, null);
         } else System.out.println("OUT OF BOUNDS");
     }
 
