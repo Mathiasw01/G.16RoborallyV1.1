@@ -101,6 +101,25 @@ public class SpaceView extends StackPane implements ViewObserver {
     private void drawFieldObjects(){
         Wall wall = (Wall)space.findObjectOfType(Wall.class);
         Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
+        Gear gear = (Gear) space.findObjectOfType(Gear.class);
+        CheckpointField checkpoint = (CheckpointField) space.findObjectOfType(CheckpointField.class);
+        StartField startField = (StartField) space.findObjectOfType(StartField.class);
+        //Gears
+        if (gear != null){
+            Rectangle gearGfx = new Rectangle();
+            gearGfx.setWidth(45);
+            gearGfx.setHeight(45);
+            if (gear.getDirection() == Direction.RIGHT){
+                Image greenGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rightGear.png");
+                gearGfx.setFill(new ImagePattern(greenGear,0,0,1,1,true));
+            } else {
+                Image redGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rightGear.png");
+                gearGfx.setFill(new ImagePattern(redGear,0,0,1,1,true));
+            }
+            this.getChildren().add(gearGfx);
+        }
+
+        //Walls
         if( wall != null) {
             Image wallSprite = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/wall.png");
             Rectangle wallGfx = new Rectangle();
@@ -130,26 +149,25 @@ public class SpaceView extends StackPane implements ViewObserver {
 
 
         //Checkpoints
-        CheckpointField checkpoint = (CheckpointField) space.findObjectOfType(CheckpointField.class);
         if(checkpoint != null){
             Circle cpGfx = new Circle();
-            cpGfx.setRadius(15);
-            cpGfx.setFill(Color.CORAL);
-            this.getChildren().add(cpGfx);
+            cpGfx.setRadius(23);
+            Image checkpoints = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/checkpoints.jpg");
+            if (checkpoint.getCheckpointNumber() <= 4) {
+                cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 0, 4, 2, true));
 
-            Text numText = new Text();
-            numText.setText(String.valueOf(checkpoint.getCheckpointNumber()));
-            this.getChildren().add(numText);
+            } else {
+                cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 1, 4, 2, true));
+            }
+            this.getChildren().add(cpGfx);
         }
 
         //Start
-        StartField startField = (StartField) space.findObjectOfType(StartField.class);
-
         if(startField != null){
             Circle startGfx = new Circle();
             startGfx.setRadius(20);
-            Image starfield = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/startfield.png");
-            startGfx.setFill(new ImagePattern(starfield,0,0,1,1,true));
+            Image startfield = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/startfield.png");
+            startGfx.setFill(new ImagePattern(startfield,0,0,1,1,true));
             this.getChildren().add(startGfx);
         }
 
@@ -181,21 +199,7 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.getChildren().add(conveyorGfx);
 
         }
-        Gear gear = (Gear) space.findObjectOfType(Gear.class);
-        //Gears
-        if (gear != null){
-            Rectangle gearGfx = new Rectangle();
-            gearGfx.setWidth(45);
-            gearGfx.setHeight(45);
-            if (gear.getDirection() == Direction.RIGHT){
-                Image greenGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rightGear.png");
-                gearGfx.setFill(new ImagePattern(greenGear,0,0,1,1,true));
-            } else {
-                Image redGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rightGear.png");
-                gearGfx.setFill(new ImagePattern(redGear,0,0,1,1,true));
-            }
-            this.getChildren().add(gearGfx);
-        }
+
         /*
         PushPanel pushPanel = (PushPanel) space.findObjectOfType(PushPanel.class);
         if (pushPanel != null) {

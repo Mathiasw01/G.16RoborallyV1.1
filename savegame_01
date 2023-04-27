@@ -37,7 +37,12 @@
             "cards": [
               {
                 "card": {
-                  "command": "MOVE_BACK"
+                  "command": "UTURN"
+                }
+              },
+              {
+                "card": {
+                  "command": "POWERUP"
                 }
               },
               {
@@ -47,17 +52,12 @@
               },
               {
                 "card": {
-                  "command": "FORWARD"
+                  "command": "RIGHT"
                 }
               },
               {
                 "card": {
-                  "command": "AGAIN"
-                }
-              },
-              {
-                "card": {
-                  "command": "AGAIN"
+                  "command": "CHOOSETURN"
                 }
               },
               {
@@ -67,7 +67,7 @@
               },
               {
                 "card": {
-                  "command": "MOVE_THREE"
+                  "command": "FAST_FORWARD"
                 }
               },
               {
@@ -133,11 +133,7 @@
             "color": "red",
             "heading": "EAST",
             "program": [
-              {
-                "card": {
-                  "command": "MOVE_THREE"
-                }
-              },
+              {},
               {},
               {},
               {},
@@ -146,28 +142,7 @@
             "cards": [
               {
                 "card": {
-                  "command": "MOVE_THREE"
-                }
-              },
-              {
-                "card": {
-                  "command": "MOVE_THREE"
-                }
-              },
-              {
-                "card": {
-                  "command": "FAST_FORWARD"
-                }
-              },
-              {},
-              {
-                "card": {
-                  "command": "POWERUP"
-                }
-              },
-              {
-                "card": {
-                  "command": "MOVE_BACK"
+                  "command": "CHOOSETURN"
                 }
               },
               {
@@ -177,7 +152,32 @@
               },
               {
                 "card": {
-                  "command": "MOVE_THREE"
+                  "command": "RIGHT"
+                }
+              },
+              {
+                "card": {
+                  "command": "MOVE_BACK"
+                }
+              },
+              {
+                "card": {
+                  "command": "FORWARD"
+                }
+              },
+              {
+                "card": {
+                  "command": "FAST_FORWARD"
+                }
+              },
+              {
+                "card": {
+                  "command": "FAST_FORWARD"
+                }
+              },
+              {
+                "card": {
+                  "command": "AGAIN"
                 }
               }
             ],
@@ -275,7 +275,7 @@
           "objects": [
             {
               "type": "gear",
-              "dir": "LEFT"
+              "dir": "RIGHT"
             }
           ]
         },
@@ -1106,11 +1106,7 @@
         "color": "red",
         "heading": "EAST",
         "program": [
-          {
-            "card": {
-              "command": "MOVE_THREE"
-            }
-          },
+          {},
           {},
           {},
           {},
@@ -1119,28 +1115,7 @@
         "cards": [
           {
             "card": {
-              "command": "MOVE_THREE"
-            }
-          },
-          {
-            "card": {
-              "command": "MOVE_THREE"
-            }
-          },
-          {
-            "card": {
-              "command": "FAST_FORWARD"
-            }
-          },
-          {},
-          {
-            "card": {
-              "command": "POWERUP"
-            }
-          },
-          {
-            "card": {
-              "command": "MOVE_BACK"
+              "command": "CHOOSETURN"
             }
           },
           {
@@ -1150,7 +1125,32 @@
           },
           {
             "card": {
-              "command": "MOVE_THREE"
+              "command": "RIGHT"
+            }
+          },
+          {
+            "card": {
+              "command": "MOVE_BACK"
+            }
+          },
+          {
+            "card": {
+              "command": "FORWARD"
+            }
+          },
+          {
+            "card": {
+              "command": "FAST_FORWARD"
+            }
+          },
+          {
+            "card": {
+              "command": "FAST_FORWARD"
+            }
+          },
+          {
+            "card": {
+              "command": "AGAIN"
             }
           }
         ],
@@ -1170,7 +1170,12 @@
         "cards": [
           {
             "card": {
-              "command": "MOVE_BACK"
+              "command": "UTURN"
+            }
+          },
+          {
+            "card": {
+              "command": "POWERUP"
             }
           },
           {
@@ -1180,17 +1185,12 @@
           },
           {
             "card": {
-              "command": "FORWARD"
+              "command": "RIGHT"
             }
           },
           {
             "card": {
-              "command": "AGAIN"
-            }
-          },
-          {
-            "card": {
-              "command": "AGAIN"
+              "command": "CHOOSETURN"
             }
           },
           {
@@ -1200,7 +1200,7 @@
           },
           {
             "card": {
-              "command": "MOVE_THREE"
+              "command": "FAST_FORWARD"
             }
           },
           {
@@ -1217,11 +1217,7 @@
       "color": "red",
       "heading": "EAST",
       "program": [
-        {
-          "card": {
-            "command": "MOVE_THREE"
-          }
-        },
+        {},
         {},
         {},
         {},
@@ -1230,28 +1226,7 @@
       "cards": [
         {
           "card": {
-            "command": "MOVE_THREE"
-          }
-        },
-        {
-          "card": {
-            "command": "MOVE_THREE"
-          }
-        },
-        {
-          "card": {
-            "command": "FAST_FORWARD"
-          }
-        },
-        {},
-        {
-          "card": {
-            "command": "POWERUP"
-          }
-        },
-        {
-          "card": {
-            "command": "MOVE_BACK"
+            "command": "CHOOSETURN"
           }
         },
         {
@@ -1261,7 +1236,32 @@
         },
         {
           "card": {
-            "command": "MOVE_THREE"
+            "command": "RIGHT"
+          }
+        },
+        {
+          "card": {
+            "command": "MOVE_BACK"
+          }
+        },
+        {
+          "card": {
+            "command": "FORWARD"
+          }
+        },
+        {
+          "card": {
+            "command": "FAST_FORWARD"
+          }
+        },
+        {
+          "card": {
+            "command": "FAST_FORWARD"
+          }
+        },
+        {
+          "card": {
+            "command": "AGAIN"
           }
         }
       ],

@@ -7,3 +7,12 @@ P;1;8
 Gear;2;1;LEFT
 BlueCon;4;4;SOUTH
 Wall;3;3;SOUTH
+#;Checkpoints
+CheckPoint;12;3;1
+CheckPoint;12;4;2
+CheckPoint;12;5;3
+CheckPoint;12;6;4
+CheckPoint;11;3;5
+CheckPoint;11;4;6
+CheckPoint;11;5;7
+CheckPoint;11;6;8
