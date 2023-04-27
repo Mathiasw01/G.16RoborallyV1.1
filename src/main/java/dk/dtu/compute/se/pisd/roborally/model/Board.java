@@ -26,9 +26,7 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Phase.INITIALISATION;
 
@@ -126,29 +124,65 @@ public class Board extends Subject {
     }
 
 
-    public Board(int width, int height, Board savedBoard) {
+    public Board(int width, int height, Board savedBoard, List<String> PLAYER_COLORS) {
         this.boardName = savedBoard.boardName;
         this.width = savedBoard.width;
         this.height = savedBoard.height;
         spaces = new Space[width][height];
+        for (int x = 0; x < width; x++) {
+            for(int y = 0; y < height; y++) {
+                Space space = new Space(this, x, y);
+                spaces[x][y] = space;
+
+            }
+        }
+
+        int currentp = 0;
+        for (int i = 0; i < savedBoard.getPlayersNumber(); i++) {
+            Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1));
+            player.setHeading(savedBoard.getPlayer(i).getHeading());
+            this.addPlayer(player);
+            if(Objects.equals(savedBoard.getPlayers().get(i).getName(), savedBoard.getCurrentPlayer().getName())){
+                currentp = i;
+            }
+        }
+
+        setCurrentPlayer(getPlayer(currentp));
+
+
         for (Space[] sr : savedBoard.spaces){
             for(Space s : sr){
-                spaces[s.x][s.y] = new Space(this, s.x, s.y);
+
                 for(FieldObject fo : s.getObjects()){
                     if(fo instanceof Conveyor conveyor){
                         spaces[s.x][s.y].addObjects(new Conveyor(Color.BLUE, conveyor.getDirection()));
                     } else if (fo instanceof  StartField sf) {
                         spaces[s.x][s.y].addObjects(new StartField());
                     }  else if (fo instanceof  CheckpointField cp) {
-                        spaces[s.x][s.y].addObjects(new CheckpointField(cp.getCheckpointNumber()));
+                        CheckpointField cpf = new CheckpointField(cp.getCheckpointNumber());
+                        for(Player p : cp.getPlayersObtained()){
+                            for(Player bp : players){
+                                if(Objects.equals(bp.getName(), p.getName())){
+                                    cpf.addPlayerIfUnobtained(bp);
+                                }
+                            }
+                        }
+                        spaces[s.x][s.y].addObjects(cpf);
+                        checkpoints.add(cpf);
                     }  else if (fo instanceof  Gear gear) {
                         spaces[s.x][s.y].addObjects(new Gear(gear.getDirection()));
                     }   else if (fo instanceof  Wall wall) {
                         spaces[s.x][s.y].addObjects(new Wall(wall.getDir()));
+                }
+
+
+                }
+                if(s.getPlayer() != null){
+                    Optional<Player> p = players.stream().filter(x -> Objects.equals(x.getName(), s.getPlayer().getName())).findFirst();
+                    if(p.isPresent()){
+                        p.get().setSpace(spaces[s.x][s.y]);
+                        System.out.println("Test");
                     }
-
-
-
 
                 }
             }

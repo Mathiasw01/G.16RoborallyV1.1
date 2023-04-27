@@ -35,6 +35,10 @@ public class CheckpointField extends FieldObject{
         return true;
     }
 
+    public ArrayList<Player> getPlayersObtained(){
+        return this.playersObtained;
+    }
+
     public boolean playerHasCheckpoint(Player player){
         return playersObtained.contains(player);
     }

@@ -346,8 +346,6 @@ public class GameController {
                     if(obtainedCheckpoints+1 == cps.size()){
                         //Player won!
                         System.out.println(player.getName() + " won!");
-                        Alert alert = new Alert(Alert.AlertType.INFORMATION,player.getName() + " won!" );
-                        alert.show();
 
                     }
                 }

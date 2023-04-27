@@ -170,23 +170,9 @@ public class AppController implements Observer {
             // give the user the option to save the game or abort this operation!
            stopGame();
         }
-        Board board = new Board(g.board.width,g.board.height, g.board);
+        Board board = new Board(g.board.width,g.board.height, g.board, PLAYER_COLORS);
         gameController = new GameController(board);
-        int cp = 0;
-        for (int i = 0; i < g.board.getPlayersNumber(); i++) {
-            Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
-            player.setHeading(g.board.getPlayer(i).getHeading());
-            board.addPlayer(player);
-            Space pSpace = g.board.getPlayer(i).getSpace();
-            board.getSpace(pSpace.x,pSpace.y).setPlayer(player);
-            if(Objects.equals(g.board.getPlayers().get(i).getName(), g.board.getCurrentPlayer().getName())){
-                cp = i;
-            }
-        }
 
-
-        // XXX: V2
-         board.setCurrentPlayer(board.getPlayer(cp));
 
         gameController.startProgrammingPhase();
 
