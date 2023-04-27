@@ -27,6 +27,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -60,23 +61,27 @@ public class GameController {
         Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
 
         if (wall != null ){
-            if (wall.getDir() == player.getHeading().next().next()){
+           if (backupflag & wall.getDir() == player.getHeading().next().next()) {
+                System.out.println("wall");
                 return;
             }
         }
 
         if (currentSpaceWall != null){
-            if (currentSpaceWall.getDir() == player.getHeading()){
+            if (!backupflag & currentSpaceWall.getDir() == player.getHeading()){
+                return;
+            } else if (backupflag & currentSpaceWall.getDir() == player.getHeading().next().next()) {
                 return;
             }
         }
 
-            if (space.getPlayer() == null) {
-                player.setSpace(space);
-            } else {
-                Player player2 = space.getPlayer();
-                int x = space.x;
-                int y = space.y;
+        if (space.getPlayer() == null) {
+            player.setSpace(space);
+        } else {
+            Player player2 = space.getPlayer();
+            Wall player2CurrenSpaceWall = (Wall) player2.getSpace().findObjectOfType(Wall.class);
+            int x = space.x;
+            int y = space.y;
 
                 if (backupflag) {
                     switch (player.getHeading()){
@@ -86,11 +91,32 @@ public class GameController {
                         case SOUTH -> {y--;}
                     }
                 } else if (conveyorHeading == null){
-                    switch (player.getHeading()){
-                        case EAST -> {x++;}
-                        case WEST -> {x--;}
-                        case NORTH -> {y--;}
-                        case SOUTH -> {y++;}
+                    if (player2CurrenSpaceWall != null) {
+                        if (player.getHeading() != player2CurrenSpaceWall.getDir()) {
+                            switch (player.getHeading()) {
+                                case EAST -> {
+                                    x++;
+                                }
+                                case WEST -> {
+                                    x--;
+                                }
+                                case NORTH -> {
+                                    y--;
+                                }
+                                case SOUTH -> {
+                                    y++;
+                                }
+                            }
+                        } else {
+                            return;
+                        }
+                    }else {
+                        switch (player.getHeading()){
+                            case EAST -> {x++;}
+                            case WEST -> {x--;}
+                            case NORTH -> {y--;}
+                            case SOUTH -> {y++;}
+                        }
                     }
                 } else {
                     switch (conveyorHeading){
@@ -238,6 +264,7 @@ public class GameController {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
                     multiThreadExecute(step);
+
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -346,6 +373,8 @@ public class GameController {
                     if(obtainedCheckpoints+1 == cps.size()){
                         //Player won!
                         System.out.println(player.getName() + " won!");
+                        //ALERT DOESN'T WORK AS IT IS NOT IN JAVA FX THREAD
+                        // FIX FIX FIX
 
                     }
                 }
