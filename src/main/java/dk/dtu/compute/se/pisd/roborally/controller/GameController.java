@@ -27,6 +27,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -90,23 +91,32 @@ public class GameController {
                         case SOUTH -> {y--;}
                     }
                 } else if (conveyorHeading == null){
-                    if (player.getHeading() != player2CurrenSpaceWall.getDir()) {
-                        switch (player.getHeading()) {
-                            case EAST -> {
-                                x++;
+                    if (player2CurrenSpaceWall != null) {
+                        if (player.getHeading() != player2CurrenSpaceWall.getDir()) {
+                            switch (player.getHeading()) {
+                                case EAST -> {
+                                    x++;
+                                }
+                                case WEST -> {
+                                    x--;
+                                }
+                                case NORTH -> {
+                                    y--;
+                                }
+                                case SOUTH -> {
+                                    y++;
+                                }
                             }
-                            case WEST -> {
-                                x--;
-                            }
-                            case NORTH -> {
-                                y--;
-                            }
-                            case SOUTH -> {
-                                y++;
-                            }
+                        } else {
+                            return;
                         }
-                    } else {
-                        return;
+                    }else {
+                        switch (player.getHeading()){
+                            case EAST -> {x++;}
+                            case WEST -> {x--;}
+                            case NORTH -> {y--;}
+                            case SOUTH -> {y++;}
+                        }
                     }
                 } else {
                     switch (conveyorHeading){
@@ -254,6 +264,7 @@ public class GameController {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
                     multiThreadExecute(step);
+
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -364,7 +375,6 @@ public class GameController {
                         System.out.println(player.getName() + " won!");
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,player.getName() + " won!" );
                         alert.show();
-
                     }
                 }
             }
