@@ -90,11 +90,23 @@ public class GameController {
                         case SOUTH -> {y--;}
                     }
                 } else if (conveyorHeading == null){
-                    switch (player.getHeading()){
-                        case EAST -> {x++;}
-                        case WEST -> {x--;}
-                        case NORTH -> {y--;}
-                        case SOUTH -> {y++;}
+                    if (player.getHeading() != player2CurrenSpaceWall.getDir()) {
+                        switch (player.getHeading()) {
+                            case EAST -> {
+                                x++;
+                            }
+                            case WEST -> {
+                                x--;
+                            }
+                            case NORTH -> {
+                                y--;
+                            }
+                            case SOUTH -> {
+                                y++;
+                            }
+                        }
+                    } else {
+                        return;
                     }
                 } else {
                     switch (conveyorHeading){
