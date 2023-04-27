@@ -82,12 +82,7 @@
         {
           "x": 1,
           "y": 2,
-          "objects": [
-            {
-              "type": "wall",
-              "dir": "NORTH"
-            }
-          ]
+          "objects": []
         },
         {
           "x": 1,
@@ -120,12 +115,7 @@
         {
           "x": 1,
           "y": 7,
-          "objects": [
-            {
-              "type": "wall",
-              "dir": "SOUTH"
-            }
-          ]
+          "objects": []
         },
         {
           "x": 1,
@@ -146,159 +136,10 @@
         {
           "x": 2,
           "y": 0,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": false,
-              "direction": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 2,
-          "y": 1,
           "objects": []
         },
         {
           "x": 2,
-          "y": 2,
-          "objects": [
-            {
-              "type": "gear",
-              "dir": "RIGHT"
-            }
-          ]
-        },
-        {
-          "x": 2,
-          "y": 3,
-          "objects": []
-        },
-        {
-          "x": 2,
-          "y": 4,
-          "objects": [
-            {
-              "type": "wall",
-              "dir": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 2,
-          "y": 5,
-          "objects": [
-            {
-              "type": "wall",
-              "dir": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 2,
-          "y": 6,
-          "objects": []
-        },
-        {
-          "x": 2,
-          "y": 7,
-          "objects": []
-        },
-        {
-          "x": 2,
-          "y": 8,
-          "objects": []
-        },
-        {
-          "x": 2,
-          "y": 9,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": false,
-              "direction": "EAST"
-            }
-          ]
-        }
-      ],
-      [
-        {
-          "x": 3,
-          "y": 0,
-          "objects": []
-        },
-        {
-          "x": 3,
-          "y": 1,
-          "objects": []
-        },
-        {
-          "x": 3,
-          "y": 2,
-          "objects": []
-        },
-        {
-          "x": 3,
-          "y": 3,
-          "objects": []
-        },
-        {
-          "x": 3,
-          "y": 4,
-          "objects": []
-        },
-        {
-          "x": 3,
-          "y": 5,
-          "objects": []
-        },
-        {
-          "x": 3,
-          "y": 6,
-          "objects": []
-        },
-        {
-          "x": 3,
-          "y": 7,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 3,
-          "y": 8,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 3,
-          "y": 9,
-          "objects": []
-        }
-      ],
-      [
-        {
-          "x": 4,
-          "y": 0,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "SOUTH"
-            }
-          ]
-        },
-        {
-          "x": 4,
           "y": 1,
           "objects": [
             {
@@ -309,7 +150,7 @@
           ]
         },
         {
-          "x": 4,
+          "x": 2,
           "y": 2,
           "objects": [
             {
@@ -320,7 +161,7 @@
           ]
         },
         {
-          "x": 4,
+          "x": 2,
           "y": 3,
           "objects": [
             {
@@ -331,7 +172,7 @@
           ]
         },
         {
-          "x": 4,
+          "x": 2,
           "y": 4,
           "objects": [
             {
@@ -342,7 +183,7 @@
           ]
         },
         {
-          "x": 4,
+          "x": 2,
           "y": 5,
           "objects": [
             {
@@ -353,7 +194,7 @@
           ]
         },
         {
-          "x": 4,
+          "x": 2,
           "y": 6,
           "objects": [
             {
@@ -364,7 +205,7 @@
           ]
         },
         {
-          "x": 4,
+          "x": 2,
           "y": 7,
           "objects": [
             {
@@ -375,18 +216,18 @@
           ]
         },
         {
-          "x": 4,
+          "x": 2,
           "y": 8,
           "objects": [
             {
               "type": "conveyor",
               "isDouble": true,
-              "direction": "EAST"
+              "direction": "SOUTH"
             }
           ]
         },
         {
-          "x": 4,
+          "x": 2,
           "y": 9,
           "player": {
             "name": "Player 1",
@@ -402,27 +243,7 @@
             "cards": [
               {
                 "card": {
-                  "command": "AGAIN"
-                }
-              },
-              {
-                "card": {
-                  "command": "MOVE_THREE"
-                }
-              },
-              {
-                "card": {
-                  "command": "RIGHT"
-                }
-              },
-              {
-                "card": {
-                  "command": "LEFT"
-                }
-              },
-              {
-                "card": {
-                  "command": "AGAIN"
+                  "command": "CHOOSETURN"
                 }
               },
               {
@@ -432,107 +253,7 @@
               },
               {
                 "card": {
-                  "command": "CHOOSETURN"
-                }
-              },
-              {
-                "card": {
-                  "command": "LEFT"
-                }
-              }
-            ],
-            "energyCubes": 0
-          },
-          "objects": []
-        }
-      ],
-      [
-        {
-          "x": 5,
-          "y": 0,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "SOUTH"
-            }
-          ]
-        },
-        {
-          "x": 5,
-          "y": 1,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "WEST"
-            }
-          ]
-        },
-        {
-          "x": 5,
-          "y": 2,
-          "objects": []
-        },
-        {
-          "x": 5,
-          "y": 3,
-          "objects": []
-        },
-        {
-          "x": 5,
-          "y": 4,
-          "objects": []
-        },
-        {
-          "x": 5,
-          "y": 5,
-          "objects": []
-        },
-        {
-          "x": 5,
-          "y": 6,
-          "objects": []
-        },
-        {
-          "x": 5,
-          "y": 7,
-          "objects": []
-        },
-        {
-          "x": 5,
-          "y": 8,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 5,
-          "y": 9,
-          "player": {
-            "name": "Player 2",
-            "color": "green",
-            "heading": "EAST",
-            "program": [
-              {},
-              {},
-              {},
-              {},
-              {}
-            ],
-            "cards": [
-              {
-                "card": {
-                  "command": "LEFT"
-                }
-              },
-              {
-                "card": {
-                  "command": "RIGHT"
+                  "command": "UTURN"
                 }
               },
               {
@@ -542,12 +263,12 @@
               },
               {
                 "card": {
-                  "command": "MOVE_BACK"
+                  "command": "LEFT"
                 }
               },
               {
                 "card": {
-                  "command": "RIGHT"
+                  "command": "AGAIN"
                 }
               },
               {
@@ -557,267 +278,40 @@
               },
               {
                 "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "AGAIN"
+                  "command": "UTURN"
                 }
               }
             ],
             "energyCubes": 0
           },
-          "objects": []
+          "objects": [
+            {
+              "type": "conveyor",
+              "isDouble": true,
+              "direction": "SOUTH"
+            }
+          ]
         }
       ],
       [
         {
-          "x": 6,
+          "x": 3,
           "y": 0,
           "objects": []
         },
         {
-          "x": 6,
+          "x": 3,
           "y": 1,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "WEST"
-            }
-          ]
+          "objects": []
         },
         {
-          "x": 6,
+          "x": 3,
           "y": 2,
           "objects": []
         },
         {
-          "x": 6,
+          "x": 3,
           "y": 3,
-          "objects": [
-            {
-              "type": "wall",
-              "dir": "NORTH"
-            }
-          ]
-        },
-        {
-          "x": 6,
-          "y": 4,
-          "objects": []
-        },
-        {
-          "x": 6,
-          "y": 5,
-          "objects": []
-        },
-        {
-          "x": 6,
-          "y": 6,
-          "objects": [
-            {
-              "type": "wall",
-              "dir": "WEST"
-            }
-          ]
-        },
-        {
-          "x": 6,
-          "y": 7,
-          "objects": []
-        },
-        {
-          "x": 6,
-          "y": 8,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 6,
-          "y": 9,
-          "objects": []
-        }
-      ],
-      [
-        {
-          "x": 7,
-          "y": 0,
-          "objects": []
-        },
-        {
-          "x": 7,
-          "y": 1,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "WEST"
-            }
-          ]
-        },
-        {
-          "x": 7,
-          "y": 2,
-          "objects": []
-        },
-        {
-          "x": 7,
-          "y": 3,
-          "objects": []
-        },
-        {
-          "x": 7,
-          "y": 4,
-          "objects": []
-        },
-        {
-          "x": 7,
-          "y": 5,
-          "objects": []
-        },
-        {
-          "x": 7,
-          "y": 6,
-          "objects": []
-        },
-        {
-          "x": 7,
-          "y": 7,
-          "objects": []
-        },
-        {
-          "x": 7,
-          "y": 8,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 7,
-          "y": 9,
-          "objects": []
-        }
-      ],
-      [
-        {
-          "x": 8,
-          "y": 0,
-          "objects": []
-        },
-        {
-          "x": 8,
-          "y": 1,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "WEST"
-            }
-          ]
-        },
-        {
-          "x": 8,
-          "y": 2,
-          "objects": []
-        },
-        {
-          "x": 8,
-          "y": 3,
-          "objects": []
-        },
-        {
-          "x": 8,
-          "y": 4,
-          "objects": []
-        },
-        {
-          "x": 8,
-          "y": 5,
-          "objects": []
-        },
-        {
-          "x": 8,
-          "y": 6,
-          "objects": []
-        },
-        {
-          "x": 8,
-          "y": 7,
-          "objects": []
-        },
-        {
-          "x": 8,
-          "y": 8,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 8,
-          "y": 9,
-          "objects": []
-        }
-      ],
-      [
-        {
-          "x": 9,
-          "y": 0,
-          "objects": []
-        },
-        {
-          "x": 9,
-          "y": 1,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "WEST"
-            }
-          ]
-        },
-        {
-          "x": 9,
-          "y": 2,
-          "objects": []
-        },
-        {
-          "x": 9,
-          "y": 3,
-          "objects": [
-            {
-              "type": "wall",
-              "dir": "EAST"
-            }
-          ]
-        },
-        {
-          "x": 9,
-          "y": 4,
-          "objects": []
-        },
-        {
-          "x": 9,
-          "y": 5,
-          "objects": []
-        },
-        {
-          "x": 9,
-          "y": 6,
           "objects": [
             {
               "type": "wall",
@@ -826,6 +320,339 @@
           ]
         },
         {
+          "x": 3,
+          "y": 4,
+          "objects": []
+        },
+        {
+          "x": 3,
+          "y": 5,
+          "objects": []
+        },
+        {
+          "x": 3,
+          "y": 6,
+          "objects": []
+        },
+        {
+          "x": 3,
+          "y": 7,
+          "objects": []
+        },
+        {
+          "x": 3,
+          "y": 8,
+          "objects": []
+        },
+        {
+          "x": 3,
+          "y": 9,
+          "objects": []
+        }
+      ],
+      [
+        {
+          "x": 4,
+          "y": 0,
+          "objects": []
+        },
+        {
+          "x": 4,
+          "y": 1,
+          "objects": []
+        },
+        {
+          "x": 4,
+          "y": 2,
+          "objects": []
+        },
+        {
+          "x": 4,
+          "y": 3,
+          "objects": []
+        },
+        {
+          "x": 4,
+          "y": 4,
+          "objects": [
+            {
+              "type": "conveyor",
+              "isDouble": true,
+              "direction": "SOUTH"
+            }
+          ]
+        },
+        {
+          "x": 4,
+          "y": 5,
+          "objects": []
+        },
+        {
+          "x": 4,
+          "y": 6,
+          "objects": []
+        },
+        {
+          "x": 4,
+          "y": 7,
+          "objects": []
+        },
+        {
+          "x": 4,
+          "y": 8,
+          "objects": []
+        },
+        {
+          "x": 4,
+          "y": 9,
+          "objects": []
+        }
+      ],
+      [
+        {
+          "x": 5,
+          "y": 0,
+          "objects": []
+        },
+        {
+          "x": 5,
+          "y": 1,
+          "objects": []
+        },
+        {
+          "x": 5,
+          "y": 2,
+          "objects": []
+        },
+        {
+          "x": 5,
+          "y": 3,
+          "objects": []
+        },
+        {
+          "x": 5,
+          "y": 4,
+          "objects": []
+        },
+        {
+          "x": 5,
+          "y": 5,
+          "objects": []
+        },
+        {
+          "x": 5,
+          "y": 6,
+          "objects": []
+        },
+        {
+          "x": 5,
+          "y": 7,
+          "objects": []
+        },
+        {
+          "x": 5,
+          "y": 8,
+          "objects": []
+        },
+        {
+          "x": 5,
+          "y": 9,
+          "objects": []
+        }
+      ],
+      [
+        {
+          "x": 6,
+          "y": 0,
+          "objects": []
+        },
+        {
+          "x": 6,
+          "y": 1,
+          "objects": []
+        },
+        {
+          "x": 6,
+          "y": 2,
+          "objects": []
+        },
+        {
+          "x": 6,
+          "y": 3,
+          "objects": []
+        },
+        {
+          "x": 6,
+          "y": 4,
+          "objects": []
+        },
+        {
+          "x": 6,
+          "y": 5,
+          "objects": []
+        },
+        {
+          "x": 6,
+          "y": 6,
+          "objects": []
+        },
+        {
+          "x": 6,
+          "y": 7,
+          "objects": []
+        },
+        {
+          "x": 6,
+          "y": 8,
+          "objects": []
+        },
+        {
+          "x": 6,
+          "y": 9,
+          "objects": []
+        }
+      ],
+      [
+        {
+          "x": 7,
+          "y": 0,
+          "objects": []
+        },
+        {
+          "x": 7,
+          "y": 1,
+          "objects": []
+        },
+        {
+          "x": 7,
+          "y": 2,
+          "objects": []
+        },
+        {
+          "x": 7,
+          "y": 3,
+          "objects": []
+        },
+        {
+          "x": 7,
+          "y": 4,
+          "objects": []
+        },
+        {
+          "x": 7,
+          "y": 5,
+          "objects": []
+        },
+        {
+          "x": 7,
+          "y": 6,
+          "objects": []
+        },
+        {
+          "x": 7,
+          "y": 7,
+          "objects": []
+        },
+        {
+          "x": 7,
+          "y": 8,
+          "objects": []
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "objects": []
+        }
+      ],
+      [
+        {
+          "x": 8,
+          "y": 0,
+          "objects": []
+        },
+        {
+          "x": 8,
+          "y": 1,
+          "objects": []
+        },
+        {
+          "x": 8,
+          "y": 2,
+          "objects": []
+        },
+        {
+          "x": 8,
+          "y": 3,
+          "objects": []
+        },
+        {
+          "x": 8,
+          "y": 4,
+          "objects": []
+        },
+        {
+          "x": 8,
+          "y": 5,
+          "objects": []
+        },
+        {
+          "x": 8,
+          "y": 6,
+          "objects": []
+        },
+        {
+          "x": 8,
+          "y": 7,
+          "objects": []
+        },
+        {
+          "x": 8,
+          "y": 8,
+          "objects": []
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "objects": []
+        }
+      ],
+      [
+        {
+          "x": 9,
+          "y": 0,
+          "objects": []
+        },
+        {
+          "x": 9,
+          "y": 1,
+          "objects": []
+        },
+        {
+          "x": 9,
+          "y": 2,
+          "objects": []
+        },
+        {
+          "x": 9,
+          "y": 3,
+          "objects": []
+        },
+        {
+          "x": 9,
+          "y": 4,
+          "objects": []
+        },
+        {
+          "x": 9,
+          "y": 5,
+          "objects": []
+        },
+        {
+          "x": 9,
+          "y": 6,
+          "objects": []
+        },
+        {
           "x": 9,
           "y": 7,
           "objects": []
@@ -833,13 +660,7 @@
         {
           "x": 9,
           "y": 8,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "EAST"
-            }
-          ]
+          "objects": []
         },
         {
           "x": 9,
@@ -856,13 +677,7 @@
         {
           "x": 10,
           "y": 1,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "WEST"
-            }
-          ]
+          "objects": []
         },
         {
           "x": 10,
@@ -897,24 +712,12 @@
         {
           "x": 10,
           "y": 8,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "EAST"
-            }
-          ]
+          "objects": []
         },
         {
           "x": 10,
           "y": 9,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "NORTH"
-            }
-          ]
+          "objects": []
         }
       ],
       [
@@ -926,133 +729,15 @@
         {
           "x": 11,
           "y": 1,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "WEST"
-            }
-          ]
-        },
-        {
-          "x": 11,
-          "y": 2,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "NORTH"
-            }
-          ]
-        },
-        {
-          "x": 11,
-          "y": 3,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "NORTH"
-            }
-          ]
-        },
-        {
-          "x": 11,
-          "y": 4,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "NORTH"
-            }
-          ]
-        },
-        {
-          "x": 11,
-          "y": 5,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "NORTH"
-            }
-          ]
-        },
-        {
-          "x": 11,
-          "y": 6,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "NORTH"
-            }
-          ]
-        },
-        {
-          "x": 11,
-          "y": 7,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "NORTH"
-            }
-          ]
-        },
-        {
-          "x": 11,
-          "y": 8,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "NORTH"
-            }
-          ]
-        },
-        {
-          "x": 11,
-          "y": 9,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "NORTH"
-            }
-          ]
-        }
-      ],
-      [
-        {
-          "x": 12,
-          "y": 0,
           "objects": []
         },
         {
-          "x": 12,
-          "y": 1,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "WEST"
-            }
-          ]
-        },
-        {
-          "x": 12,
+          "x": 11,
           "y": 2,
-          "objects": [
-            {
-              "type": "conveyor",
-              "isDouble": true,
-              "direction": "WEST"
-            }
-          ]
+          "objects": []
         },
         {
-          "x": 12,
+          "x": 11,
           "y": 3,
           "objects": [
             {
@@ -1063,19 +748,113 @@
           ]
         },
         {
+          "x": 11,
+          "y": 4,
+          "objects": [
+            {
+              "type": "checkPoint",
+              "playersObtained": [],
+              "checkpointNumber": 2
+            }
+          ]
+        },
+        {
+          "x": 11,
+          "y": 5,
+          "objects": [
+            {
+              "type": "checkPoint",
+              "playersObtained": [],
+              "checkpointNumber": 3
+            }
+          ]
+        },
+        {
+          "x": 11,
+          "y": 6,
+          "objects": [
+            {
+              "type": "checkPoint",
+              "playersObtained": [],
+              "checkpointNumber": 4
+            }
+          ]
+        },
+        {
+          "x": 11,
+          "y": 7,
+          "objects": []
+        },
+        {
+          "x": 11,
+          "y": 8,
+          "objects": []
+        },
+        {
+          "x": 11,
+          "y": 9,
+          "objects": []
+        }
+      ],
+      [
+        {
+          "x": 12,
+          "y": 0,
+          "objects": []
+        },
+        {
+          "x": 12,
+          "y": 1,
+          "objects": []
+        },
+        {
+          "x": 12,
+          "y": 2,
+          "objects": []
+        },
+        {
+          "x": 12,
+          "y": 3,
+          "objects": [
+            {
+              "type": "checkPoint",
+              "playersObtained": [],
+              "checkpointNumber": 5
+            }
+          ]
+        },
+        {
           "x": 12,
           "y": 4,
-          "objects": []
+          "objects": [
+            {
+              "type": "checkPoint",
+              "playersObtained": [],
+              "checkpointNumber": 6
+            }
+          ]
         },
         {
           "x": 12,
           "y": 5,
-          "objects": []
+          "objects": [
+            {
+              "type": "checkPoint",
+              "playersObtained": [],
+              "checkpointNumber": 7
+            }
+          ]
         },
         {
           "x": 12,
           "y": 6,
-          "objects": []
+          "objects": [
+            {
+              "type": "checkPoint",
+              "playersObtained": [],
+              "checkpointNumber": 8
+            }
+          ]
         },
         {
           "x": 12,
@@ -1098,6 +877,34 @@
       {
         "playersObtained": [],
         "checkpointNumber": 1
+      },
+      {
+        "playersObtained": [],
+        "checkpointNumber": 2
+      },
+      {
+        "playersObtained": [],
+        "checkpointNumber": 3
+      },
+      {
+        "playersObtained": [],
+        "checkpointNumber": 4
+      },
+      {
+        "playersObtained": [],
+        "checkpointNumber": 5
+      },
+      {
+        "playersObtained": [],
+        "checkpointNumber": 6
+      },
+      {
+        "playersObtained": [],
+        "checkpointNumber": 7
+      },
+      {
+        "playersObtained": [],
+        "checkpointNumber": 8
       }
     ],
     "players": [
@@ -1115,27 +922,7 @@
         "cards": [
           {
             "card": {
-              "command": "AGAIN"
-            }
-          },
-          {
-            "card": {
-              "command": "MOVE_THREE"
-            }
-          },
-          {
-            "card": {
-              "command": "RIGHT"
-            }
-          },
-          {
-            "card": {
-              "command": "LEFT"
-            }
-          },
-          {
-            "card": {
-              "command": "AGAIN"
+              "command": "CHOOSETURN"
             }
           },
           {
@@ -1145,12 +932,32 @@
           },
           {
             "card": {
-              "command": "CHOOSETURN"
+              "command": "UTURN"
+            }
+          },
+          {
+            "card": {
+              "command": "AGAIN"
             }
           },
           {
             "card": {
               "command": "LEFT"
+            }
+          },
+          {
+            "card": {
+              "command": "AGAIN"
+            }
+          },
+          {
+            "card": {
+              "command": "POWERUP"
+            }
+          },
+          {
+            "card": {
+              "command": "UTURN"
             }
           }
         ],
@@ -1170,42 +977,42 @@
         "cards": [
           {
             "card": {
+              "command": "CHOOSETURN"
+            }
+          },
+          {
+            "card": {
               "command": "LEFT"
             }
           },
           {
             "card": {
-              "command": "RIGHT"
+              "command": "FAST_FORWARD"
             }
           },
           {
             "card": {
-              "command": "AGAIN"
+              "command": "LEFT"
             }
           },
           {
             "card": {
-              "command": "MOVE_BACK"
+              "command": "CHOOSETURN"
             }
           },
           {
             "card": {
-              "command": "RIGHT"
+              "command": "LEFT"
             }
           },
           {
             "card": {
-              "command": "POWERUP"
+              "command": "FAST_FORWARD"
             }
           },
           {
             "card": {
-              "command": "FORWARD"
-            }
-          },
-          {
-            "card": {
-              "command": "AGAIN"
+              "command": "MOVE_THREE"
             }
           }
         ],
@@ -1226,27 +1033,7 @@
       "cards": [
         {
           "card": {
-            "command": "AGAIN"
-          }
-        },
-        {
-          "card": {
-            "command": "MOVE_THREE"
-          }
-        },
-        {
-          "card": {
-            "command": "RIGHT"
-          }
-        },
-        {
-          "card": {
-            "command": "LEFT"
-          }
-        },
-        {
-          "card": {
-            "command": "AGAIN"
+            "command": "CHOOSETURN"
           }
         },
         {
@@ -1256,18 +1043,38 @@
         },
         {
           "card": {
-            "command": "CHOOSETURN"
+            "command": "UTURN"
+          }
+        },
+        {
+          "card": {
+            "command": "AGAIN"
           }
         },
         {
           "card": {
             "command": "LEFT"
           }
+        },
+        {
+          "card": {
+            "command": "AGAIN"
+          }
+        },
+        {
+          "card": {
+            "command": "POWERUP"
+          }
+        },
+        {
+          "card": {
+            "command": "UTURN"
+          }
         }
       ],
       "energyCubes": 0
     },
-    "phase": "PROGRAMMING",
+    "phase": "ACTIVATION",
     "stepMode": true
   }
 }
