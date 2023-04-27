@@ -91,23 +91,32 @@ public class GameController {
                         case SOUTH -> {y--;}
                     }
                 } else if (conveyorHeading == null){
-                    if (player.getHeading() != player2CurrenSpaceWall.getDir()) {
-                        switch (player.getHeading()) {
-                            case EAST -> {
-                                x++;
+                    if (player2CurrenSpaceWall != null) {
+                        if (player.getHeading() != player2CurrenSpaceWall.getDir()) {
+                            switch (player.getHeading()) {
+                                case EAST -> {
+                                    x++;
+                                }
+                                case WEST -> {
+                                    x--;
+                                }
+                                case NORTH -> {
+                                    y--;
+                                }
+                                case SOUTH -> {
+                                    y++;
+                                }
                             }
-                            case WEST -> {
-                                x--;
-                            }
-                            case NORTH -> {
-                                y--;
-                            }
-                            case SOUTH -> {
-                                y++;
-                            }
+                        } else {
+                            return;
                         }
-                    } else {
-                        return;
+                    }else {
+                        switch (player.getHeading()){
+                            case EAST -> {x++;}
+                            case WEST -> {x--;}
+                            case NORTH -> {y--;}
+                            case SOUTH -> {y++;}
+                        }
                     }
                 } else {
                     switch (conveyorHeading){
@@ -366,7 +375,6 @@ public class GameController {
                         System.out.println(player.getName() + " won!");
                         Alert alert = new Alert(Alert.AlertType.INFORMATION,player.getName() + " won!" );
                         alert.show();
-
                     }
                 }
             }
