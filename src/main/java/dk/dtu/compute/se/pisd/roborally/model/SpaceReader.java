@@ -32,7 +32,9 @@ public class SpaceReader {
         try{
             File map = new File(fileName);
             Scanner myReader = new Scanner(map);
+            int lineNum = 0;
             while (myReader.hasNextLine()) {
+                lineNum += 1;
                 String data = myReader.nextLine();
                 String[] result = data.split(";");
                 Space space = board.getSpace(0,0);
@@ -61,6 +63,10 @@ public class SpaceReader {
                         break;
                     case "Gear":
                         space.addObjects(new Gear(Direction.valueOf(result[3])));
+                        break;
+                    default:
+                        System.out.println("Unkown object in " + fileName);
+                        System.out.println("On line " +lineNum);
                         break;
                 }
             }
