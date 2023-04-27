@@ -60,43 +60,46 @@ public class GameController {
         Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
 
         if (wall != null ){
-            if (wall.getDir() == player.getHeading().next().next() || wall.getDir() == player.getHeading()){
+           if (backupflag & wall.getDir() == player.getHeading().next().next()) {
+                System.out.println("wall");
                 return;
             }
         }
 
         if (currentSpaceWall != null){
-            if (currentSpaceWall.getDir() == player.getHeading() || currentSpaceWall.getDir() == player.getHeading().next().next()){
+            if (!backupflag & currentSpaceWall.getDir() == player.getHeading()){
+                return;
+            } else if (backupflag & currentSpaceWall.getDir() == player.getHeading().next().next()) {
                 return;
             }
         }
 
-            if (space.getPlayer() == null) {
-                player.setSpace(space);
-            } else {
-                Player player2 = space.getPlayer();
-                int x = space.x;
-                int y = space.y;
+        if (space.getPlayer() == null) {
+            player.setSpace(space);
+        } else {
+            Player player2 = space.getPlayer();
+            Wall player2CurrenSpaceWall = (Wall) player2.getSpace().findObjectOfType(Wall.class);
+            int x = space.x;
+            int y = space.y;
 
-                if (backupflag) {
-                    switch (player.getHeading()){
-                        case EAST -> {x--;}
-                        case WEST -> {x++;}
-                        case NORTH -> {y++;}
-                        case SOUTH -> {y--;}
-                    }
-                } else {
-                    switch (player.getHeading()){
-                        case EAST -> {x++;}
-                        case WEST -> {x--;}
-                        case NORTH -> {y--;}
-                        case SOUTH -> {y++;}
-                    }
+            if (backupflag) {
+                switch (player.getHeading()){
+                    case EAST -> {x--;}
+                    case WEST -> {x++;}
+                    case NORTH -> {y++;}
+                    case SOUTH -> {y--;}
                 }
+            } else {
+                switch (player.getHeading()){
+                    case EAST -> {x++;}
+                    case WEST -> {x--;}
+                    case NORTH -> {y--;}
+                    case SOUTH -> {y++;}
+                }
+            }
 
-
-                player2.setSpace(board.getSpace(x,y));
-                player.setSpace(space);
+            player2.setSpace(board.getSpace(x,y));
+            player.setSpace(space);
             }
         }
 
