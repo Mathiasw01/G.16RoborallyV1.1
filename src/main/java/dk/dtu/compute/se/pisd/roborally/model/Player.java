@@ -25,10 +25,9 @@ import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.EAST;
-import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
 /**
  * A player
@@ -68,12 +67,20 @@ public class Player extends Subject {
 
 
 
-    public Player(@NotNull Board board, String color, @NotNull String name) {
+    private List<CommandCard> programmingDeck;
+
+
+
+    private List<CommandCard> discardpile;
+
+    public Player(@NotNull Board board, String color, @NotNull String name, List<CommandCard> programmingDeck, List<CommandCard> discardpile ) {
         this.board = board;
         this.name = name;
         this.color = color;
-
+        this.programmingDeck=programmingDeck;
+        this.discardpile=discardpile;
         this.space = null;
+
 
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
@@ -129,6 +136,12 @@ public class Player extends Subject {
             }
             notifyChange();
         }
+    }
+    public List<CommandCard> getProgrammingDeck() {
+        return programmingDeck;
+    }
+    public List<CommandCard> getDiscardpile() {
+        return discardpile;
     }
 
     public Heading getHeading() {

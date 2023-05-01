@@ -153,8 +153,11 @@ public class GameController {
                 }
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
+
                     field.setCard(generateRandomCommandCard());
                     field.setVisible(true);
+
+                    drawCard(player.getProgrammingDeck(),player);
                 }
             }
         }
@@ -166,6 +169,27 @@ public class GameController {
         int random = (int) (Math.random() * commands.length);
         return new CommandCard(commands[random]);
     }
+
+    public CommandCard drawCard(List<CommandCard> deck, Player currentPLayer) {
+        if (deck.isEmpty()) {
+            shuffleDeck(currentPLayer.getProgrammingDeck(),currentPLayer.getDiscardpile());
+        }
+
+        CommandCard topCard = deck.get(0);
+        deck.remove(0);
+        return topCard;
+    }
+
+    public void discardCard(List<CommandCard> discardPile, CommandCard card) {
+        discardPile.add(card);
+    }
+
+    public void shuffleDeck(List<CommandCard> deck, List<CommandCard> discardPile) {
+        deck.addAll(discardPile);
+        discardPile.clear();
+        Collections.shuffle(deck);
+    }
+
 
     /**
      * Finish programming phase and start activation phase

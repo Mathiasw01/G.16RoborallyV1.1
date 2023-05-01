@@ -1,11 +1,13 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ProgrammingDeckInit {
     private List<CommandCard> deck;
 
     public ProgrammingDeckInit() {
+        deck=new ArrayList<>();
     }
 
 

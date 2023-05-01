@@ -74,6 +74,10 @@ public class Board extends Subject {
     private int counter=0;
     private SpaceReader spaceReader;
 
+    private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
+
+    private List<CommandCard> discardPile;
+
     /**
      * Creates a new board
      * <p>
@@ -124,6 +128,7 @@ public class Board extends Subject {
     }
 
 
+
     public Board(int width, int height, Board savedBoard, List<String> PLAYER_COLORS) {
         this.boardName = savedBoard.boardName;
         this.width = savedBoard.width;
@@ -139,7 +144,7 @@ public class Board extends Subject {
 
         int currentp = 0;
         for (int i = 0; i < savedBoard.getPlayersNumber(); i++) {
-            Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1));
+            Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1), programmingDeckInit.init(),discardPile );
             player.setHeading(savedBoard.getPlayer(i).getHeading());
             this.addPlayer(player);
             if(Objects.equals(savedBoard.getPlayers().get(i).getName(), savedBoard.getCurrentPlayer().getName())){
