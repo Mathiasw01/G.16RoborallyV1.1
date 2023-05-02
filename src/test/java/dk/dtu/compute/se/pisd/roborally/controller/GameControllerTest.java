@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 
 class GameControllerTest {
 
-    private final int TEST_WIDTH = 8;
-    private final int TEST_HEIGHT = 8;
+    private final int TEST_WIDTH = 13;
+    private final int TEST_HEIGHT = 10;
 
     private GameController gameController;
 
@@ -32,21 +32,38 @@ class GameControllerTest {
         gameController = null;
     }
 
-    /*
     @Test
     void moveCurrentPlayerToSpace() {
         Board board = gameController.board;
         Player player1 = board.getPlayer(0);
         Player player2 = board.getPlayer(1);
-        boolean backupflag = false;
-        gameController.moveCurrentPlayerToSpace(board.getSpace(0, 4), backupflag,player1,);
 
+
+        //Test moving player 1
+        gameController.moveCurrentPlayerToSpace(board.getSpace(0, 4), false, player1, null);
         Assertions.assertEquals(player1, board.getSpace(0, 4).getPlayer(), "Player " + player1.getName() + " should beSpace (0,4)!");
-        Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
-        Assertions.assertEquals(player2, board.getCurrentPlayer(), "Current player should be " + player2.getName() +"!");
-    }
 
-     */
+        //Test original field empty
+        Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
+
+        //Test set player turn
+        gameController.board.setCurrentPlayer(player2);
+        Assertions.assertEquals(player2, board.getCurrentPlayer(), "Current player should be " + player2.getName() +"!");
+
+        //Test player 2 pushing player 1
+        player2.setHeading(Heading.EAST);
+        gameController.moveCurrentPlayerToSpace(board.getSpace(0, 4), false, player2, null);
+
+        //Test player 2 source field empty
+        Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
+
+        //Test player 2 position, test player 1
+        Assertions.assertEquals(player2, board.getSpace(0, 4).getPlayer(), "Player " + player2.getName() + " should beSpace (0,4)!");
+        Assertions.assertEquals(player1, board.getSpace(1, 4).getPlayer(), "Player " + player1.getName() + " should beSpace (0,4)!");
+
+
+
+    }
 
     @Test
     void moveForward() {

@@ -44,6 +44,17 @@ public class GameController {
 
     @Expose
     final public Board board;
+    private Heading originalHeading = null;
+
+    public Heading getOriginalHeading() {
+        return originalHeading;
+    }
+
+    public void setOriginalHeading(Heading originalHeading) {
+        this.originalHeading = originalHeading;
+    }
+
+
 
 
     public GameController(@NotNull Board board) {
@@ -55,7 +66,7 @@ public class GameController {
      * <p>
      * Moves current player to the parsed space if the space is empty
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading) {
+    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         board.setCounter(board.getCounter() + 1);
         Wall wall = (Wall) space.findObjectOfType(Wall.class);
         Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
@@ -63,10 +74,25 @@ public class GameController {
         /**
          * Stops current player from moving if there is a wall in the way
          */
-        if (currentSpaceWall != null){
-            if (!backupflag & currentSpaceWall.getDir() == player.getHeading()){
+        if (originalHeading == null) {
+            if (conPush){
+                setOriginalHeading(conveyorHeading);
+            } else {
+                setOriginalHeading(player.getHeading());
+            }
+        }
+
+        if (wall != null ){
+            if (backupflag & wall.getDir() == getOriginalHeading().next().next()) {
+                System.out.println("wall");
                 return;
-            } else if (backupflag & currentSpaceWall.getDir() == player.getHeading().next().next()) {
+            }
+        }
+
+        if (currentSpaceWall != null){
+            if (!backupflag & currentSpaceWall.getDir() == getOriginalHeading()){
+                return;
+            } else if (backupflag & currentSpaceWall.getDir() == getOriginalHeading().next().next()) {
                 return;
             }
         }
@@ -92,59 +118,55 @@ public class GameController {
             int x = space.x;
             int y = space.y;
 
-                if (backupflag) {
-                    if (player2CurrenSpaceWall != null) {
-                        if (player.getHeading().next().next() != player2CurrenSpaceWall.getDir()) {
-                            switch (player.getHeading()){
-                                case EAST -> {x--;}
-                                case WEST -> {x++;}
-                                case NORTH -> {y++;}
-                                case SOUTH -> {y--;}
+            if (backupflag) {
+                switch (getOriginalHeading()){
+                    case EAST -> {x--;}
+                    case WEST -> {x++;}
+                    case NORTH -> {y++;}
+                    case SOUTH -> {y--;}
+                }
+            } else if (conveyorHeading == null){
+                if (player2CurrenSpaceWall != null) {
+                    if (getOriginalHeading() != player2CurrenSpaceWall.getDir()) {
+                        switch (getOriginalHeading()) {
+                            case EAST -> {
+                                x++;
                             }
-                        } else {
-                            return;
+                            case WEST -> {
+                                x--;
+                            }
+                            case NORTH -> {
+                                y--;
+                            }
+                            case SOUTH -> {
+                                y++;
+                            }
                         }
                     } else {
-                    switch (player.getHeading()){
-                        case EAST -> {x--;}
-                        case WEST -> {x++;}
-                        case NORTH -> {y++;}
-                        case SOUTH -> {y--;}
+                        return;
                     }
-                }
-                } else if (conveyorHeading == null){
-                    if (player2CurrenSpaceWall != null) {
-                        if (player.getHeading() != player2CurrenSpaceWall.getDir()) {
-                            switch (player.getHeading()) {
-                                case EAST -> {x++;}
-                                case WEST -> {x--;}
-                                case NORTH -> {y--;}
-                                case SOUTH -> {y++;}
-                            }
-                        } else {
-                            return;
-                        }
-                    }else {
-                        switch (player.getHeading()){
-                            case EAST -> {x++;}
-                            case WEST -> {x--;}
-                            case NORTH -> {y--;}
-                            case SOUTH -> {y++;}
-                        }
-                    }
-                } else {
-                    switch (conveyorHeading){
+                }else {
+                    switch (getOriginalHeading()){
                         case EAST -> {x++;}
                         case WEST -> {x--;}
                         case NORTH -> {y--;}
                         case SOUTH -> {y++;}
                     }
-                } if (board.getSpace(x,y) != null) {
-                    player2.setSpace(board.getSpace(x, y));
-                    player.setSpace(space);
                 }
+            } else {
+                switch (conveyorHeading){
+                    case EAST -> {x++;}
+                    case WEST -> {x--;}
+                    case NORTH -> {y--;}
+                    case SOUTH -> {y++;}
+                }
+            } if (board.getSpace(x,y) != null) {
+                moveCurrentPlayerToSpace(board.getSpace(x,y), false,player2,null, conPush);
+                //player2.setSpace(board.getSpace(x, y));
+                player.setSpace(space);
             }
         }
+    }
 
     /**
      * Start programming phase
@@ -458,7 +480,7 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = false;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, null);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, null, false);
         } else {
 
             System.out.println("OUT OF BOUNDS");
@@ -471,6 +493,13 @@ public class GameController {
 
     }
 
+    /**
+     * Makes a player interact with a movementField
+     * <p>
+     * This method makes the player interact with a movement field
+     * @param  player  the player which will interact with the field
+     * @paramt fieldObject the object which the player will interact with
+     */
     private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
@@ -482,10 +511,10 @@ public class GameController {
             case NORTH -> {y--;}
             case SOUTH -> {y++;}
         }
-        System.out.println(x+ " " +y);
+        //System.out.println(x+ " " +y);
         boolean backupflag = false;
         if(board.getSpace(x,y) != null) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection());
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection(), true);
         } else System.out.println("OUT OF BOUNDS");
     }
 
@@ -564,7 +593,7 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = true;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player, null);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player, null, false);
         } else System.out.println("OUT OF BOUNDS");
     }
 
