@@ -148,7 +148,7 @@ public class GameController {
                 }
             } if (board.getSpace(x,y) != null) {
 
-                if (canPush(board.getSpace(x,y),conPush?conveyorHeading:originalHeading,backupflag)) {
+                if (canPush(board.getSpace(x,y),conPush?conveyorHeading:originalHeading,backupflag, player)) {
                     moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player2, conveyorHeading, conPush);
                     //player2.setSpace(board.getSpace(x, y));
                     player.setSpace(space);
@@ -157,10 +157,12 @@ public class GameController {
         }
     }
 
-    public boolean canPush(Space space, Heading heading,  boolean backupflag){
+    public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player){
         if (space == null){
+            reboot(player);
             return false;
         }
+        player = space.getPlayer();
         int x = space.x;
         int y = space.y;
         if (!backupflag){
@@ -182,7 +184,7 @@ public class GameController {
         if (space.getPlayer() == null) {
             return true;
         } else {
-            return canPush(nextSpace,heading, backupflag);
+            return canPush(nextSpace,heading, backupflag,player);
         }
     }
 
