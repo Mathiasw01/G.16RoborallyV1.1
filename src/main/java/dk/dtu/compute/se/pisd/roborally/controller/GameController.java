@@ -60,13 +60,9 @@ public class GameController {
         Wall wall = (Wall) space.findObjectOfType(Wall.class);
         Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
 
-        if (wall != null ){
-           if (backupflag & wall.getDir() == player.getHeading().next().next()) {
-                System.out.println("wall");
-                return;
-            }
-        }
-
+        /**
+         * Stops current player from moving if there is a wall in the way
+         */
         if (currentSpaceWall != null){
             if (!backupflag & currentSpaceWall.getDir() == player.getHeading()){
                 return;
@@ -75,6 +71,19 @@ public class GameController {
             }
         }
 
+        if (wall != null){
+            if ((!backupflag & wall.getDir().next().next() == player.getHeading())){
+                return;
+            } else if ((backupflag & wall.getDir().next().next() == player.getHeading().next().next())) {
+                return;
+            }
+        }
+
+        /**
+         * Pushes other players if they occupy the space the current player is moving through
+         *
+         * Stops if there is a wall in the way
+         */
         if (space.getPlayer() == null) {
             player.setSpace(space);
         } else {
@@ -84,28 +93,33 @@ public class GameController {
             int y = space.y;
 
                 if (backupflag) {
+                    if (player2CurrenSpaceWall != null) {
+                        if (player.getHeading().next().next() != player2CurrenSpaceWall.getDir()) {
+                            switch (player.getHeading()){
+                                case EAST -> {x--;}
+                                case WEST -> {x++;}
+                                case NORTH -> {y++;}
+                                case SOUTH -> {y--;}
+                            }
+                        } else {
+                            return;
+                        }
+                    } else {
                     switch (player.getHeading()){
                         case EAST -> {x--;}
                         case WEST -> {x++;}
                         case NORTH -> {y++;}
                         case SOUTH -> {y--;}
                     }
+                }
                 } else if (conveyorHeading == null){
                     if (player2CurrenSpaceWall != null) {
                         if (player.getHeading() != player2CurrenSpaceWall.getDir()) {
                             switch (player.getHeading()) {
-                                case EAST -> {
-                                    x++;
-                                }
-                                case WEST -> {
-                                    x--;
-                                }
-                                case NORTH -> {
-                                    y--;
-                                }
-                                case SOUTH -> {
-                                    y++;
-                                }
+                                case EAST -> {x++;}
+                                case WEST -> {x--;}
+                                case NORTH -> {y--;}
+                                case SOUTH -> {y++;}
                             }
                         } else {
                             return;
