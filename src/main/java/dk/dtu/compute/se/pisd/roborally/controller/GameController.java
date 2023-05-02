@@ -164,45 +164,54 @@ public class GameController {
         player = space.getPlayer();
         int x = space.x;
         int y = space.y;
+        int prvx = space.x;
+        int prvy = space.y;
 
         if (!backupflag) {
             switch (heading) {
                 case EAST -> {
                     x++;
+                    prvx--;
                 }
                 case WEST -> {
                     x--;
+                    prvx++;
                 }
                 case NORTH -> {
                     y--;
+                    prvy++;
                 }
                 case SOUTH -> {
                     y++;
+                    prvy--;
                 }
             }
         } else {
-                switch (getOriginalHeading()) {
+                switch (heading) {
                     case EAST -> {
-                        x++;
+                        x--;
+                        prvx++;
                     }
                     case WEST -> {
-                        x--;
+                        x++;
+                        prvx--;
                     }
                     case NORTH -> {
-                        y--;
+                        y++;
+                        prvy--;
                     }
                     case SOUTH -> {
-                        y++;
+                        y--;
+                        prvy++;
                     }
                 }
             }
 
-
-
             Space nextSpace = board.getSpace(x, y);
+        Space prvSpace = board.getSpace(prvx,prvy);
             if (space.getPlayer() == null) {
                 Wall wall = (Wall) space.findObjectOfType(Wall.class);
-                Wall nextWall = (Wall) nextSpace.findObjectOfType(Wall.class);
+                Wall prvWall = (Wall) prvSpace.findObjectOfType(Wall.class);
                 if (wall != null){
                     if (!backupflag) {
                         if (wall.getDir().next().next() == heading) {
@@ -211,12 +220,13 @@ public class GameController {
                     } else if (wall.getDir() == heading){
                         return false;
                     }
-                } if (nextWall != null){
+                }
+                if (prvWall != null){
                     if (backupflag) {
-                        if (nextWall.getDir().next().next() == heading) {
+                        if (prvWall.getDir().next().next() == heading) {
                             return false;
                         }
-                    } else if (nextWall.getDir() == heading){
+                    } else if (prvWall.getDir() == heading){
                         return false;
                     }
                 }
