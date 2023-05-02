@@ -145,8 +145,7 @@ public class GameController {
                     } else {
                         return;
                     }
-                }
-                else {
+                } else {
                     switch (getOriginalHeading()){
                         case EAST -> {x++;}
                         case WEST -> {x--;}
@@ -173,36 +172,85 @@ public class GameController {
         }
     }
 
-    public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player){
-        if (space == null){
+    public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player) {
+        if (space == null) {
             reboot(player);
             return false;
         }
         player = space.getPlayer();
         int x = space.x;
         int y = space.y;
-        if (!backupflag){
-            switch (heading){
-                case EAST -> {x++;}
-                case WEST -> {x--;}
-                case NORTH -> {y--;}
-                case SOUTH -> {y++;}
+        int prvx = space.x;
+        int prvy = space.y;
+
+        if (!backupflag) {
+            switch (heading) {
+                case EAST -> {
+                    x++;
+                    prvx--;
+                }
+                case WEST -> {
+                    x--;
+                    prvx++;
+                }
+                case NORTH -> {
+                    y--;
+                    prvy++;
+                }
+                case SOUTH -> {
+                    y++;
+                    prvy--;
+                }
             }
         } else {
-            switch (heading){
-                case EAST -> {x--;}
-                case WEST -> {x++;}
-                case NORTH -> {y++;}
-                case SOUTH -> {y--;}
+                switch (heading) {
+                    case EAST -> {
+                        x--;
+                        prvx++;
+                    }
+                    case WEST -> {
+                        x++;
+                        prvx--;
+                    }
+                    case NORTH -> {
+                        y++;
+                        prvy--;
+                    }
+                    case SOUTH -> {
+                        y--;
+                        prvy++;
+                    }
+                }
+            }
+
+            Space nextSpace = board.getSpace(x, y);
+        Space prvSpace = board.getSpace(prvx,prvy);
+            if (space.getPlayer() == null) {
+                Wall wall = (Wall) space.findObjectOfType(Wall.class);
+                Wall prvWall = (Wall) prvSpace.findObjectOfType(Wall.class);
+                if (wall != null){
+                    if (!backupflag) {
+                        if (wall.getDir().next().next() == heading) {
+                            return false;
+                        }
+                    } else if (wall.getDir() == heading){
+                        return false;
+                    }
+                }
+                if (prvWall != null){
+                    if (backupflag) {
+                        if (prvWall.getDir().next().next() == heading) {
+                            return false;
+                        }
+                    } else if (prvWall.getDir() == heading){
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return canPush(nextSpace, heading, backupflag, player);
             }
         }
-        Space nextSpace = board.getSpace(x, y);
-        if (space.getPlayer() == null) {
-            return true;
-        } else {
-            return canPush(nextSpace,heading, backupflag,player);
-        }
-    }
 
     /**
      * Start programming phase
@@ -351,6 +399,8 @@ public class GameController {
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
             if (step >= 0 && step < Player.NO_REGISTERS) {
+                originalHeading = null;
+
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
                 if (card != null) {
                     Command command = card.command;
