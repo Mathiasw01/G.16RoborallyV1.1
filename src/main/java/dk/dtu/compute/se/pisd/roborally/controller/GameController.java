@@ -82,13 +82,9 @@ public class GameController {
             }
         }
 
-        if (wall != null ){
-            if (backupflag & wall.getDir() == getOriginalHeading().next().next()) {
-                System.out.println("wall");
-                return;
-            }
-        }
-
+        /**
+         * Stops current player from moving if there is a wall in the way
+         */
         if (currentSpaceWall != null){
             if (!backupflag & currentSpaceWall.getDir() == getOriginalHeading()){
                 return;
@@ -96,11 +92,10 @@ public class GameController {
                 return;
             }
         }
-
         if (wall != null){
-            if ((!backupflag & wall.getDir().next().next() == player.getHeading())){
+            if ((!backupflag & wall.getDir().next().next() == getOriginalHeading())){
                 return;
-            } else if ((backupflag & wall.getDir().next().next() == player.getHeading().next().next())) {
+            } else if ((backupflag & wall.getDir().next().next() == getOriginalHeading().next().next())) {
                 return;
             }
         }
@@ -129,18 +124,10 @@ public class GameController {
                 if (player2CurrenSpaceWall != null) {
                     if (getOriginalHeading() != player2CurrenSpaceWall.getDir()) {
                         switch (getOriginalHeading()) {
-                            case EAST -> {
-                                x++;
-                            }
-                            case WEST -> {
-                                x--;
-                            }
-                            case NORTH -> {
-                                y--;
-                            }
-                            case SOUTH -> {
-                                y++;
-                            }
+                            case EAST -> {x++;}
+                            case WEST -> {x--;}
+                            case NORTH -> {y--;}
+                            case SOUTH -> {y++;}
                         }
                     } else {
                         return;
