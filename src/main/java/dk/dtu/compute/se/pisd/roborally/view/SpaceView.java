@@ -81,12 +81,17 @@ public class SpaceView extends StackPane implements ViewObserver {
 
         Player player = space.getPlayer();
         if (player != null) {
-            Polygon arrow = new Polygon(0.0, 0.0,
-                    10.0, 20.0,
-                    20.0, 0.0 );
+            Circle arrow = new Circle();
+            arrow.setRadius(23);
+            Image robots = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/robo_figur.png");
             try {
-                arrow.setFill(Color.valueOf(player.getColor()));
-            } catch (Exception e) {
+                if (player.getPlayerNum() <= 4) {
+                    arrow.setFill(new ImagePattern(robots, -player.getPlayerNum() + 1, 0, 4, 2, true));
+                } else {
+                    arrow.setFill(new ImagePattern(robots, -player.getPlayerNum() + 1, 1, 4, 2, true));
+                }
+            }
+            catch (Exception e) {
                 arrow.setFill(Color.MEDIUMPURPLE);
             }
 
