@@ -129,7 +129,8 @@ public class GameController {
                     } else {
                         return;
                     }
-                }else {
+                }
+                else {
                     switch (getOriginalHeading()){
                         case EAST -> {x++;}
                         case WEST -> {x--;}
@@ -137,6 +138,7 @@ public class GameController {
                         case SOUTH -> {y++;}
                     }
                 }
+
             } else {
                 switch (conveyorHeading){
                     case EAST -> {x++;}
@@ -145,10 +147,42 @@ public class GameController {
                     case SOUTH -> {y++;}
                 }
             } if (board.getSpace(x,y) != null) {
-                moveCurrentPlayerToSpace(board.getSpace(x,y), false,player2,null, conPush);
-                //player2.setSpace(board.getSpace(x, y));
-                player.setSpace(space);
+
+                if (canPush(board.getSpace(x,y),conPush?conveyorHeading:originalHeading,backupflag)) {
+                    moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player2, conveyorHeading, conPush);
+                    //player2.setSpace(board.getSpace(x, y));
+                    player.setSpace(space);
+                }
             }
+        }
+    }
+
+    public boolean canPush(Space space, Heading heading,  boolean backupflag){
+        if (space == null){
+            return false;
+        }
+        int x = space.x;
+        int y = space.y;
+        if (!backupflag){
+            switch (heading){
+                case EAST -> {x++;}
+                case WEST -> {x--;}
+                case NORTH -> {y--;}
+                case SOUTH -> {y++;}
+            }
+        } else {
+            switch (heading){
+                case EAST -> {x--;}
+                case WEST -> {x++;}
+                case NORTH -> {y++;}
+                case SOUTH -> {y--;}
+            }
+        }
+        Space nextSpace = board.getSpace(x, y);
+        if (space.getPlayer() == null) {
+            return true;
+        } else {
+            return canPush(nextSpace,heading, backupflag);
         }
     }
 

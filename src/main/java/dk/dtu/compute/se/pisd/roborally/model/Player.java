@@ -71,11 +71,6 @@ public class Player extends Subject {
 
 
     private List<CommandCard> programmingDeck;
-
-
-
-
-    public Player(@NotNull Board board, String color, @NotNull String name) {
     private List<CommandCard> discardpile =new ArrayList<>();
 
     public Player(@NotNull Board board, String color, @NotNull String name,int playerNum, List<CommandCard> programmingDeck) {
