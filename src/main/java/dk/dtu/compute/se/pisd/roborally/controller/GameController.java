@@ -157,9 +157,8 @@ public class GameController {
                     field.setCard(generateRandomCommandCard());
                     field.setVisible(true);
                      */
-                    field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
+                    field.setCard(drawCard(player));
                     field.setVisible(true);
-
                 }
             }
         }
@@ -172,16 +171,14 @@ public class GameController {
         return new CommandCard(commands[random]);
     }
 
-    public CommandCard drawCard(List<CommandCard> deck, Player currentPLayer) {
+    public CommandCard drawCard(Player currentPLayer) {
         if (currentPLayer.getProgrammingDeck().isEmpty()) {
             shuffleDeck(currentPLayer.getProgrammingDeck(),currentPLayer.getDiscardpile());
         }
         CommandCard topCard = currentPLayer.getProgrammingDeck().get(0);
         currentPLayer.getProgrammingDeck().remove(0);
-        discardCard(currentPLayer,topCard);
-        if (topCard==null){
-            drawCard(currentPLayer.getProgrammingDeck(),currentPLayer);
-        }
+            discardCard(currentPLayer, topCard);
+
         return topCard;
     }
 
@@ -286,7 +283,9 @@ public class GameController {
                         board.setPhase(Phase.PLAYER_INTERACTION);
                         return;
                     }
-                    executeCommand(currentPlayer, command);
+                    if(!currentPlayer.getRebooting()) {
+                        executeCommand(currentPlayer, command);
+                    }
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
                 if (nextPlayerNumber < board.getPlayersNumber()) {
@@ -299,6 +298,9 @@ public class GameController {
                         board.setStep(step);
                         board.setCurrentPlayer(board.getPlayer(0));
                     } else {
+                        for (Player player: players) {
+                            player.setRebooting(false);
+                        }
                         startProgrammingPhase();
                     }
                 }
@@ -354,6 +356,8 @@ public class GameController {
                     this.again(player);
                     break;
                 case CHOOSETURN:
+                    break;
+                case SPAM:
                     break;
                 default:
                     // DO NOTHING (for now)
@@ -446,7 +450,7 @@ public class GameController {
             boolean backupflag = false;
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, null);
         } else {
-
+            reboot(player);
             System.out.println("OUT OF BOUNDS");
         }
     }
@@ -454,7 +458,7 @@ public class GameController {
     private void reboot(Player player){
         player.getDiscardpile().add(new CommandCard(Command.SPAM));
         player.getDiscardpile().add(new CommandCard(Command.SPAM));
-
+        player.setRebooting(true);
     }
 
     private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
@@ -472,7 +476,11 @@ public class GameController {
         boolean backupflag = false;
         if(board.getSpace(x,y) != null) {
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection());
-        } else System.out.println("OUT OF BOUNDS");
+        } else{
+            reboot(player);
+            System.out.println("OUT OF BOUNDS");
+        }
+
     }
 
     /**
@@ -551,7 +559,10 @@ public class GameController {
         if(board.getSpace(x,y) != null) {
             boolean backupflag = true;
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player, null);
-        } else System.out.println("OUT OF BOUNDS");
+        } else {
+            reboot(player);
+            System.out.println("OUT OF BOUNDS");
+        }
     }
 
     /**

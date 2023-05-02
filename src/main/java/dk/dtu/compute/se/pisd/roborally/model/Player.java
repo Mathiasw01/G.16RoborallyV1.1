@@ -66,13 +66,11 @@ public class Player extends Subject {
     @Expose
     private int energyCubes = 0;
 
-
-
     private List<CommandCard> programmingDeck;
 
-
-
     private List<CommandCard> discardpile =new ArrayList<>();
+
+    private boolean rebooting=false;
 
     public Player(@NotNull Board board, String color, @NotNull String name, List<CommandCard> programmingDeck) {
         this.board = board;
@@ -105,6 +103,13 @@ public class Player extends Subject {
                 space.playerChanged();
             }
         }
+    }
+    public boolean getRebooting() {
+        return rebooting;
+    }
+
+    public void setRebooting(boolean rebooting) {
+        this.rebooting = rebooting;
     }
 
     public String getColor() {
