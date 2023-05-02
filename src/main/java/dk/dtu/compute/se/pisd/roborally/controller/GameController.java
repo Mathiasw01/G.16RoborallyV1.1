@@ -526,7 +526,6 @@ public class GameController {
     private void reboot(Player player){
         player.getDiscardpile().add(new CommandCard(Command.SPAM));
         player.getDiscardpile().add(new CommandCard(Command.SPAM));
-
     }
 
     /**
