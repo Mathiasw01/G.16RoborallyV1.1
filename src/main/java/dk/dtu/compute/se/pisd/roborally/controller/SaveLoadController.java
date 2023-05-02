@@ -12,6 +12,12 @@ import java.util.ArrayList;
 
 public class SaveLoadController {
 
+    /**
+     * A runtime type adapter which maps classes to strings. This makes the gson builder able
+     * to (de)serialize lists of objects inheriting from the FieldObject class and still maintain
+     * information of which subclass the object is an instance of.
+     */
+
     private static final RuntimeTypeAdapterFactory<FieldObject> runtimeTypeAdapterFactory = RuntimeTypeAdapterFactory
             .of(FieldObject.class, "type")
             .registerSubtype(Wall.class, "wall")
@@ -20,33 +26,28 @@ public class SaveLoadController {
             .registerSubtype(Gear.class, "gear")
             .registerSubtype(Conveyor.class, "conveyor");
 
-    private static Gson gson = new GsonBuilder()
+    private static final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
             .setPrettyPrinting()
             .registerTypeAdapterFactory(runtimeTypeAdapterFactory)
             .create();
+
+    /**
+     * Serialize the game controller and save it to a file
+     * <p>
+     * This method serializes a game controller and serializes its state to a JSON-formatted file.
+     * This is useful for saving the game state and can be deserialized to load the game in the future
+     * @param  gc the game controller to be serialized
+     * @param filePath the path to the file, in which the JSON will be saved
+     */
+
     public static void serializeAndSave(GameController gc, String filePath) throws IOException {
-
-
-
-
-
         Gson gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .setPrettyPrinting()
                 .registerTypeAdapterFactory(runtimeTypeAdapterFactory)
                 .create();
 
-
-
-
-        /*
-        for(int x = 0; x < width; x++){
-            for(int y = 0; y < height; y++){
-                jsonString.append(gson.toJson(gc.board.getSpace(x, y)));
-            }
-        }
-         */
         String jso = gson.toJson(gc);
 
         BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
@@ -56,6 +57,17 @@ public class SaveLoadController {
 
     }
 
+
+
+
+    /**
+     * Deserialize a JSON formatted file to a GameController object
+     * <p>
+     * This method deseralized a JSON-formatted savefile to a game controller object.
+     * The game controller object is returned and can be used for initializing a game from a previous game state.
+     * @param filePath the path to the JSON-formatted savefile
+     * @return a GameController object which contains the board and the game state.
+     */
     public static GameController deserializeAndLoad(String filePath){
 
 
@@ -72,10 +84,9 @@ public class SaveLoadController {
             String everything = sb.toString();
             br.close();
 
-            GameController fromJson = gson.fromJson(everything, GameController.class);
-            return fromJson;
+            return gson.fromJson(everything, GameController.class);
         }catch (IOException ioe){
-            System.out.println("Couldnt load file.. ");
+            System.out.println("Couldn't load file.. ");
         }
         return null;
 

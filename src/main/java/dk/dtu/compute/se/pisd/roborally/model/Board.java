@@ -124,6 +124,16 @@ public class Board extends Subject {
     }
 
 
+
+    /**
+     * Creates a new board from previous save game
+     * <p>
+     * Creates a new board from a deserialized saved game board.
+     * @param width the width of the board in blocks
+     * @param height the height of the board in blocks
+     * @param savedBoard board, deserialized from save file
+     * @param PLAYER_COLORS the colors which are used to represent the players
+     */
     public Board(int width, int height, Board savedBoard, List<String> PLAYER_COLORS) {
         this.boardName = savedBoard.boardName;
         this.width = savedBoard.width;
@@ -429,15 +439,32 @@ public class Board extends Subject {
     }
 
 
+    /**
+     * Adds a checkpoint to the game board.
+     * <p>
+     * Adds a checkpoint to the game board, which makes it a required checkpoint to obtain to be able to finishing the game.
+     * @param checkpoint The checkpoint field to be added
+     */
     public void addCheckpoint(CheckpointField checkpoint){
         checkpoints.add(checkpoint);
     }
 
-
+    /**
+     * Get list of checkpoints
+     * <p>
+     * Returns a list of checkpoints that a player must obtain to finish the game
+     * @return an array list of the required checkpoints
+     */
     public ArrayList<CheckpointField> getCheckpoints(){
         return this.checkpoints;
     }
 
+    /**
+     * Get list of players
+     * <p>
+     * Returns a list of players in the current game
+     * @return a list of the players in the game
+     */
     public List<Player> getPlayers() {
         return players;
     }

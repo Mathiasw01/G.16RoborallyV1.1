@@ -420,6 +420,13 @@ public class GameController {
         } else System.out.println("OUT OF BOUNDS");
     }
 
+    /**
+     * Makes a player interact with a movementField
+     * <p>
+     * This method makes the player interact with a movement field
+     * @param  player  the player which will interact with the field
+     * @paramt fieldObject the object which the player will interact with
+     */
     private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
@@ -431,7 +438,7 @@ public class GameController {
             case NORTH -> {y--;}
             case SOUTH -> {y++;}
         }
-        System.out.println(x+ " " +y);
+        //System.out.println(x+ " " +y);
         boolean backupflag = false;
         if(board.getSpace(x,y) != null) {
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection());
