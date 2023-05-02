@@ -333,6 +333,8 @@ public class GameController {
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
             if (step >= 0 && step < Player.NO_REGISTERS) {
+                originalHeading = null;
+
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
                 if (card != null) {
                     Command command = card.command;
@@ -364,7 +366,6 @@ public class GameController {
             // this should not happen
             assert false;
         }
-        originalHeading = null;
     }
 
     /**
