@@ -46,7 +46,8 @@ public enum Command {
     POWERUP("Power Up"),
     MOVE_BACK("Back Up"),
     AGAIN("Repeat last card"),
-    CHOOSETURN("Turn left or right", RIGHT, LEFT)
+    CHOOSETURN("Turn left or right", RIGHT, LEFT),
+    SPAM("Spam")
     ;
 
     @Expose
