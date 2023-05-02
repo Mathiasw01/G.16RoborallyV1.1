@@ -139,7 +139,7 @@ public class Board extends Subject {
 
         int currentp = 0;
         for (int i = 0; i < savedBoard.getPlayersNumber(); i++) {
-            Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1));
+            Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1), i+1);
             player.setHeading(savedBoard.getPlayer(i).getHeading());
             this.addPlayer(player);
             if(Objects.equals(savedBoard.getPlayers().get(i).getName(), savedBoard.getCurrentPlayer().getName())){

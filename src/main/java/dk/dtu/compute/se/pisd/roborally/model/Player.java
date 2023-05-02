@@ -65,15 +65,17 @@ public class Player extends Subject {
 
     @Expose
     private int energyCubes = 0;
+    private int playerNum;
 
 
 
-    public Player(@NotNull Board board, String color, @NotNull String name) {
+    public Player(@NotNull Board board, String color, @NotNull String name, int playerNum) {
         this.board = board;
         this.name = name;
         this.color = color;
 
         this.space = null;
+        this.playerNum = playerNum;
 
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
@@ -99,6 +101,8 @@ public class Player extends Subject {
             }
         }
     }
+
+
 
     public String getColor() {
         return color;
@@ -158,6 +162,9 @@ public class Player extends Subject {
 
     public CommandCardField getCardField(int i) {
         return cards[i];
+    }
+    public int getPlayerNum(){
+        return playerNum;
     }
 
 }
