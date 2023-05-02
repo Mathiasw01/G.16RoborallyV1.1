@@ -35,14 +35,35 @@ public class CheckpointField extends FieldObject{
         return true;
     }
 
+    /**
+     * Gets a list of the players who has obtained the checkpoint
+     * <p>
+     * Returns an array list of the players who have obtained this checkpoint
+     * @return Arraylist of the players who have obtained the
+     */
     public ArrayList<Player> getPlayersObtained(){
         return this.playersObtained;
     }
 
+    /**
+     * Returns whether a player has the checkpoint
+     * <p>
+     * Returns true/false depending on if the player has obtained the checkpoint
+     * @param player the player which for the condition will be checked
+     * @return True if Player has checkpoint
+     */
     public boolean playerHasCheckpoint(Player player){
         return playersObtained.contains(player);
     }
 
+
+    /**
+     * Get checkpoint number
+     * <p>
+     * Returns the number of the checkpoint
+     * The number is also the index of the order in which the checkpoints need to be obtained
+     * @return The number of the checkpoint
+     */
     public int getCheckpointNumber(){
         return this.checkpointNumber;
     }

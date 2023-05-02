@@ -173,8 +173,13 @@ public class GameController {
                 }
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
+                    /*
                     field.setCard(generateRandomCommandCard());
                     field.setVisible(true);
+                     */
+                    field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
+                    field.setVisible(true);
+
                 }
             }
         }
@@ -186,6 +191,30 @@ public class GameController {
         int random = (int) (Math.random() * commands.length);
         return new CommandCard(commands[random]);
     }
+
+    public CommandCard drawCard(List<CommandCard> deck, Player currentPLayer) {
+        if (currentPLayer.getProgrammingDeck().isEmpty()) {
+            shuffleDeck(currentPLayer.getProgrammingDeck(),currentPLayer.getDiscardpile());
+        }
+        CommandCard topCard = currentPLayer.getProgrammingDeck().get(0);
+        currentPLayer.getProgrammingDeck().remove(0);
+        discardCard(currentPLayer,topCard);
+        if (topCard==null){
+            drawCard(currentPLayer.getProgrammingDeck(),currentPLayer);
+        }
+        return topCard;
+    }
+
+    public void discardCard(Player player, CommandCard card) {
+        player.getDiscardpile().add(card);
+    }
+
+    public void shuffleDeck(List<CommandCard> deck, List<CommandCard> discardPile) {
+        deck.addAll(discardPile);
+        discardPile.clear();
+        Collections.shuffle(deck);
+    }
+
 
     /**
      * Finish programming phase and start activation phase
@@ -284,7 +313,6 @@ public class GameController {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
                     multiThreadExecute(step);
-
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -438,9 +466,25 @@ public class GameController {
         if(board.getSpace(x,y) != null) {
             boolean backupflag = false;
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, null, false);
-        } else System.out.println("OUT OF BOUNDS");
+        } else {
+
+            System.out.println("OUT OF BOUNDS");
+        }
     }
 
+    private void reboot(Player player){
+        player.getDiscardpile().add(new CommandCard(Command.SPAM));
+        player.getDiscardpile().add(new CommandCard(Command.SPAM));
+
+    }
+
+    /**
+     * Makes a player interact with a movementField
+     * <p>
+     * This method makes the player interact with a movement field
+     * @param  player  the player which will interact with the field
+     * @paramt fieldObject the object which the player will interact with
+     */
     private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
@@ -452,7 +496,7 @@ public class GameController {
             case NORTH -> {y--;}
             case SOUTH -> {y++;}
         }
-        System.out.println(x+ " " +y);
+        //System.out.println(x+ " " +y);
         boolean backupflag = false;
         if(board.getSpace(x,y) != null) {
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection(), true);

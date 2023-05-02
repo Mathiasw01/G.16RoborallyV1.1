@@ -46,7 +46,8 @@ public enum Command {
     POWERUP("Power Up"),
     MOVE_BACK("Back Up"),
     AGAIN("Repeat last card"),
-    CHOOSETURN("Turn left or right", RIGHT, LEFT)
+    CHOOSETURN("Turn left or right", RIGHT, LEFT),
+    SPAM("Spam")
     ;
 
     @Expose
@@ -59,10 +60,23 @@ public enum Command {
         this.options = Collections.unmodifiableList(Arrays.asList(options));
     }
 
+
+    /**
+     * Returns whether the command requires user interaction
+     * <p>
+     * Returns if the command requires the user to select between different commands upon execution
+     * @return Whether the command is interactive
+     */
     public boolean isInteractive() {
         return !options.isEmpty();
     }
 
+    /**
+     * Returns command options
+     * <p>
+     * Returns the options the user can choose between upon the execution of the command
+     * @return List of options (commands)
+     */
     public List<Command> getOptions() {
         return options;
     }
