@@ -129,8 +129,7 @@ public class GameController {
                     } else {
                         return;
                     }
-                }
-                else {
+                } else {
                     switch (getOriginalHeading()){
                         case EAST -> {x++;}
                         case WEST -> {x--;}
@@ -157,36 +156,75 @@ public class GameController {
         }
     }
 
-    public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player){
-        if (space == null){
+    public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player) {
+        if (space == null) {
             reboot(player);
             return false;
         }
         player = space.getPlayer();
         int x = space.x;
         int y = space.y;
-        if (!backupflag){
-            switch (heading){
-                case EAST -> {x++;}
-                case WEST -> {x--;}
-                case NORTH -> {y--;}
-                case SOUTH -> {y++;}
+
+        if (!backupflag) {
+            switch (heading) {
+                case EAST -> {
+                    x++;
+                }
+                case WEST -> {
+                    x--;
+                }
+                case NORTH -> {
+                    y--;
+                }
+                case SOUTH -> {
+                    y++;
+                }
             }
         } else {
-            switch (heading){
-                case EAST -> {x--;}
-                case WEST -> {x++;}
-                case NORTH -> {y++;}
-                case SOUTH -> {y--;}
+                switch (getOriginalHeading()) {
+                    case EAST -> {
+                        x++;
+                    }
+                    case WEST -> {
+                        x--;
+                    }
+                    case NORTH -> {
+                        y--;
+                    }
+                    case SOUTH -> {
+                        y++;
+                    }
+                }
+            }
+
+
+
+            Space nextSpace = board.getSpace(x, y);
+            if (space.getPlayer() == null) {
+                Wall wall = (Wall) space.findObjectOfType(Wall.class);
+                Wall nextWall = (Wall) nextSpace.findObjectOfType(Wall.class);
+                if (wall != null){
+                    if (!backupflag) {
+                        if (wall.getDir().next().next() == heading) {
+                            return false;
+                        }
+                    } else if (wall.getDir() == heading){
+                        return false;
+                    }
+                } if (nextWall != null){
+                    if (backupflag) {
+                        if (nextWall.getDir().next().next() == heading) {
+                            return false;
+                        }
+                    } else if (nextWall.getDir() == heading){
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return canPush(nextSpace, heading, backupflag, player);
             }
         }
-        Space nextSpace = board.getSpace(x, y);
-        if (space.getPlayer() == null) {
-            return true;
-        } else {
-            return canPush(nextSpace,heading, backupflag,player);
-        }
-    }
 
     /**
      * Start programming phase
