@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static dk.dtu.compute.se.pisd.roborally.model.Heading.EAST;
+import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
 
 /**
  * A player
@@ -65,11 +66,13 @@ public class Player extends Subject {
 
     @Expose
     private int energyCubes = 0;
+    private int playerNum;
 
     private List<CommandCard> programmingDeck;
 
     private List<CommandCard> discardpile =new ArrayList<>();
 
+    public Player(@NotNull Board board, String color, @NotNull String name,int playerNum, List<CommandCard> programmingDeck) {
     private boolean rebooting=false;
 
     public Player(@NotNull Board board, String color, @NotNull String name, List<CommandCard> programmingDeck) {
@@ -78,6 +81,7 @@ public class Player extends Subject {
         this.color = color;
         this.programmingDeck=programmingDeck;
         this.space = null;
+        this.playerNum = playerNum;
 
 
         program = new CommandCardField[NO_REGISTERS];
@@ -176,6 +180,9 @@ public class Player extends Subject {
 
     public CommandCardField getCardField(int i) {
         return cards[i];
+    }
+    public int getPlayerNum(){
+        return playerNum;
     }
 
 }

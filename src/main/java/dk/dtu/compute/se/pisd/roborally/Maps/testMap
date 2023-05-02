@@ -1,10 +1,10 @@
 P;1;1
-P;0;3
-P;1;4
-P;1;5
-P;0;6
-P;1;8
-BlueCon;2;1;SOUTH
+P;2;1
+P;3;1
+P;4;1
+P;5;1
+P;6;1
+Wall;7;1;EAST
 BlueCon;2;2;SOUTH
 BlueCon;2;3;SOUTH
 BlueCon;2;4;SOUTH
@@ -12,7 +12,6 @@ BlueCon;2;5;SOUTH
 BlueCon;2;6;SOUTH
 BlueCon;2;7;SOUTH
 BlueCon;2;8;SOUTH
-BlueCon;2;9;SOUTH
 BlueCon;4;4;SOUTH
 Wall;3;3;SOUTH
 #;Checkpoints

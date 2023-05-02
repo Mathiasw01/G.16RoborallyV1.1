@@ -44,6 +44,17 @@ public class GameController {
 
     @Expose
     final public Board board;
+    private Heading originalHeading = null;
+
+    public Heading getOriginalHeading() {
+        return originalHeading;
+    }
+
+    public void setOriginalHeading(Heading originalHeading) {
+        this.originalHeading = originalHeading;
+    }
+
+
 
 
     public GameController(@NotNull Board board) {
@@ -55,22 +66,30 @@ public class GameController {
      * <p>
      * Moves current player to the parsed space if the space is empty
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading) {
+    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         board.setCounter(board.getCounter() + 1);
         Wall wall = (Wall) space.findObjectOfType(Wall.class);
         Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
 
+        if (originalHeading == null) {
+            if (conPush){
+                setOriginalHeading(conveyorHeading);
+            } else {
+                setOriginalHeading(player.getHeading());
+            }
+        }
+
         if (wall != null ){
-           if (backupflag & wall.getDir() == player.getHeading().next().next()) {
+            if (backupflag & wall.getDir() == getOriginalHeading().next().next()) {
                 System.out.println("wall");
                 return;
             }
         }
 
         if (currentSpaceWall != null){
-            if (!backupflag & currentSpaceWall.getDir() == player.getHeading()){
+            if (!backupflag & currentSpaceWall.getDir() == getOriginalHeading()){
                 return;
-            } else if (backupflag & currentSpaceWall.getDir() == player.getHeading().next().next()) {
+            } else if (backupflag & currentSpaceWall.getDir() == getOriginalHeading().next().next()) {
                 return;
             }
         }
@@ -83,54 +102,89 @@ public class GameController {
             int x = space.x;
             int y = space.y;
 
-                if (backupflag) {
-                    switch (player.getHeading()){
-                        case EAST -> {x--;}
-                        case WEST -> {x++;}
-                        case NORTH -> {y++;}
-                        case SOUTH -> {y--;}
-                    }
-                } else if (conveyorHeading == null){
-                    if (player2CurrenSpaceWall != null) {
-                        if (player.getHeading() != player2CurrenSpaceWall.getDir()) {
-                            switch (player.getHeading()) {
-                                case EAST -> {
-                                    x++;
-                                }
-                                case WEST -> {
-                                    x--;
-                                }
-                                case NORTH -> {
-                                    y--;
-                                }
-                                case SOUTH -> {
-                                    y++;
-                                }
+            if (backupflag) {
+                switch (getOriginalHeading()){
+                    case EAST -> {x--;}
+                    case WEST -> {x++;}
+                    case NORTH -> {y++;}
+                    case SOUTH -> {y--;}
+                }
+            } else if (conveyorHeading == null){
+                if (player2CurrenSpaceWall != null) {
+                    if (getOriginalHeading() != player2CurrenSpaceWall.getDir()) {
+                        switch (getOriginalHeading()) {
+                            case EAST -> {
+                                x++;
                             }
-                        } else {
-                            return;
+                            case WEST -> {
+                                x--;
+                            }
+                            case NORTH -> {
+                                y--;
+                            }
+                            case SOUTH -> {
+                                y++;
+                            }
                         }
-                    }else {
-                        switch (player.getHeading()){
-                            case EAST -> {x++;}
-                            case WEST -> {x--;}
-                            case NORTH -> {y--;}
-                            case SOUTH -> {y++;}
-                        }
+                    } else {
+                        return;
                     }
-                } else {
-                    switch (conveyorHeading){
+                }
+                else {
+                    switch (getOriginalHeading()){
                         case EAST -> {x++;}
                         case WEST -> {x--;}
                         case NORTH -> {y--;}
                         case SOUTH -> {y++;}
                     }
-                } if (board.getSpace(x,y) != null) {
-                    player2.setSpace(board.getSpace(x, y));
+                }
+
+            } else {
+                switch (conveyorHeading){
+                    case EAST -> {x++;}
+                    case WEST -> {x--;}
+                    case NORTH -> {y--;}
+                    case SOUTH -> {y++;}
+                }
+            } if (board.getSpace(x,y) != null) {
+
+                if (canPush(board.getSpace(x,y),conPush?conveyorHeading:originalHeading,backupflag)) {
+                    moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player2, conveyorHeading, conPush);
+                    //player2.setSpace(board.getSpace(x, y));
                     player.setSpace(space);
                 }
             }
         }
+    }
+
+    public boolean canPush(Space space, Heading heading,  boolean backupflag){
+        if (space == null){
+            return false;
+        }
+        int x = space.x;
+        int y = space.y;
+        if (!backupflag){
+            switch (heading){
+                case EAST -> {x++;}
+                case WEST -> {x--;}
+                case NORTH -> {y--;}
+                case SOUTH -> {y++;}
+            }
+        } else {
+            switch (heading){
+                case EAST -> {x--;}
+                case WEST -> {x++;}
+                case NORTH -> {y++;}
+                case SOUTH -> {y--;}
+            }
+        }
+        Space nextSpace = board.getSpace(x, y);
+        if (space.getPlayer() == null) {
+            return true;
+        } else {
+            return canPush(nextSpace,heading, backupflag);
+        }
+    }
 
     /**
      * Start programming phase
@@ -157,8 +211,9 @@ public class GameController {
                     field.setCard(generateRandomCommandCard());
                     field.setVisible(true);
                      */
-                    field.setCard(drawCard(player));
+                    field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
                     field.setVisible(true);
+
                 }
             }
         }
@@ -171,14 +226,16 @@ public class GameController {
         return new CommandCard(commands[random]);
     }
 
-    public CommandCard drawCard(Player currentPLayer) {
+    public CommandCard drawCard(List<CommandCard> deck, Player currentPLayer) {
         if (currentPLayer.getProgrammingDeck().isEmpty()) {
             shuffleDeck(currentPLayer.getProgrammingDeck(),currentPLayer.getDiscardpile());
         }
         CommandCard topCard = currentPLayer.getProgrammingDeck().get(0);
         currentPLayer.getProgrammingDeck().remove(0);
-            discardCard(currentPLayer, topCard);
-
+        discardCard(currentPLayer,topCard);
+        if (topCard==null){
+            drawCard(currentPLayer.getProgrammingDeck(),currentPLayer);
+        }
         return topCard;
     }
 
@@ -283,9 +340,7 @@ public class GameController {
                         board.setPhase(Phase.PLAYER_INTERACTION);
                         return;
                     }
-                    if(!currentPlayer.getRebooting()) {
-                        executeCommand(currentPlayer, command);
-                    }
+                    executeCommand(currentPlayer, command);
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
                 if (nextPlayerNumber < board.getPlayersNumber()) {
@@ -298,9 +353,6 @@ public class GameController {
                         board.setStep(step);
                         board.setCurrentPlayer(board.getPlayer(0));
                     } else {
-                        for (Player player: players) {
-                            player.setRebooting(false);
-                        }
                         startProgrammingPhase();
                     }
                 }
@@ -312,6 +364,7 @@ public class GameController {
             // this should not happen
             assert false;
         }
+        originalHeading = null;
     }
 
     /**
@@ -356,8 +409,6 @@ public class GameController {
                     this.again(player);
                     break;
                 case CHOOSETURN:
-                    break;
-                case SPAM:
                     break;
                 default:
                     // DO NOTHING (for now)
@@ -448,9 +499,9 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = false;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, null);
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, null, false);
         } else {
-            reboot(player);
+
             System.out.println("OUT OF BOUNDS");
         }
     }
@@ -458,9 +509,16 @@ public class GameController {
     private void reboot(Player player){
         player.getDiscardpile().add(new CommandCard(Command.SPAM));
         player.getDiscardpile().add(new CommandCard(Command.SPAM));
-        player.setRebooting(true);
+
     }
 
+    /**
+     * Makes a player interact with a movementField
+     * <p>
+     * This method makes the player interact with a movement field
+     * @param  player  the player which will interact with the field
+     * @paramt fieldObject the object which the player will interact with
+     */
     private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
@@ -472,15 +530,11 @@ public class GameController {
             case NORTH -> {y--;}
             case SOUTH -> {y++;}
         }
-        System.out.println(x+ " " +y);
+        //System.out.println(x+ " " +y);
         boolean backupflag = false;
         if(board.getSpace(x,y) != null) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection());
-        } else{
-            reboot(player);
-            System.out.println("OUT OF BOUNDS");
-        }
-
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection(), true);
+        } else System.out.println("OUT OF BOUNDS");
     }
 
     /**
@@ -558,11 +612,8 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = true;
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player, null);
-        } else {
-            reboot(player);
-            System.out.println("OUT OF BOUNDS");
-        }
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player, null, false);
+        } else System.out.println("OUT OF BOUNDS");
     }
 
     /**
