@@ -74,7 +74,7 @@ public class Player extends Subject {
 
     private boolean rebooting=false;
 
-    public Player(@NotNull Board board, String color, @NotNull String name,int playerNum, List<CommandCard> programmingDeck) {
+    public Player(@NotNull Board board, String color, @NotNull String name, int playerNum, List<CommandCard> programmingDeck) {
         this.board = board;
         this.name = name;
         this.color = color;
