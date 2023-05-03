@@ -71,6 +71,9 @@ public class GameController {
         Wall wall = (Wall) space.findObjectOfType(Wall.class);
         Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
 
+        /**
+         * Stops current player from moving if there is a wall in the way
+         */
         if (originalHeading == null) {
             if (conPush){
                 setOriginalHeading(conveyorHeading);
@@ -79,13 +82,9 @@ public class GameController {
             }
         }
 
-        if (wall != null ){
-            if (backupflag & wall.getDir() == getOriginalHeading().next().next()) {
-                System.out.println("wall");
-                return;
-            }
-        }
-
+        /**
+         * Stops current player from moving if there is a wall in the way
+         */
         if (currentSpaceWall != null){
             if (!backupflag & currentSpaceWall.getDir() == getOriginalHeading()){
                 return;
@@ -93,7 +92,19 @@ public class GameController {
                 return;
             }
         }
+        if (wall != null){
+            if ((!backupflag & wall.getDir().next().next() == getOriginalHeading())){
+                return;
+            } else if ((backupflag & wall.getDir().next().next() == getOriginalHeading().next().next())) {
+                return;
+            }
+        }
 
+        /**
+         * Pushes other players if they occupy the space the current player is moving through
+         *
+         * Stops if there is a wall in the way
+         */
         if (space.getPlayer() == null) {
             player.setSpace(space);
         } else {
