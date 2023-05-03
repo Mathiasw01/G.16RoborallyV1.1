@@ -103,48 +103,28 @@ public class GameController {
             int y = space.y;
 
             if (backupflag) {
-                switch (getOriginalHeading()){
-                    case EAST -> {x--;}
-                    case WEST -> {x++;}
-                    case NORTH -> {y++;}
-                    case SOUTH -> {y--;}
-                }
+                int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,0,0,backupflag);
+                x = newCoordinates[0];
+                y = newCoordinates[1];
             } else if (conveyorHeading == null){
                 if (player2CurrenSpaceWall != null) {
                     if (getOriginalHeading() != player2CurrenSpaceWall.getDir()) {
-                        switch (getOriginalHeading()) {
-                            case EAST -> {
-                                x++;
-                            }
-                            case WEST -> {
-                                x--;
-                            }
-                            case NORTH -> {
-                                y--;
-                            }
-                            case SOUTH -> {
-                                y++;
-                            }
-                        }
+                        int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,0,0,backupflag);
+                        x = newCoordinates[0];
+                        y = newCoordinates[1];
                     } else {
                         return;
                     }
                 } else {
-                    switch (getOriginalHeading()){
-                        case EAST -> {x++;}
-                        case WEST -> {x--;}
-                        case NORTH -> {y--;}
-                        case SOUTH -> {y++;}
-                    }
+                    int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,0,0,backupflag);
+                    x = newCoordinates[0];
+                    y = newCoordinates[1];
                 }
 
             } else {
-                switch (conveyorHeading){
-                    case EAST -> {x++;}
-                    case WEST -> {x--;}
-                    case NORTH -> {y--;}
-                    case SOUTH -> {y++;}
-                }
+                int[] newCoordinates = getNewCoordinates(conveyorHeading,x,y,0,0,backupflag);
+                x = newCoordinates[0];
+                y = newCoordinates[1];
             } if (board.getSpace(x,y) != null) {
 
                 if (canPush(board.getSpace(x,y),conPush?conveyorHeading:originalHeading,backupflag, player)) {
@@ -154,6 +134,25 @@ public class GameController {
                 }
             }
         }
+    }
+
+    public static int[] getNewCoordinates(Heading heading, int x, int y, int prvx, int prvy, boolean backupflag) {
+        if (backupflag){
+            switch (heading) {
+                case EAST -> {x--;prvx++;}
+                case WEST -> {x++;prvx--;}
+                case NORTH -> {y++;prvy--;}
+                case SOUTH -> {y--;prvy++;}
+            }
+        } else {
+            switch (heading) {
+                case EAST -> {x++;prvx--;}
+                case WEST -> {x--;prvx++;}
+                case NORTH -> {y--;prvy++;}
+                case SOUTH -> {y++;prvy--;}
+            }
+        }
+        return new int[] { x, y, prvx, prvy};
     }
 
     public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player) {
@@ -167,47 +166,13 @@ public class GameController {
         int prvx = space.x;
         int prvy = space.y;
 
-        if (!backupflag) {
-            switch (heading) {
-                case EAST -> {
-                    x++;
-                    prvx--;
-                }
-                case WEST -> {
-                    x--;
-                    prvx++;
-                }
-                case NORTH -> {
-                    y--;
-                    prvy++;
-                }
-                case SOUTH -> {
-                    y++;
-                    prvy--;
-                }
-            }
-        } else {
-                switch (heading) {
-                    case EAST -> {
-                        x--;
-                        prvx++;
-                    }
-                    case WEST -> {
-                        x++;
-                        prvx--;
-                    }
-                    case NORTH -> {
-                        y++;
-                        prvy--;
-                    }
-                    case SOUTH -> {
-                        y--;
-                        prvy++;
-                    }
-                }
-            }
+        int[] newCoordinates = getNewCoordinates(heading,x,y,prvx,prvy,backupflag);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
+        prvx = newCoordinates[2];
+        prvy = newCoordinates[3];
 
-            Space nextSpace = board.getSpace(x, y);
+        Space nextSpace = board.getSpace(x, y);
         Space prvSpace = board.getSpace(prvx,prvy);
             if (space.getPlayer() == null) {
                 Wall wall = (Wall) space.findObjectOfType(Wall.class);
