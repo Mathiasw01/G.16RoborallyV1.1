@@ -114,26 +114,26 @@ public class GameController {
             int y = space.y;
 
             if (backupflag) {
-                int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,0,0,backupflag);
+                int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,backupflag);
                 x = newCoordinates[0];
                 y = newCoordinates[1];
             } else if (conveyorHeading == null){
                 if (player2CurrenSpaceWall != null) {
                     if (getOriginalHeading() != player2CurrenSpaceWall.getDir()) {
-                        int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,0,0,backupflag);
+                        int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,backupflag);
                         x = newCoordinates[0];
                         y = newCoordinates[1];
                     } else {
                         return;
                     }
                 } else {
-                    int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,0,0,backupflag);
+                    int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,backupflag);
                     x = newCoordinates[0];
                     y = newCoordinates[1];
                 }
 
             } else {
-                int[] newCoordinates = getNewCoordinates(conveyorHeading,x,y,0,0,backupflag);
+                int[] newCoordinates = getNewCoordinates(conveyorHeading,x,y,backupflag);
                 x = newCoordinates[0];
                 y = newCoordinates[1];
             } if (board.getSpace(x,y) != null) {
@@ -147,7 +147,19 @@ public class GameController {
         }
     }
 
-    public static int[] getNewCoordinates(Heading heading, int x, int y, int prvx, int prvy, boolean backupflag) {
+    /**
+     *
+     * @param heading The players heading or the conveyor belts heading
+     * @param x x coordinate for the space
+     * @param y y coordinate for the space
+     * @param backupflag A boolean for whether the player is backing up or moving forward
+     * @return Returns coordinates for the space in front of the player and behind them
+     * This function is used to get the coordinates for the space behind and in front of the player.
+     * These values are determined by the heading.
+     */
+    public static int[] getNewCoordinates(Heading heading, int x, int y, boolean backupflag) {
+        int prvx = x;
+        int prvy = y;
         if (backupflag){
             switch (heading) {
                 case EAST -> {x--;prvx++;}
@@ -174,10 +186,10 @@ public class GameController {
         player = space.getPlayer();
         int x = space.x;
         int y = space.y;
-        int prvx = space.x;
-        int prvy = space.y;
+        int prvx;
+        int prvy;
 
-        int[] newCoordinates = getNewCoordinates(heading,x,y,prvx,prvy,backupflag);
+        int[] newCoordinates = getNewCoordinates(heading,x,y,backupflag);
         x = newCoordinates[0];
         y = newCoordinates[1];
         prvx = newCoordinates[2];
