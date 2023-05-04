@@ -278,6 +278,7 @@ public class GameController {
     }
 
     public void discardCard(Player player, CommandCard card) {
+        player.getProgrammingDeck().remove(card);
         player.getDiscardpile().add(card);
     }
 
@@ -287,6 +288,18 @@ public class GameController {
         Collections.shuffle(deck);
     }
 
+    public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
+
+
+        Iterator<CommandCard> discardIterator = discardPile.iterator();
+        while (discardIterator.hasNext()) {
+            CommandCard card = discardIterator.next();
+            if (card.command == command) {
+                discardIterator.remove();
+
+            }
+        }
+    }
 
     /**
      * Finish programming phase and start activation phase
@@ -393,6 +406,7 @@ public class GameController {
                         board.setStep(step);
                         board.setCurrentPlayer(board.getPlayer(0));
                     } else {
+
                         startProgrammingPhase();
                     }
                 }
@@ -448,6 +462,9 @@ public class GameController {
                     this.again(player);
                     break;
                 case CHOOSETURN:
+                    break;
+                case SPAM:
+                    removeOneCardWithCommand(player.getDiscardpile(),Command.SPAM);
                     break;
                 default:
                     // DO NOTHING (for now)
@@ -539,6 +556,7 @@ public class GameController {
         } else {
 
             System.out.println("OUT OF BOUNDS");
+            reboot(player);
         }
     }
 
@@ -566,7 +584,11 @@ public class GameController {
         //System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection(), true);
-        } else System.out.println("OUT OF BOUNDS");
+        } else {
+            reboot(player);
+            System.out.println("OUT OF BOUNDS");
+        }
+
     }
 
     /**
@@ -642,7 +664,10 @@ public class GameController {
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player, null, false);
-        } else System.out.println("OUT OF BOUNDS");
+        } else{
+            reboot(player);
+            System.out.println("OUT OF BOUNDS");
+        }
     }
 
     /**
