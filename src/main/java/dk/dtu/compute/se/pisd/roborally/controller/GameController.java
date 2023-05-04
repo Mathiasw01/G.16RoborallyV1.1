@@ -411,6 +411,9 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
+                    for (Player player: players) {
+                        player.setRebooting(false);
+                    }
                     multiThreadExecute(step);
                     step++;
                     if (step < Player.NO_REGISTERS) {
