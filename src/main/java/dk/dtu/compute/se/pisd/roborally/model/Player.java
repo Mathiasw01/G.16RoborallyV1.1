@@ -28,8 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-import static dk.dtu.compute.se.pisd.roborally.model.Heading.EAST;
-import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
+import static dk.dtu.compute.se.pisd.roborally.model.Heading.*;
 
 /**
  * A player
@@ -37,7 +36,7 @@ import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
  * A player has a name and a color, and a space.
  * The player also has a direction which is represented by a @Heading .
  * A player has a number of command cards in his hand which is represented by the @cards variable.
- * The current programmed program also consists of command cards, but as the @program variable.
+ * The current  program also consists of command cards, but as the @program variable.
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
@@ -66,11 +65,11 @@ public class Player extends Subject {
 
     @Expose
     private int energyCubes = 0;
-    private int playerNum;
+    private final int playerNum;
 
-    private List<CommandCard> programmingDeck;
+    private final List<CommandCard> programmingDeck;
 
-    private List<CommandCard> discardpile =new ArrayList<>();
+    private final List<CommandCard> discardPile =new ArrayList<>();
 
     private boolean rebooting=false;
 
@@ -148,8 +147,8 @@ public class Player extends Subject {
     public List<CommandCard> getProgrammingDeck() {
         return programmingDeck;
     }
-    public List<CommandCard> getDiscardpile() {
-        return discardpile;
+    public List<CommandCard> getDiscardPile() {
+        return discardPile;
     }
 
     public Heading getHeading() {

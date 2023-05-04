@@ -107,6 +107,7 @@ public class SpaceView extends StackPane implements ViewObserver {
         CheckpointField checkpoint = (CheckpointField) space.findObjectOfType(CheckpointField.class);
         StartField startField = (StartField) space.findObjectOfType(StartField.class);
         Laser laserField = (Laser) space.findObjectOfType(Laser.class);
+        RebootField rebootField = (RebootField) space.findObjectOfType(RebootField.class);
         //Gears
         if (gear != null){
             Rectangle gearGfx = new Rectangle();
@@ -122,8 +123,14 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.getChildren().add(gearGfx);
         }
 
-
-
+        //Reboot
+        if (rebootField !=null){
+            Rectangle rebootGFX = new Rectangle();
+            rebootGFX.setHeight(SPACE_HEIGHT);
+            rebootGFX.setWidth(SPACE_WIDTH);
+            rebootGFX.setFill(Color.GREEN);
+            this.getChildren().add(rebootGFX);
+        }
 
         //Checkpoints
         if(checkpoint != null){

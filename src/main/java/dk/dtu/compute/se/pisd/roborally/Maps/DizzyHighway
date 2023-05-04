@@ -4,6 +4,9 @@ P;1;4
 P;1;5
 P;0;6
 P;1;8
+#;Reboot
+#;
+Reboot;7;4;SOUTH
 #;Walls
 #;
 Wall;1;2;NORTH
