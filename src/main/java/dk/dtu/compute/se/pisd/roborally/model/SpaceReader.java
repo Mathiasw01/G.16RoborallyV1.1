@@ -64,6 +64,9 @@ public class SpaceReader {
                     case "Gear":
                         space.addObjects(new Gear(Direction.valueOf(result[3])));
                         break;
+                    case "Reboot":
+                        space.addObjects(new RebootField(Heading.valueOf(result[3])));
+                        break;
                     default:
                         System.out.println("Unkown object in " + fileName);
                         System.out.println("On line " +lineNum);

@@ -258,6 +258,11 @@ public class GameController {
     }
 
     // XXX: V2
+
+    /**
+     * Was used in an earlier version.
+     * @returns a random commandcard
+     */
     private CommandCard generateRandomCommandCard() {
         Command[] commands = Command.values();
         int random = (int) (Math.random() * commands.length);
@@ -269,11 +274,7 @@ public class GameController {
             shuffleDeck(currentPLayer.getProgrammingDeck(),currentPLayer.getDiscardpile());
         }
         CommandCard topCard = currentPLayer.getProgrammingDeck().get(0);
-        currentPLayer.getProgrammingDeck().remove(0);
         discardCard(currentPLayer,topCard);
-        if (topCard==null){
-            drawCard(currentPLayer.getProgrammingDeck(),currentPLayer);
-        }
         return topCard;
     }
 
@@ -288,15 +289,17 @@ public class GameController {
         Collections.shuffle(deck);
     }
 
+    /**
+     * Removes a single command card with a specific command, it's used when a damage card is played.
+     * @param discardPile
+     * @param command The command that you want to be removed
+     */
     public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
-
-
         Iterator<CommandCard> discardIterator = discardPile.iterator();
         while (discardIterator.hasNext()) {
             CommandCard card = discardIterator.next();
             if (card.command == command) {
                 discardIterator.remove();
-
             }
         }
     }
@@ -393,7 +396,9 @@ public class GameController {
                         board.setPhase(Phase.PLAYER_INTERACTION);
                         return;
                     }
-                    executeCommand(currentPlayer, command);
+                    if (!currentPlayer.getRebooting()) {
+                        executeCommand(currentPlayer, command);
+                    }
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
                 if (nextPlayerNumber < board.getPlayersNumber()) {
@@ -560,7 +565,13 @@ public class GameController {
         }
     }
 
+    /**
+     * Reboots a player, adding two spam cards to their discard pile
+     * @param player, the player that needs to be rebooted
+     */
     private void reboot(Player player){
+
+        player.setRebooting(true);
         player.getDiscardpile().add(new CommandCard(Command.SPAM));
         player.getDiscardpile().add(new CommandCard(Command.SPAM));
     }
