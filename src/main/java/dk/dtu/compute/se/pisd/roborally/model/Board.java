@@ -78,6 +78,7 @@ public class Board extends Subject {
 
     private List<CommandCard> discardPile = new ArrayList<>();
 
+
     /**
      * Creates a new board
      * <p>
@@ -96,7 +97,6 @@ public class Board extends Subject {
             for(int y = 0; y < height; y++) {
                 Space space = new Space(this, x, y);
                 spaces[x][y] = space;
-
             }
         }
         spaceReader = new SpaceReader(map);

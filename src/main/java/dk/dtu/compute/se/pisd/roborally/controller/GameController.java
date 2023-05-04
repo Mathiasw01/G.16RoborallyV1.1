@@ -595,11 +595,15 @@ public class GameController {
     }
 
     /**
-     * Reboots a player, adding two spam cards to their discard pile
+     * Reboots a player, adding two spam cards to their discard pile. Not finished yet, it doesn't set the
+     * players position to a reboot field.
      * @param player, the player that needs to be rebooted
      */
     private void reboot(Player player){
+        /*
+        player.setSpace(board.getSpace(7,4));
 
+         */
         player.setRebooting(true);
         player.getDiscardpile().add(new CommandCard(Command.SPAM));
         player.getDiscardpile().add(new CommandCard(Command.SPAM));

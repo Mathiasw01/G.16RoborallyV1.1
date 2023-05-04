@@ -67,7 +67,7 @@ public class SpaceReader {
                         space.addObjects(new Laser(Heading.valueOf(result[3]), result[4]));
                         break;
                     case "Reboot":
-                        space.addObjects(new RebootField(Heading.valueOf(result[3])));
+                        space.addObjects(new RebootField(Heading.valueOf(result[3]),Integer.parseInt(result[1]),Integer.parseInt(result[2])));
                         break;
                     default:
                         System.out.println("Unkown object in " + fileName);
