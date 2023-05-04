@@ -187,7 +187,9 @@ public class Board extends Subject {
                         spaces[s.x][s.y].addObjects(new Gear(gear.getDirection()));
                     }   else if (fo instanceof  Wall wall) {
                         spaces[s.x][s.y].addObjects(new Wall(wall.getDir()));
-                }
+                } else if (fo instanceof  Laser laser) {
+                        spaces[s.x][s.y].addObjects(new Laser(laser.getDirection(), laser.getType()));
+                    }
 
 
                 }

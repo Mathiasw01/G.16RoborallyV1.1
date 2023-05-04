@@ -104,7 +104,6 @@ public class SpaceView extends StackPane implements ViewObserver {
 
     private void drawFieldObjects(){
         ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
-
         Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
         Gear gear = (Gear) space.findObjectOfType(Gear.class);
         CheckpointField checkpoint = (CheckpointField) space.findObjectOfType(CheckpointField.class);
@@ -162,7 +161,21 @@ public class SpaceView extends StackPane implements ViewObserver {
             Rectangle rebootGFX = new Rectangle();
             rebootGFX.setHeight(SPACE_HEIGHT);
             rebootGFX.setWidth(SPACE_WIDTH);
-            rebootGFX.setFill(Color.GREEN);
+            switch (rebootField.getDirection()) {
+                case SOUTH:
+                    rebootGFX.setRotate(180);
+                    break;
+                case NORTH:
+                    break;
+                case EAST:
+                    rebootGFX.setRotate(90);
+                    break;
+                case WEST:
+                    rebootGFX.setRotate(-90);
+                    break;
+            }
+            Image reboot = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/Reboot.jpg");
+            rebootGFX.setFill(new ImagePattern(reboot,0,0,1,1,true));
             this.getChildren().add(rebootGFX);
         }
 

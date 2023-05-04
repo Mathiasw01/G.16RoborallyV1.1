@@ -24,7 +24,8 @@ public class SaveLoadController {
             .registerSubtype(StartField.class, "startField")
             .registerSubtype(CheckpointField.class, "checkPoint")
             .registerSubtype(Gear.class, "gear")
-            .registerSubtype(Conveyor.class, "conveyor");
+            .registerSubtype(Conveyor.class, "conveyor")
+            .registerSubtype(Laser.class, "laser");
 
     private static final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()

@@ -13,7 +13,7 @@ public class ProgrammingDeckInit {
 
 
     public List<CommandCard> init(){
-            deck=new ArrayList<>();
+        deck=new ArrayList<>();
         deck.add(new CommandCard(Command.AGAIN));
         deck.add(new CommandCard(Command.UTURN));
         deck.add(new CommandCard(Command.LEFT));
