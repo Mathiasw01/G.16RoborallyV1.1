@@ -525,8 +525,17 @@ public class GameController {
                 }
             }
             if (object instanceof Laser laser){
-                player.getDiscardpile().add(new CommandCard(Command.SPAM));
-                System.out.println("Player "+ player.getPlayerNum()+" got hit");
+                Space space = player.getSpace();
+                if (laser.getType().equals("SHOT")) {
+                    if (testIfLaserIsBlocked(space.x, space.y, laser)){
+                        System.out.println("Space is blocked");
+                    } else {
+                        player.getDiscardpile().add(new CommandCard(Command.SPAM));
+                        System.out.println("Player " + player.getPlayerNum() + " got hit");
+                    }
+                } else {
+                    System.out.println("Player " + player.getPlayerNum() + " got hit");
+                }
             }
             if (object instanceof PushPanel pp){
                 for (int i=0;i<pp.getActivation().length;i++){
@@ -535,6 +544,23 @@ public class GameController {
                     }
                 }
             }
+        }
+    }
+
+    public boolean testIfLaserIsBlocked(int x, int y, Laser laser){
+        int[] cords = getNewCoordinates(laser.getDirection(),x,y,true);
+        Space space = board.getSpace(cords[0],cords[1]);
+        for (FieldObject object : space.getObjects()){
+            if (object instanceof Laser l){
+                if (l.getType().equals("EMIT")){
+                    return false;
+                }
+            }
+        }
+        if (space.getPlayer() == null) {
+            return testIfLaserIsBlocked(cords[0], cords[1],laser);
+        } else {
+            return true;
         }
     }
 

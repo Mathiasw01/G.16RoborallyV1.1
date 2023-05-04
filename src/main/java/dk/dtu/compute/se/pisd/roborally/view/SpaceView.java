@@ -208,7 +208,7 @@ public class SpaceView extends StackPane implements ViewObserver {
                 Image laser = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/SingleLaser.png");
                 laserShot.setFill(new ImagePattern(laser, 0, 0, 1, 1, true));
             } else {
-                Image laser = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/RealEMITER.png");
+                Image laser = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/Emiter.png");
                 laserShot.setFill(new ImagePattern(laser, 0, 0, 1, 1, true));
             }
             this.getChildren().add(laserShot);
