@@ -529,12 +529,9 @@ public class GameController {
         int x=currentSpace.x;
         int y=currentSpace.y;
         // Husk outofbounds fejl
-        switch (player.getHeading()){
-            case EAST -> {x++;}
-            case WEST -> {x--;}
-            case NORTH -> {y--;}
-            case SOUTH -> {y++;}
-        }
+        int[] newCoordinates = getNewCoordinates(player.getHeading(),x,y,false);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             boolean backupflag = false;
@@ -561,15 +558,12 @@ public class GameController {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
         int y=currentSpace.y;
-        // Husk outofbounds fejl
-        switch (((MovementField)fieldObject).getDirection()){
-            case EAST -> {x++;}
-            case WEST -> {x--;}
-            case NORTH -> {y--;}
-            case SOUTH -> {y++;}
-        }
-        //System.out.println(x+ " " +y);
         boolean backupflag = false;
+        // Husk outofbounds fejl
+        int[] newCoordinates = getNewCoordinates(((MovementField)fieldObject).getDirection(),x,y,backupflag);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
+        //System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection(), true);
         } else System.out.println("OUT OF BOUNDS");
@@ -640,16 +634,13 @@ public class GameController {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
         int y=currentSpace.y;
+        boolean backupflag = true;
         // Husk outofbounds fejl
-        switch (player.getHeading()){
-            case EAST -> {x--;}
-            case WEST -> {x++;}
-            case NORTH -> {y++;}
-            case SOUTH -> {y--;}
-        }
+        int[] newCoordinates = getNewCoordinates(player.getHeading(),x,y,backupflag);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
         System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
-            boolean backupflag = true;
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player, null, false);
         } else System.out.println("OUT OF BOUNDS");
     }

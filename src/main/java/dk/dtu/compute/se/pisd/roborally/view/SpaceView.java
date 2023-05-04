@@ -70,7 +70,7 @@ public class SpaceView extends StackPane implements ViewObserver {
         ImageView imageView = new ImageView(image);
 
         // Set the background of the SpaceView to the ImageView object
-        this.setBackground(new Background(new BackgroundImage(imageView.getImage(), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(SPACE_WIDTH, SPACE_HEIGHT, false, false, false, false))));
+        this.setBackground(new Background(new BackgroundImage(imageView.getImage(), BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT, new BackgroundSize(SPACE_WIDTH+1, SPACE_HEIGHT+1, false, false, false, false))));
 
         // This space view should listen to changes of the space
         space.attach(this);
@@ -81,23 +81,23 @@ public class SpaceView extends StackPane implements ViewObserver {
 
         Player player = space.getPlayer();
         if (player != null) {
-            Circle arrow = new Circle();
-            arrow.setRadius(23);
+            Circle playerGFX = new Circle();
+            playerGFX.setRadius(SPACE_WIDTH/2);
             Image robots = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/robo_figur.png");
             try {
                 if (player.getPlayerNum() <= 4) {
-                    arrow.setFill(new ImagePattern(robots, -player.getPlayerNum() + 1, 0, 4, 2, true));
+                    playerGFX.setFill(new ImagePattern(robots, -player.getPlayerNum() + 1, 0, 4, 2, true));
                 } else {
-                    arrow.setFill(new ImagePattern(robots, -player.getPlayerNum() + 1, 1, 4, 2, true));
+                    playerGFX.setFill(new ImagePattern(robots, -player.getPlayerNum() + 1, 1, 4, 2, true));
                 }
             }
             catch (Exception e) {
-                arrow.setFill(Color.MEDIUMPURPLE);
+                playerGFX.setFill(Color.MEDIUMPURPLE);
             }
 
-            arrow.setRotate((90*player.getHeading().ordinal())%360);
+            playerGFX.setRotate((90*player.getHeading().ordinal())%360);
 
-            this.getChildren().add(arrow);
+            this.getChildren().add(playerGFX);
         }
 
     }
@@ -112,8 +112,8 @@ public class SpaceView extends StackPane implements ViewObserver {
         //Gears
         if (gear != null){
             Rectangle gearGfx = new Rectangle();
-            gearGfx.setWidth(45);
-            gearGfx.setHeight(45);
+            gearGfx.setWidth(SPACE_WIDTH);
+            gearGfx.setHeight(SPACE_HEIGHT);
             if (gear.getDirection() == Direction.RIGHT){
                 Image greenGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rightGear.png");
                 gearGfx.setFill(new ImagePattern(greenGear,0,0,1,1,true));
@@ -128,7 +128,7 @@ public class SpaceView extends StackPane implements ViewObserver {
         if( wall != null) {
             Image wallSprite = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/wall.png");
             Rectangle wallGfx = new Rectangle();
-            wallGfx.setWidth(40);
+            wallGfx.setWidth(SPACE_WIDTH);
             wallGfx.setHeight(10);
             wallGfx.setFill(new ImagePattern(wallSprite,0,0,1,1,true));
 
@@ -156,7 +156,7 @@ public class SpaceView extends StackPane implements ViewObserver {
         //Checkpoints
         if(checkpoint != null){
             Circle cpGfx = new Circle();
-            cpGfx.setRadius(23);
+            cpGfx.setRadius(SPACE_WIDTH/2);
             Image checkpoints = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/checkpoints.jpg");
             if (checkpoint.getCheckpointNumber() <= 4) {
                 cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 0, 4, 2, true));
@@ -169,7 +169,7 @@ public class SpaceView extends StackPane implements ViewObserver {
         //Start
         if(startField != null){
             Circle startGfx = new Circle();
-            startGfx.setRadius(20);
+            startGfx.setRadius(SPACE_WIDTH/2.5);
             Image startfield = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/startfield.png");
             startGfx.setFill(new ImagePattern(startfield,0,0,1,1,true));
             this.getChildren().add(startGfx);
@@ -178,8 +178,8 @@ public class SpaceView extends StackPane implements ViewObserver {
         //Conveyor
         if (conveyor != null) {
             Rectangle conveyorGfx = new Rectangle();
-            conveyorGfx.setWidth(40);
-            conveyorGfx.setHeight(45);
+            conveyorGfx.setWidth(SPACE_WIDTH-5);
+            conveyorGfx.setHeight(SPACE_HEIGHT);
             switch (conveyor.getDirection()) {
                 case SOUTH:
                     conveyorGfx.setRotate(180);
