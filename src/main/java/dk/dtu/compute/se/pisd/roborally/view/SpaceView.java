@@ -35,6 +35,8 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 /**
  * ...
  *
@@ -101,7 +103,7 @@ public class SpaceView extends StackPane implements ViewObserver {
 
 
     private void drawFieldObjects(){
-        Wall wall = (Wall)space.findObjectOfType(Wall.class);
+        ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
         Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
         Gear gear = (Gear) space.findObjectOfType(Gear.class);
         CheckpointField checkpoint = (CheckpointField) space.findObjectOfType(CheckpointField.class);
@@ -123,12 +125,57 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.getChildren().add(gearGfx);
         }
 
+        //Walls
+        if (walls.isEmpty()) {
+        } else {
+            for (FieldObject fobject : walls) {
+                Wall object = (Wall) fobject;
+                Image wallSprite = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/wall.png");
+                Rectangle wallGfx = new Rectangle();
+                wallGfx.setWidth(SPACE_WIDTH);
+                wallGfx.setHeight(10);
+                wallGfx.setFill(new ImagePattern(wallSprite, 0, 0, 1, 1, true));
+                switch (object.getDir()) {
+                    case SOUTH:
+                        wallGfx.setTranslateY(20);
+                        break;
+                    case NORTH:
+                        wallGfx.setTranslateY(-20);
+                        break;
+                    case EAST:
+                        wallGfx.setRotate(90);
+                        wallGfx.setTranslateX(20);
+                        break;
+                    case WEST:
+                        wallGfx.setRotate(90);
+                        wallGfx.setTranslateX(-20);
+                        break;
+                }
+
+                this.getChildren().add(wallGfx);
+            }
+        }
+
         //Reboot
         if (rebootField !=null){
             Rectangle rebootGFX = new Rectangle();
             rebootGFX.setHeight(SPACE_HEIGHT);
             rebootGFX.setWidth(SPACE_WIDTH);
-            rebootGFX.setFill(Color.GREEN);
+            switch (rebootField.getDirection()) {
+                case SOUTH:
+                    rebootGFX.setRotate(180);
+                    break;
+                case NORTH:
+                    break;
+                case EAST:
+                    rebootGFX.setRotate(90);
+                    break;
+                case WEST:
+                    rebootGFX.setRotate(-90);
+                    break;
+            }
+            Image reboot = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/Reboot.jpg");
+            rebootGFX.setFill(new ImagePattern(reboot,0,0,1,1,true));
             this.getChildren().add(rebootGFX);
         }
 
@@ -221,7 +268,7 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.getChildren().add(laserShot);
         }
         //Walls
-        if( wall != null) {
+        /*if( wall != null) {
             Image wallSprite = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/wall.png");
             Rectangle wallGfx = new Rectangle();
             wallGfx.setWidth(SPACE_WIDTH);
@@ -246,7 +293,7 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
 
             this.getChildren().add(wallGfx);
-        }
+        }*/
         /*
         PushPanel pushPanel = (PushPanel) space.findObjectOfType(PushPanel.class);
         if (pushPanel != null) {

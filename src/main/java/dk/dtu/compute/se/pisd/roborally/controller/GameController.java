@@ -23,7 +23,6 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
@@ -71,7 +70,7 @@ public class GameController {
         Wall wall = (Wall) space.findObjectOfType(Wall.class);
         Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
 
-        /**
+        /*
          * Stops current player from moving if there is a wall in the way
          */
         if (originalHeading == null) {
@@ -82,69 +81,74 @@ public class GameController {
             }
         }
 
-        /**
-         * Stops current player from moving if there is a wall in the way
+        /*
+         *Stops current player from moving if there is a wall in the way
          */
-        if (currentSpaceWall != null){
-            if (!backupflag & currentSpaceWall.getDir() == getOriginalHeading()){
-                return;
-            } else if (backupflag & currentSpaceWall.getDir() == getOriginalHeading().next().next()) {
-                return;
-            }
-        }
-        if (wall != null){
-            if ((!backupflag & wall.getDir().next().next() == getOriginalHeading())){
-                return;
-            } else if ((backupflag & wall.getDir().next().next() == getOriginalHeading().next().next())) {
-                return;
-            }
-        }
-
-        /**
-         * Pushes other players if they occupy the space the current player is moving through
-         *
-         * Stops if there is a wall in the way
+        if(isWallBlocking(currentSpaceWall, backupflag, true))
+            return;
+        if(isWallBlocking(wall, backupflag, false))
+            return;
+        /*
+        If the target space is free, move and return!
          */
         if (space.getPlayer() == null) {
             player.setSpace(space);
-        } else {
-            Player player2 = space.getPlayer();
-            Wall player2CurrenSpaceWall = (Wall) player2.getSpace().findObjectOfType(Wall.class);
-            int x = space.x;
-            int y = space.y;
+            return;
+        }
 
-            if (backupflag) {
-                int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,backupflag);
-                x = newCoordinates[0];
-                y = newCoordinates[1];
-            } else if (conveyorHeading == null){
-                if (player2CurrenSpaceWall != null) {
-                    if (getOriginalHeading() != player2CurrenSpaceWall.getDir()) {
-                        int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,backupflag);
-                        x = newCoordinates[0];
-                        y = newCoordinates[1];
-                    } else {
-                        return;
-                    }
-                } else {
-                    int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y,backupflag);
-                    x = newCoordinates[0];
-                    y = newCoordinates[1];
-                }
+        /*
+         * Target space is occupied, push if possible!
+         * Pushes other players if they occupy the space the current player is moving through
+         * Stops if there is a wall in the way
+         */
+        handleRobotCollision(space, backupflag, player, conveyorHeading, conPush);
 
-            } else {
-                int[] newCoordinates = getNewCoordinates(conveyorHeading,x,y,backupflag);
-                x = newCoordinates[0];
-                y = newCoordinates[1];
-            } if (board.getSpace(x,y) != null) {
+    }
 
-                if (canPush(board.getSpace(x,y),conPush?conveyorHeading:originalHeading,backupflag, player)) {
-                    moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player2, conveyorHeading, conPush);
-                    //player2.setSpace(board.getSpace(x, y));
-                    player.setSpace(space);
+    private void handleRobotCollision(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
+        Player player2 = space.getPlayer();
+        Wall player2CurrentSpaceWall = (Wall) player2.getSpace().findObjectOfType(Wall.class);
+        int x = space.x;
+        int y = space.y;
+        int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y, backupflag);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
+
+        if (!backupflag && conveyorHeading == null){
+            if (player2CurrentSpaceWall != null) {
+                if (getOriginalHeading() == player2CurrentSpaceWall.getDir()) {
+                    return;
                 }
             }
+        } else {
+            newCoordinates = getNewCoordinates(conveyorHeading,x,y, backupflag);
+            x = newCoordinates[0];
+            y = newCoordinates[1];
         }
+
+        if(board.getSpace(x,y) == null){
+            return;
+        }
+
+        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player)) {
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player2, conveyorHeading, conPush);
+            player.setSpace(space);
+        }
+    }
+
+
+    private boolean isWallBlocking(Wall wall, boolean backupflag, boolean ownField){
+        if(wall == null){
+            return false;
+        }
+        boolean reversed = backupflag;
+        if(!ownField){
+            reversed = !reversed;
+        }
+        return wall.getDir() == (reversed ? getOriginalHeading().next().next() :
+                getOriginalHeading());
+
+
     }
 
     /**
@@ -271,7 +275,7 @@ public class GameController {
 
     public CommandCard drawCard(List<CommandCard> deck, Player currentPLayer) {
         if (currentPLayer.getProgrammingDeck().isEmpty()) {
-            shuffleDeck(currentPLayer.getProgrammingDeck(),currentPLayer.getDiscardpile());
+            shuffleDeck(currentPLayer.getProgrammingDeck(), currentPLayer.getDiscardPile());
         }
         CommandCard topCard = currentPLayer.getProgrammingDeck().get(0);
         discardCard(currentPLayer,topCard);
@@ -280,7 +284,7 @@ public class GameController {
 
     public void discardCard(Player player, CommandCard card) {
         player.getProgrammingDeck().remove(card);
-        player.getDiscardpile().add(card);
+        player.getDiscardPile().add(card);
     }
 
     public void shuffleDeck(List<CommandCard> deck, List<CommandCard> discardPile) {
@@ -295,11 +299,14 @@ public class GameController {
      * @param command The command that you want to be removed
      */
     public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
+
+
         Iterator<CommandCard> discardIterator = discardPile.iterator();
         while (discardIterator.hasNext()) {
             CommandCard card = discardIterator.next();
             if (card.command == command) {
                 discardIterator.remove();
+
             }
         }
     }
@@ -468,7 +475,7 @@ public class GameController {
                 case CHOOSETURN:
                     break;
                 case SPAM:
-                    removeOneCardWithCommand(player.getDiscardpile(),Command.SPAM);
+                    removeOneCardWithCommand(player.getDiscardPile(),Command.SPAM);
                     break;
                 default:
                     // DO NOTHING (for now)
@@ -491,6 +498,9 @@ public class GameController {
     }
 
     private void executeBoardElement(Player player, int step) {
+        if(player.getSpace() == null){
+            return;
+        }
         for (FieldObject object : player.getSpace().getObjects()) {
             if (object instanceof Conveyor) {
                 if (((Conveyor) object).getColor().equals(Color.BLUE)) {
@@ -535,7 +545,7 @@ public class GameController {
                     if (testIfLaserIsBlocked(space.x, space.y, laser)){
                         System.out.println("Space is blocked");
                     } else {
-                        player.getDiscardpile().add(new CommandCard(Command.SPAM));
+                        player.getDiscardPile().add(new CommandCard(Command.SPAM));
                         System.out.println("Player " + player.getPlayerNum() + " got hit");
                     }
                 } else {
@@ -557,7 +567,7 @@ public class GameController {
         Space space = board.getSpace(cords[0],cords[1]);
         for (FieldObject object : space.getObjects()){
             if (object instanceof Laser l){
-                if (l.getType().equals("EMIT")){
+                if (l.getType().equals("EMIT") && space.getPlayer() == null){
                     return false;
                 }
             }
@@ -605,8 +615,8 @@ public class GameController {
 
          */
         player.setRebooting(true);
-        player.getDiscardpile().add(new CommandCard(Command.SPAM));
-        player.getDiscardpile().add(new CommandCard(Command.SPAM));
+        player.getDiscardPile().add(new CommandCard(Command.SPAM));
+        player.getDiscardPile().add(new CommandCard(Command.SPAM));
     }
 
     /**
@@ -614,7 +624,7 @@ public class GameController {
      * <p>
      * This method makes the player interact with a movement field
      * @param  player  the player which will interact with the field
-     * @paramt fieldObject the object which the player will interact with
+     * @param fieldObject the object which the player will interact with
      */
     private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
         Space currentSpace=player.getSpace();
