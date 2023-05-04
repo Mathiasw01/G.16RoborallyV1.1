@@ -8,7 +8,8 @@ Laser;5;1;WEST;EMIT
 Laser;4;1;WEST;SHOT
 Laser;3;1;WEST;SHOT
 Laser;2;1;WEST;SHOT
-Wall;8;1;WEST
+Wall;7;1;EAST
+Wall;7;1;SOUTH
 BlueCon;2;2;SOUTH
 BlueCon;2;3;SOUTH
 BlueCon;2;4;SOUTH

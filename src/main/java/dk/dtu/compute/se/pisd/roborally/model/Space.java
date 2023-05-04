@@ -94,7 +94,13 @@ public class Space extends Subject {
         }
         return null;
     }
-
+    public ArrayList<FieldObject> findObjectsOfType(Class<?> objectType){
+        ArrayList<FieldObject> numObjects = new ArrayList<>();
+        for (FieldObject object: objects) {
+            if (object.getClass() == objectType) numObjects.add(object);
+        }
+        return numObjects;
+    }
     void playerChanged() {
         // This is a minor hack; since some views that are registered with the space
         // also need to update when some player attributes change, the player can
