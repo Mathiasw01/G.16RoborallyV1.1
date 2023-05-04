@@ -21,6 +21,8 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,15 +37,49 @@ public enum Command {
 
     // This is a very simplistic way of realizing different commands.
 
-    FORWARD("Fwd"),
+    FORWARD("Move 1"),
     RIGHT("Turn Right"),
     LEFT("Turn Left"),
-    FAST_FORWARD("Fast Fwd");
+    FAST_FORWARD("Move 2"),
+    MOVE_THREE("Move 3"),
+    UTURN("Do a u-turn"),
+    POWERUP("Power Up"),
+    MOVE_BACK("Back Up"),
+    AGAIN("Repeat last card"),
+    CHOOSETURN("Turn left or right", RIGHT, LEFT),
+    SPAM("Spam")
+    ;
 
+    @Expose
     final public String displayName;
 
-    Command(String displayName) {
+    final private List<Command> options;
+
+    Command(String displayName, Command... options) {
         this.displayName = displayName;
+        this.options = Collections.unmodifiableList(Arrays.asList(options));
     }
+
+
+    /**
+     * Returns whether the command requires user interaction
+     * <p>
+     * Returns if the command requires the user to select between different commands upon execution
+     * @return Whether the command is interactive
+     */
+    public boolean isInteractive() {
+        return !options.isEmpty();
+    }
+
+    /**
+     * Returns command options
+     * <p>
+     * Returns the options the user can choose between upon the execution of the command
+     * @return List of options (commands)
+     */
+    public List<Command> getOptions() {
+        return options;
+    }
+
 
 }

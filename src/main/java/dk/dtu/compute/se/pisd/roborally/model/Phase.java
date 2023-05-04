@@ -22,7 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
 /**
- * ...
+ * Represents a phase in the game
  *
  * @author Ekkart Kindler, ekki@dtu.dk
  *

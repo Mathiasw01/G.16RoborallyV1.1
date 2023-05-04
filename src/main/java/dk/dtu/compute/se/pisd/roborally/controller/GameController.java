@@ -21,8 +21,17 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * ...
@@ -32,30 +41,199 @@ import org.jetbrains.annotations.NotNull;
  */
 public class GameController {
 
+    @Expose
     final public Board board;
+    private Heading originalHeading = null;
+
+    public Heading getOriginalHeading() {
+        return originalHeading;
+    }
+
+    public void setOriginalHeading(Heading originalHeading) {
+        this.originalHeading = originalHeading;
+    }
+
+
+
 
     public GameController(@NotNull Board board) {
         this.board = board;
     }
 
     /**
-     * This is just some dummy controller operation to make a simple move to see something
-     * happening on the board. This method should eventually be deleted!
-     *
-     * @param space the space to which the current player should move
+     * Moves current player to space if possible
+     * <p>
+     * Moves current player to the parsed space if the space is empty
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space)  {
-        // TODO Assignment V1: method should be implemented by the students:
-        //   - the current player should be moved to the given space
-        //     (if it is free()
-        //   - and the current player should be set to the player
-        //     following the current player
-        //   - the counter of moves in the game should be increased by one
-        //     if the player is moved
+    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
+        board.setCounter(board.getCounter() + 1);
+        Wall wall = (Wall) space.findObjectOfType(Wall.class);
+        Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
+
+        /*
+         * Stops current player from moving if there is a wall in the way
+         */
+        if (originalHeading == null) {
+            if (conPush){
+                setOriginalHeading(conveyorHeading);
+            } else {
+                setOriginalHeading(player.getHeading());
+            }
+        }
+
+        /*
+         *Stops current player from moving if there is a wall in the way
+         */
+        if(isWallBlocking(currentSpaceWall, backupflag, true))
+            return;
+        if(isWallBlocking(wall, backupflag, false))
+            return;
+        /*
+        If the target space is free, move and return!
+         */
+        if (space.getPlayer() == null) {
+            player.setSpace(space);
+            return;
+        }
+
+        /*
+         * Target space is occupied, push if possible!
+         * Pushes other players if they occupy the space the current player is moving through
+         * Stops if there is a wall in the way
+         */
+        handleRobotCollision(space, backupflag, player, conveyorHeading, conPush);
 
     }
 
-    // XXX: V2
+    private void handleRobotCollision(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
+        Player player2 = space.getPlayer();
+        Wall player2CurrentSpaceWall = (Wall) player2.getSpace().findObjectOfType(Wall.class);
+        int x = space.x;
+        int y = space.y;
+        int[] newCoordinates = getNewCoordinates(getOriginalHeading(),x,y, backupflag);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
+
+        if (!backupflag && conveyorHeading == null){
+            if (player2CurrentSpaceWall != null) {
+                if (getOriginalHeading() == player2CurrentSpaceWall.getDir()) {
+                    return;
+                }
+            }
+        } else {
+            newCoordinates = getNewCoordinates(conveyorHeading,x,y, backupflag);
+            x = newCoordinates[0];
+            y = newCoordinates[1];
+        }
+
+        if(board.getSpace(x,y) == null){
+            return;
+        }
+
+        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player)) {
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player2, conveyorHeading, conPush);
+            player.setSpace(space);
+        }
+    }
+
+
+    private boolean isWallBlocking(Wall wall, boolean backupflag, boolean ownField){
+        if(wall == null){
+            return false;
+        }
+        boolean reversed = backupflag;
+        if(!ownField){
+            reversed = !reversed;
+        }
+        return wall.getDir() == (reversed ? getOriginalHeading().next().next() :
+                getOriginalHeading());
+
+
+    }
+
+    /**
+     *
+     * @param heading The players heading or the conveyor belts heading
+     * @param x x coordinate for the space
+     * @param y y coordinate for the space
+     * @param backupflag A boolean for whether the player is backing up or moving forward
+     * @return Returns coordinates for the space in front of the player and behind them
+     * This function is used to get the coordinates for the space behind and in front of the player.
+     * These values are determined by the heading.
+     */
+    public static int[] getNewCoordinates(Heading heading, int x, int y, boolean backupflag) {
+        int prvx = x;
+        int prvy = y;
+        if (backupflag){
+            switch (heading) {
+                case EAST -> {x--;prvx++;}
+                case WEST -> {x++;prvx--;}
+                case NORTH -> {y++;prvy--;}
+                case SOUTH -> {y--;prvy++;}
+            }
+        } else {
+            switch (heading) {
+                case EAST -> {x++;prvx--;}
+                case WEST -> {x--;prvx++;}
+                case NORTH -> {y--;prvy++;}
+                case SOUTH -> {y++;prvy--;}
+            }
+        }
+        return new int[] { x, y, prvx, prvy};
+    }
+
+    public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player) {
+        if (space == null) {
+            reboot(player);
+            return false;
+        }
+        player = space.getPlayer();
+        int x = space.x;
+        int y = space.y;
+        int prvx;
+        int prvy;
+
+        int[] newCoordinates = getNewCoordinates(heading,x,y,backupflag);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
+        prvx = newCoordinates[2];
+        prvy = newCoordinates[3];
+
+        Space nextSpace = board.getSpace(x, y);
+        Space prvSpace = board.getSpace(prvx,prvy);
+            if (space.getPlayer() == null) {
+                Wall wall = (Wall) space.findObjectOfType(Wall.class);
+                Wall prvWall = (Wall) prvSpace.findObjectOfType(Wall.class);
+                if (wall != null){
+                    if (!backupflag) {
+                        if (wall.getDir().next().next() == heading) {
+                            return false;
+                        }
+                    } else if (wall.getDir() == heading){
+                        return false;
+                    }
+                }
+                if (prvWall != null){
+                    if (backupflag) {
+                        if (prvWall.getDir().next().next() == heading) {
+                            return false;
+                        }
+                    } else if (prvWall.getDir() == heading){
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return canPush(nextSpace, heading, backupflag, player);
+            }
+        }
+
+    /**
+     * Start programming phase
+     * <p>
+     * Sets the current phase to programming phase and sets current player and step index to 0
+     * Removes all the cards in the command card fields and replaces them with new, random command cards
+     */
     public void startProgrammingPhase() {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
@@ -71,21 +249,75 @@ public class GameController {
                 }
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
+                    /*
                     field.setCard(generateRandomCommandCard());
                     field.setVisible(true);
+                     */
+                    field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
+                    field.setVisible(true);
+
                 }
             }
         }
     }
 
     // XXX: V2
+
+    /**
+     * Was used in an earlier version.
+     * @returns a random commandcard
+     */
     private CommandCard generateRandomCommandCard() {
         Command[] commands = Command.values();
         int random = (int) (Math.random() * commands.length);
         return new CommandCard(commands[random]);
     }
 
-    // XXX: V2
+    public CommandCard drawCard(List<CommandCard> deck, Player currentPLayer) {
+        if (currentPLayer.getProgrammingDeck().isEmpty()) {
+            shuffleDeck(currentPLayer.getProgrammingDeck(), currentPLayer.getDiscardPile());
+        }
+        CommandCard topCard = currentPLayer.getProgrammingDeck().get(0);
+        discardCard(currentPLayer,topCard);
+        return topCard;
+    }
+
+    public void discardCard(Player player, CommandCard card) {
+        player.getProgrammingDeck().remove(card);
+        player.getDiscardPile().add(card);
+    }
+
+    public void shuffleDeck(List<CommandCard> deck, List<CommandCard> discardPile) {
+        deck.addAll(discardPile);
+        discardPile.clear();
+        Collections.shuffle(deck);
+    }
+
+    /**
+     * Removes a single command card with a specific command, it's used when a damage card is played.
+     * @param discardPile
+     * @param command The command that you want to be removed
+     */
+    public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
+
+
+        Iterator<CommandCard> discardIterator = discardPile.iterator();
+        while (discardIterator.hasNext()) {
+            CommandCard card = discardIterator.next();
+            if (card.command == command) {
+                discardIterator.remove();
+
+            }
+        }
+    }
+
+    /**
+     * Finish programming phase and start activation phase
+     * <p>
+     * Finished programming phase by locking the progam fields and makes the programmed card invisble except for
+     * the card in register 0. Afterwards changes the game phase to acivation phase and sets the current
+     * player and step to index 0
+     */
     public void finishProgrammingPhase() {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
@@ -116,40 +348,73 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * Disables step mode and executes the programs
+     * <p>
+     * Disables step mode and runs the programs programmed by the player.
+     */
     public void executePrograms() {
         board.setStepMode(false);
         continuePrograms();
     }
 
-    // XXX: V2
+    /**
+     * Executes the next step
+     * <p>
+     * Execute the card in the current step for the current player and doesn't continue execution afterwards.
+     */
     public void executeStep() {
         board.setStepMode(true);
         continuePrograms();
     }
 
-    // XXX: V2
+    /**
+     * Executes the players programs continuously
+     * <p>
+     * This method executes all the programmed cards. It executes the next step and the cards programmed in each step
+     * by the individual players, until the phase is no longer the activation phase or the game is not in step mode.
+     */
     private void continuePrograms() {
         do {
             executeNextStep();
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
     }
 
-    // XXX: V2
+    /**
+     * Execute the programmed cards next step
+     * <p>
+     * This method executes the next card. After executing the card, it sets the turn to the
+     * next player, and if all the players have executed their cards programmed in the current step, it will
+     * increase the step by one. If the step is larger than the number of registers the players have, the
+     * method will change the game's phase to the programing phase.
+     */
     private void executeNextStep() {
+        List<Player> players = board.getPlayers();
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
             int step = board.getStep();
             if (step >= 0 && step < Player.NO_REGISTERS) {
+                originalHeading = null;
+
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
                 if (card != null) {
                     Command command = card.command;
-                    executeCommand(currentPlayer, command);
+                    if (command.isInteractive()){
+                        board.setPhase(Phase.PLAYER_INTERACTION);
+                        return;
+                    }
+                    if (!currentPlayer.getRebooting()) {
+                        executeCommand(currentPlayer, command);
+                    }
                 }
                 int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
+                    for (Player player: players) {
+                        player.setRebooting(false);
+                    }
+                    multiThreadExecute(step);
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -169,7 +434,13 @@ public class GameController {
         }
     }
 
-    // XXX: V2
+    /**
+     * Execute a command on a player
+     * <p>
+     * This method executed the parsed command on the parsed player.
+     * @param  player  The player on which the command should be executed
+     * @param  command The command that should be executed on the player.
+     */
     private void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
             // XXX This is a very simplistic way of dealing with some basic cards and
@@ -187,7 +458,27 @@ public class GameController {
                     this.turnLeft(player);
                     break;
                 case FAST_FORWARD:
-                    this.fastForward(player);
+                    this.fastForward(player, 2);
+                    break;
+                case MOVE_THREE:
+                    this.fastForward(player, 3);
+                    break;
+                case UTURN:
+                    this.uturn(player);
+                    break;
+                case POWERUP:
+                    this.powerup(player);
+                    break;
+                case MOVE_BACK:
+                    this.backup(player);
+                    break;
+                case AGAIN:
+                    this.again(player);
+                    break;
+                case CHOOSETURN:
+                    break;
+                case SPAM:
+                    removeOneCardWithCommand(player.getDiscardPile(),Command.SPAM);
                     break;
                 default:
                     // DO NOTHING (for now)
@@ -195,26 +486,275 @@ public class GameController {
         }
     }
 
-    // TODO Assignment V2
+    public void multiThreadExecute(int step){
+        ExecutorService executor = Executors.newFixedThreadPool(board.getPlayers().size());
+
+        for (Player player : board.getPlayers()) {
+            executor.execute(() -> executeBoardElement(player, step));
+        }
+        executor.shutdown();
+        try {
+            executor.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            System.out.println("Exception: " + e);
+        }
+    }
+
+    private void executeBoardElement(Player player, int step) {
+        if(player.getSpace() == null){
+            return;
+        }
+        for (FieldObject object : player.getSpace().getObjects()) {
+            if (object instanceof Conveyor) {
+                if (((Conveyor) object).getColor().equals(Color.BLUE)) {
+                    moveBoardElement(player, object);
+                    for (FieldObject object2 : player.getSpace().getObjects()) {
+                        moveBoardElement(player, object2);
+                    }
+                } else if (((Conveyor) object).getColor().equals(Color.GREEN)) {
+                    moveBoardElement(player, object);
+                }
+            }
+
+            if(object instanceof CheckpointField cp){
+                if(cp.playerHasCheckpoint(player)){
+                    return;
+                }
+                ArrayList<CheckpointField> cps = board.getCheckpoints();
+                int obtainedCheckpoints = (int)cps.stream().filter(c -> c.playerHasCheckpoint(player)).count();
+
+                if(cp.getCheckpointNumber()-1 == obtainedCheckpoints){
+                    cp.addPlayerIfUnobtained(player);
+
+                    if(obtainedCheckpoints+1 == cps.size()){
+                        //Player won!
+                        System.out.println(player.getName() + " won!");
+                        //ALERT DOESN'T WORK AS IT IS NOT IN JAVA FX THREAD
+                        // FIX FIX FIX
+
+                    }
+                }
+            }
+            if (object instanceof Gear gear){
+                if (gear.getDirection() == Direction.LEFT){
+                    turnLeft(player);
+                } else if (gear.getDirection() == Direction.RIGHT) {
+                    turnRight(player);
+                }
+            }
+            if (object instanceof Laser laser){
+                Space space = player.getSpace();
+                if (laser.getType().equals("SHOT")) {
+                    if (testIfLaserIsBlocked(space.x, space.y, laser)){
+                        System.out.println("Space is blocked");
+                    } else {
+                        player.getDiscardPile().add(new CommandCard(Command.SPAM));
+                        System.out.println("Player " + player.getPlayerNum() + " got hit");
+                    }
+                } else {
+                    System.out.println("Player " + player.getPlayerNum() + " got hit");
+                }
+            }
+            if (object instanceof PushPanel pp){
+                for (int i=0;i<pp.getActivation().length;i++){
+                    if (step==pp.getActivation()[i]){
+                        moveBoardElement(player,pp);
+                    }
+                }
+            }
+        }
+    }
+
+    public boolean testIfLaserIsBlocked(int x, int y, Laser laser){
+        int[] cords = getNewCoordinates(laser.getDirection(),x,y,true);
+        Space space = board.getSpace(cords[0],cords[1]);
+        for (FieldObject object : space.getObjects()){
+            if (object instanceof Laser l){
+                if (l.getType().equals("EMIT") && space.getPlayer() == null){
+                    return false;
+                }
+            }
+        }
+        if (space.getPlayer() == null) {
+            return testIfLaserIsBlocked(cords[0], cords[1],laser);
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Moves the player one spaces forward
+     * <p>
+     * This method moves the player one spaces forward, if the target space is valid.
+     * @param  player  the player which will be moved.
+     */
     public void moveForward(@NotNull Player player) {
+        Space currentSpace=player.getSpace();
+        int x=currentSpace.x;
+        int y=currentSpace.y;
+        // Husk outofbounds fejl
+        int[] newCoordinates = getNewCoordinates(player.getHeading(),x,y,false);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
+        System.out.println(x+ " " +y);
+        if(board.getSpace(x,y) != null) {
+            boolean backupflag = false;
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, null, false);
+        } else {
+
+            System.out.println("OUT OF BOUNDS");
+            reboot(player);
+        }
+    }
+
+    /**
+     * Reboots a player, adding two spam cards to their discard pile. Not finished yet, it doesn't set the
+     * players position to a reboot field.
+     * @param player, the player that needs to be rebooted
+     */
+    private void reboot(Player player){
+        /*
+        player.setSpace(board.getSpace(7,4));
+
+         */
+        player.setRebooting(true);
+        player.getDiscardPile().add(new CommandCard(Command.SPAM));
+        player.getDiscardPile().add(new CommandCard(Command.SPAM));
+    }
+
+    /**
+     * Makes a player interact with a movementField
+     * <p>
+     * This method makes the player interact with a movement field
+     * @param  player  the player which will interact with the field
+     * @param fieldObject the object which the player will interact with
+     */
+    private void moveBoardElement(@NotNull Player player, FieldObject fieldObject) {
+        Space currentSpace=player.getSpace();
+        int x=currentSpace.x;
+        int y=currentSpace.y;
+        boolean backupflag = false;
+        // Husk outofbounds fejl
+        int[] newCoordinates = getNewCoordinates(((MovementField)fieldObject).getDirection(),x,y,backupflag);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
+        //System.out.println(x+ " " +y);
+        if(board.getSpace(x,y) != null) {
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection(), true);
+        } else {
+            reboot(player);
+            System.out.println("OUT OF BOUNDS");
+        }
 
     }
 
-    // TODO Assignment V2
-    public void fastForward(@NotNull Player player) {
-
+    /**
+     * Moves the player two spaces forward
+     * <p>
+     * This method moves the player two spaces forward
+     * @param  player  the player which will be moved.
+     */
+    public void fastForward(@NotNull Player player, int moves) {
+        for (int i = 0; i < moves; i++) {
+            moveForward(player);
+        }
     }
 
-    // TODO Assignment V2
+    /**
+     * Turns the player right.
+     * <p>
+     * This method rotates the 90 degrees right, relative to the players heading.
+     * @param  player  the player which will be rotated.
+     */
     public void turnRight(@NotNull Player player) {
-
+        player.setHeading(player.getHeading().next());
     }
 
-    // TODO Assignment V2
+    /**
+     * Turns the player left.
+     * <p>
+     * This method rotates the 90 degrees left, relative to the players heading.
+     * @param  player  the player which will be rotated.
+     */
     public void turnLeft(@NotNull Player player) {
-
+        player.setHeading(player.getHeading().prev());
     }
 
+
+    /**
+     * Turns the player to the opposition direction.
+     * <p>
+     * This method rotates the player 180 degrees.
+     * @param  player  the player which will be rotated.
+     */
+    public void uturn(@NotNull Player player){
+        player.setHeading(player.getHeading().next());
+        player.setHeading(player.getHeading().next());
+    }
+
+    /**
+     * Adds one energy to the player's energy balance
+     * <p>
+     * This method adds one energy to the player's energy balance
+     * @param  player  the player which energy balance will be increased with one.
+     */
+    public void powerup (@NotNull Player player){
+        player.setEnergy(player.getEnergy()+1);
+    }
+
+    /**
+     * Moves the player one slot back.
+     * <p>
+     * This method executes moves the player one position in the opposite the direction,
+     * that the player is facing. If the destination space is not valid, the player will not move.
+     * @param  player  the player which will move one space back.
+     */
+    public void backup (@NotNull Player player){
+        Space currentSpace=player.getSpace();
+        int x=currentSpace.x;
+        int y=currentSpace.y;
+        boolean backupflag = true;
+        // Husk outofbounds fejl
+        int[] newCoordinates = getNewCoordinates(player.getHeading(),x,y,backupflag);
+        x = newCoordinates[0];
+        y = newCoordinates[1];
+        System.out.println(x+ " " +y);
+        if(board.getSpace(x,y) != null) {
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag ,player, null, false);
+        } else{
+            reboot(player);
+            System.out.println("OUT OF BOUNDS");
+        }
+    }
+
+    /**
+     * Repeats last command card
+     * <p>
+     * This method executes the players last used command card.
+     * If there was no program field before the current field, no card will execute.
+     * @param  player  the player which will repeat and execute the last card
+     */
+    public void again (@NotNull Player player){
+        int step = board.getStep()-1;
+        if (step > -1) {
+            CommandCard card = player.getProgramField(step).getCard();
+            Command command = card.command;
+            executeCommand(player, command);
+        }
+    }
+
+
+    /**
+     * Moves a card from one card field to another
+     * <p>
+     * This method moves a card from a card field to an empty card field
+     * If the source card field is empty or the target card field occupied,
+     * the method will return false, indicating the move operation was invalid.
+     * The method will return true, if the card is moved successfully.
+     * @param  source  the source command card field
+     * @param  target  the target command card field
+     * @return boolean, if the move operation was successful.
+     */
     public boolean moveCards(@NotNull CommandCardField source, @NotNull CommandCardField target) {
         CommandCard sourceCard = source.getCard();
         CommandCard targetCard = target.getCard();
@@ -227,13 +767,40 @@ public class GameController {
         }
     }
 
+
     /**
-     * A method called when no corresponding controller operation is implemented yet. This
-     * should eventually be removed.
+     * Executes a command that is selected by the player and resumes execution afterwards.
+     * <p>
+     * This method always executes the parsed command given by the command parameter.
+     * Afterwards the method continues execution of the rest of the registers by
+     * setting the phase to ACTIVATION_PHASE. The game continues execution with/without
+     * step mode as when the card interaction card was reached.
+     * @param  command  the player-chosen command
      */
-    public void notImplemented() {
-        // XXX just for now to indicate that the actual method is not yet implemented
-        assert false;
+    public void executeCommandOptionAndContinue(Command command){
+        executeCommand(board.getCurrentPlayer(),command);
+        board.setPhase(Phase.ACTIVATION);
+        int step = board.getStep();
+        int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;
+        if (nextPlayerNumber < board.getPlayersNumber()) {
+            board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
+        } else {
+            step++;
+            if (step < Player.NO_REGISTERS) {
+                makeProgramFieldsVisible(step);
+                board.setStep(step);
+                board.setCurrentPlayer(board.getPlayer(0));
+            } else {
+                startProgrammingPhase();
+                return;
+            }
+        }
+        continuePrograms();
     }
+
+
+
+
+
 
 }

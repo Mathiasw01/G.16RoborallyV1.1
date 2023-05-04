@@ -28,7 +28,10 @@ import dk.dtu.compute.se.pisd.roborally.model.Phase;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import dk.dtu.compute.se.pisd.roborally.model.Space;
 import javafx.event.EventHandler;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
@@ -51,7 +54,7 @@ public class BoardView extends VBox implements ViewObserver {
 
     private Label statusLabel;
 
-    private SpaceEventHandler spaceEventHandler;
+    //private SpaceEventHandler spaceEventHandler;
 
     public BoardView(@NotNull GameController gameController) {
         board = gameController.board;
@@ -66,7 +69,7 @@ public class BoardView extends VBox implements ViewObserver {
 
         spaces = new SpaceView[board.width][board.height];
 
-        spaceEventHandler = new SpaceEventHandler(gameController);
+        //spaceEventHandler = new SpaceEventHandler(gameController);
 
         for (int x = 0; x < board.width; x++) {
             for (int y = 0; y < board.height; y++) {
@@ -74,7 +77,7 @@ public class BoardView extends VBox implements ViewObserver {
                 SpaceView spaceView = new SpaceView(space);
                 spaces[x][y] = spaceView;
                 mainBoardPane.add(spaceView, x, y);
-                spaceView.setOnMouseClicked(spaceEventHandler);
+                //spaceView.setOnMouseClicked(spaceEventHandler);
             }
         }
 
@@ -87,11 +90,16 @@ public class BoardView extends VBox implements ViewObserver {
         if (subject == board) {
             Phase phase = board.getPhase();
             statusLabel.setText(board.getStatusMessage());
+
+
         }
     }
 
+
+
     // XXX this handler and its uses should eventually be deleted! This is just to help test the
     //     behaviour of the game by being able to explicitly move the players on the board!
+    /*
     private class SpaceEventHandler implements EventHandler<MouseEvent> {
 
         final public GameController gameController;
@@ -116,5 +124,8 @@ public class BoardView extends VBox implements ViewObserver {
         }
 
     }
+    */
+
+
 
 }

@@ -26,19 +26,24 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 
-import dk.dtu.compute.se.pisd.roborally.model.Board;
-import dk.dtu.compute.se.pisd.roborally.model.Player;
+import dk.dtu.compute.se.pisd.roborally.model.*;
 
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
+import javafx.scene.control.TextInputDialog;
+import javafx.stage.FileChooser;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+
+
 
 /**
  * ...
@@ -54,16 +59,28 @@ public class AppController implements Observer {
     final private RoboRally roboRally;
 
     private GameController gameController;
+    private SpaceReader spaceReader;
+    private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
+
+    private List<CommandCard> discardPile;
 
     public AppController(@NotNull RoboRally roboRally) {
         this.roboRally = roboRally;
     }
 
-    public void newGame() {
+    /**
+     * New game
+     * <p>
+     * Initialises a new game. Asks the user for desired number of players, initialises board and
+     * draws UI elements.
+     * @param map the map that the user chose
+     */
+    public void newGame(String map) {
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
         dialog.setTitle("Player number");
         dialog.setHeaderText("Select number of players");
         Optional<Integer> result = dialog.showAndWait();
+        spaceReader = new SpaceReader(map);
 
         if (result.isPresent()) {
             if (gameController != null) {
@@ -76,14 +93,17 @@ public class AppController implements Observer {
 
             // XXX the board should eventually be created programmatically or loaded from a file
             //     here we just create an empty board with the required number of players.
-            Board board = new Board(8,8);
+            Board board = new Board(13,10, map);
             gameController = new GameController(board);
             int no = result.get();
+
+
             for (int i = 0; i < no; i++) {
-                Player player = new Player(board, PLAYER_COLORS.get(i), "Player " + (i + 1));
+                Player player = new Player(board, PLAYER_COLORS.get(i),"Player " + (i + 1),i+1, programmingDeckInit.init());
                 board.addPlayer(player);
-                player.setSpace(board.getSpace(i % board.width, i));
+                spaceReader.initPlayers(board,player, i);
             }
+
 
             // XXX: V2
             // board.setCurrentPlayer(board.getPlayer(0));
@@ -93,16 +113,76 @@ public class AppController implements Observer {
         }
     }
 
+    /**
+     * Save game
+     * <p>
+     * TODO - implement
+     */
     public void saveGame() {
-        // XXX needs to be implemented eventually
+
+        try {
+            TextInputDialog dialog = new TextInputDialog("savegame_01");
+            dialog.setTitle("Save game");
+            dialog.setHeaderText("Save game");
+            dialog.setContentText("Please enter the name of the save file");
+
+
+            Optional<String> result = dialog.showAndWait();
+            if (!result.isPresent()){
+                return;
+            }
+            SaveLoadController.serializeAndSave(gameController, result.get());
+        } catch (IOException ioe){
+            System.out.println("Couldn't save game as file doesnt exist!!!");
+        }
+
+
     }
 
+    /**
+     * Load game
+     * <p>
+     * TODO - implement
+     */
     public void loadGame() {
+        /*
         // XXX needs to be implemented eventually
         // for now, we just create a new game
         if (gameController == null) {
-            newGame();
+            //newGame();
         }
+
+         */
+        TextInputDialog dialog = new TextInputDialog("savegame_01");
+        dialog.setTitle("Load game");
+        dialog.setHeaderText("Load save");
+        dialog.setContentText("Please enter the name of the save file");
+
+
+        Optional<String> result = dialog.showAndWait();
+        if (!result.isPresent()){
+            return;
+        }
+
+        GameController g = SaveLoadController.deserializeAndLoad(result.get());
+        if(g == null){
+            return;
+        }
+        if (gameController != null) {
+            // The UI should not allow this, but in case this happens anyway.
+            // give the user the option to save the game or abort this operation!
+           stopGame();
+        }
+        Board board = new Board(g.board.width,g.board.height, g.board, PLAYER_COLORS);
+        gameController = new GameController(board);
+
+
+        gameController.startProgrammingPhase();
+
+        roboRally.createBoardView(gameController);
+
+
+
     }
 
     /**
@@ -127,6 +207,12 @@ public class AppController implements Observer {
         return false;
     }
 
+    /**
+     * Exits game
+     * <p>
+     * Asks the player if the player really wants to exit the game. If confirmed,
+     * the program is exited.
+     */
     public void exit() {
         if (gameController != null) {
             Alert alert = new Alert(AlertType.CONFIRMATION);
@@ -146,6 +232,12 @@ public class AppController implements Observer {
         }
     }
 
+    /**
+     * Returns if the games is running or not
+     * <p>
+     * Returns a bool representing if the game is running
+     * @return boolean, game is running
+     */
     public boolean isGameRunning() {
         return gameController != null;
     }

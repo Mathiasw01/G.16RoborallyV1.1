@@ -21,11 +21,19 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import javafx.scene.image.Image;
+
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.Objects;
 
 /**
- * ...
- *
+ * A space on the board.
+ * <p>
+ * A space on the game board.
+ * A space can hold multiple objects and can hold up to one player.
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
@@ -33,16 +41,24 @@ public class Space extends Subject {
 
     public final Board board;
 
+    @Expose
     public final int x;
+    @Expose
     public final int y;
 
+
+    @Expose
     private Player player;
+
+    @Expose
+    private ArrayList<FieldObject> objects;
 
     public Space(Board board, int x, int y) {
         this.board = board;
         this.x = x;
         this.y = y;
         player = null;
+        objects = new ArrayList<>();
     }
 
     public Player getPlayer() {
@@ -65,6 +81,26 @@ public class Space extends Subject {
         }
     }
 
+    public void addObjects(FieldObject object){
+        objects.add(object);
+    }
+
+    public ArrayList<FieldObject> getObjects() {
+        return objects;
+    }
+    public FieldObject findObjectOfType(Class<?> objectType){
+        for (FieldObject object: objects) {
+            if (object.getClass() == objectType) return object;
+        }
+        return null;
+    }
+    public ArrayList<FieldObject> findObjectsOfType(Class<?> objectType){
+        ArrayList<FieldObject> numObjects = new ArrayList<>();
+        for (FieldObject object: objects) {
+            if (object.getClass() == objectType) numObjects.add(object);
+        }
+        return numObjects;
+    }
     void playerChanged() {
         // This is a minor hack; since some views that are registered with the space
         // also need to update when some player attributes change, the player can

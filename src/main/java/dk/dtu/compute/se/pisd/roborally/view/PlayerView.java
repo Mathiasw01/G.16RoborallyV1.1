@@ -25,12 +25,15 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 /**
  * ...
@@ -203,15 +206,15 @@ public class PlayerView extends Tab implements ViewObserver {
                     //      an interactive command card, and the buttons should represent
                     //      the player's choices of the interactive command card. The
                     //      following is just a mockup showing two options
-                    Button optionButton = new Button("Option1");
-                    optionButton.setOnAction( e -> gameController.notImplemented());
-                    optionButton.setDisable(false);
-                    playerInteractionPanel.getChildren().add(optionButton);
-
-                    optionButton = new Button("Option 2");
-                    optionButton.setOnAction( e -> gameController.notImplemented());
-                    optionButton.setDisable(false);
-                    playerInteractionPanel.getChildren().add(optionButton);
+                    int i = gameController.board.getStep();
+                    List<Command> options = player.getProgramField(i).getCard().command.getOptions();
+                    for (Command option: options) {
+                        String text = option.displayName;
+                        Button optionButton = new Button(text);
+                        optionButton.setOnAction( e -> gameController.executeCommandOptionAndContinue(option));
+                        optionButton.setDisable(false);
+                        playerInteractionPanel.getChildren().add(optionButton);
+                    }
                 }
             }
         }

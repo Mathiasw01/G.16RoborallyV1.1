@@ -21,14 +21,22 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import org.jetbrains.annotations.NotNull;
 
-import static dk.dtu.compute.se.pisd.roborally.model.Heading.SOUTH;
+import java.util.ArrayList;
+import java.util.List;
+
+import static dk.dtu.compute.se.pisd.roborally.model.Heading.*;
 
 /**
- * ...
- *
+ * A player
+ *<p>
+ * A player has a name and a color, and a space.
+ * The player also has a direction which is represented by a @Heading .
+ * A player has a number of command cards in his hand which is represented by the @cards variable.
+ * The current  program also consists of command cards, but as the @program variable.
  * @author Ekkart Kindler, ekki@dtu.dk
  *
  */
@@ -39,21 +47,40 @@ public class Player extends Subject {
 
     final public Board board;
 
+    @Expose
     private String name;
+    @Expose
     private String color;
 
-    private Space space;
-    private Heading heading = SOUTH;
 
+    private Space space;
+
+    @Expose
+    private Heading heading = EAST;
+
+    @Expose
     private CommandCardField[] program;
+    @Expose
     private CommandCardField[] cards;
 
-    public Player(@NotNull Board board, String color, @NotNull String name) {
+    @Expose
+    private int energyCubes = 0;
+    private final int playerNum;
+
+    private final List<CommandCard> programmingDeck;
+
+    private final List<CommandCard> discardPile =new ArrayList<>();
+
+    private boolean rebooting=false;
+
+    public Player(@NotNull Board board, String color, @NotNull String name, int playerNum, List<CommandCard> programmingDeck) {
         this.board = board;
         this.name = name;
         this.color = color;
-
+        this.programmingDeck=programmingDeck;
         this.space = null;
+        this.playerNum = playerNum;
+
 
         program = new CommandCardField[NO_REGISTERS];
         for (int i = 0; i < program.length; i++) {
@@ -78,6 +105,13 @@ public class Player extends Subject {
                 space.playerChanged();
             }
         }
+    }
+    public boolean getRebooting() {
+        return rebooting;
+    }
+
+    public void setRebooting(boolean rebooting) {
+        this.rebooting = rebooting;
     }
 
     public String getColor() {
@@ -110,6 +144,12 @@ public class Player extends Subject {
             notifyChange();
         }
     }
+    public List<CommandCard> getProgrammingDeck() {
+        return programmingDeck;
+    }
+    public List<CommandCard> getDiscardPile() {
+        return discardPile;
+    }
 
     public Heading getHeading() {
         return heading;
@@ -125,12 +165,22 @@ public class Player extends Subject {
         }
     }
 
+    public void setEnergy(int cubes){
+        energyCubes = cubes;
+    }
+    public int getEnergy(){
+        return energyCubes;
+    }
+
     public CommandCardField getProgramField(int i) {
         return program[i];
     }
 
     public CommandCardField getCardField(int i) {
         return cards[i];
+    }
+    public int getPlayerNum(){
+        return playerNum;
     }
 
 }
