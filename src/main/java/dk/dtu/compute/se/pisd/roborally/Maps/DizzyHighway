@@ -14,6 +14,19 @@ Wall;6;3;NORTH
 Wall;6;6;WEST
 Wall;9;3;EAST
 Wall;9;6;SOUTH
+#;Lasers
+Wall;6;4;SOUTH
+Laser;6;4;SOUTH;SHOT
+Laser;6;3;SOUTH;EMITER
+Wall;9;5;NORTH
+Laser;9;5;NORTH;SHOT
+Laser;9;6;NORTH;EMITER
+Wall;8;3;WEST
+Laser;8;3;WEST;SHOT
+Laser;9;3;WEST;EMITER
+Wall;7;6;EAST
+Laser;7;6;EAST;SHOT
+Laser;6;6;EAST;EMITER
 #;Checkpoints
 CheckPoint;12;3;1
 #;Conveyor belts

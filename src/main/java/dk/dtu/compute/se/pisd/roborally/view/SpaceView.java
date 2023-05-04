@@ -32,14 +32,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeLineCap;
-import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
-
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 
 /**
  * ...
@@ -49,8 +43,11 @@ import java.io.FileNotFoundException;
  */
 public class SpaceView extends StackPane implements ViewObserver {
 
-    final public static int SPACE_HEIGHT = 45; // 60; // 75;
-    final public static int SPACE_WIDTH = 45;  // 60; // 75;
+    // Update this value to change the size of the spaces
+    // Size should be no smaller than 45
+    final static int spaceSize = 45; // 60; // 75;
+    final public static int SPACE_HEIGHT = spaceSize;
+    final public static int SPACE_WIDTH = spaceSize;
 
     public final Space space;
 
@@ -109,6 +106,7 @@ public class SpaceView extends StackPane implements ViewObserver {
         Gear gear = (Gear) space.findObjectOfType(Gear.class);
         CheckpointField checkpoint = (CheckpointField) space.findObjectOfType(CheckpointField.class);
         StartField startField = (StartField) space.findObjectOfType(StartField.class);
+        Laser laserField = (Laser) space.findObjectOfType(Laser.class);
         //Gears
         if (gear != null){
             Rectangle gearGfx = new Rectangle();
@@ -124,39 +122,13 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.getChildren().add(gearGfx);
         }
 
-        //Walls
-        if( wall != null) {
-            Image wallSprite = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/wall.png");
-            Rectangle wallGfx = new Rectangle();
-            wallGfx.setWidth(SPACE_WIDTH);
-            wallGfx.setHeight(10);
-            wallGfx.setFill(new ImagePattern(wallSprite,0,0,1,1,true));
 
-            switch (wall.getDir()) {
-                case SOUTH:
-                    wallGfx.setTranslateY(20);
-                    break;
-                case NORTH:
-                    wallGfx.setTranslateY(-20);
-                    break;
-                case EAST:
-                    wallGfx.setRotate(90);
-                    wallGfx.setTranslateX(20);
-                    break;
-                case WEST:
-                    wallGfx.setRotate(90);
-                    wallGfx.setTranslateX(-20);
-                    break;
-            }
-
-            this.getChildren().add(wallGfx);
-        }
 
 
         //Checkpoints
         if(checkpoint != null){
             Circle cpGfx = new Circle();
-            cpGfx.setRadius(SPACE_WIDTH/2);
+            cpGfx.setRadius(SPACE_WIDTH*0.5);
             Image checkpoints = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/checkpoints.jpg");
             if (checkpoint.getCheckpointNumber() <= 4) {
                 cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 0, 4, 2, true));
@@ -203,7 +175,71 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.getChildren().add(conveyorGfx);
 
         }
+        if (laserField != null){
+            Rectangle laserShot = new Rectangle();
+            laserShot.setHeight(SPACE_HEIGHT);
+            laserShot.setWidth(SPACE_WIDTH);
+            switch (laserField.getDirection()) {
+                case SOUTH:
+                    laserShot.setRotate(180);
+                    if (laserField.getType().equals("EMITER")){
+                        laserShot.setTranslateY(SPACE_WIDTH*0.15);
+                    }
+                    break;
+                case NORTH:
+                    if (laserField.getType().equals("EMITER")){
+                        laserShot.setTranslateY(-SPACE_WIDTH*0.15);
+                    }
+                    break;
+                case EAST:
+                    laserShot.setRotate(90);
+                    if (laserField.getType().equals("EMITER")){
+                        laserShot.setTranslateX(SPACE_HEIGHT*0.15);
+                    }
+                    break;
+                case WEST:
+                    laserShot.setRotate(-90);
+                    if (laserField.getType().equals("EMITER")){
+                        laserShot.setTranslateX(-SPACE_HEIGHT*0.15);
+                    }
+                    break;
+            }
+            if (laserField.getType().equals("SHOT")) {
+                Image laser = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/SingleLaser.png");
+                laserShot.setFill(new ImagePattern(laser, 0, 0, 1, 1, true));
+            } else {
+                Image laser = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/Emiter.png");
+                laserShot.setFill(new ImagePattern(laser, 0, 0, 1, 1, true));
+            }
+            this.getChildren().add(laserShot);
+        }
+        //Walls
+        if( wall != null) {
+            Image wallSprite = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/wall.png");
+            Rectangle wallGfx = new Rectangle();
+            wallGfx.setWidth(SPACE_WIDTH);
+            wallGfx.setHeight(SPACE_WIDTH*0.222);
+            wallGfx.setFill(new ImagePattern(wallSprite,0,0,1,1,true));
 
+            switch (wall.getDir()) {
+                case SOUTH:
+                    wallGfx.setTranslateY(SPACE_WIDTH*0.45);
+                    break;
+                case NORTH:
+                    wallGfx.setTranslateY(-SPACE_WIDTH*0.45);
+                    break;
+                case EAST:
+                    wallGfx.setRotate(90);
+                    wallGfx.setTranslateX(SPACE_WIDTH*0.45);
+                    break;
+                case WEST:
+                    wallGfx.setRotate(90);
+                    wallGfx.setTranslateX(-SPACE_WIDTH*0.45);
+                    break;
+            }
+
+            this.getChildren().add(wallGfx);
+        }
         /*
         PushPanel pushPanel = (PushPanel) space.findObjectOfType(PushPanel.class);
         if (pushPanel != null) {

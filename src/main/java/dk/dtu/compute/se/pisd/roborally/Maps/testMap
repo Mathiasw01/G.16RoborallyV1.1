@@ -1,9 +1,13 @@
-P;1;1
+P;4;1
 P;2;1
 P;3;1
 P;4;1
 P;5;1
 P;6;1
+Laser;5;1;WEST;EMIT
+Laser;4;1;WEST;SHOT
+Laser;3;1;WEST;SHOT
+Laser;2;1;WEST;SHOT
 Wall;8;1;WEST
 BlueCon;2;2;SOUTH
 BlueCon;2;3;SOUTH
