@@ -1,6 +1,5 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
-import com.sun.jdi.IntegerValue;
 import javafx.scene.paint.Color;
 
 import java.io.File;
@@ -63,6 +62,9 @@ public class SpaceReader {
                         break;
                     case "Gear":
                         space.addObjects(new Gear(Direction.valueOf(result[3])));
+                        break;
+                    case "Laser":
+                        space.addObjects(new Laser(Heading.valueOf(result[3]), result[4]));
                         break;
                     default:
                         System.out.println("Unkown object in " + fileName);

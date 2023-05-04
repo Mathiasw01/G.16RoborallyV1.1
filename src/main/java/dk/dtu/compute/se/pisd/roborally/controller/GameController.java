@@ -406,7 +406,6 @@ public class GameController {
                         board.setStep(step);
                         board.setCurrentPlayer(board.getPlayer(0));
                     } else {
-
                         startProgrammingPhase();
                     }
                 }
@@ -524,6 +523,10 @@ public class GameController {
                 } else if (gear.getDirection() == Direction.RIGHT) {
                     turnRight(player);
                 }
+            }
+            if (object instanceof Laser laser){
+                player.getDiscardpile().add(new CommandCard(Command.SPAM));
+                System.out.println("Player "+ player.getPlayerNum()+" got hit");
             }
             if (object instanceof PushPanel pp){
                 for (int i=0;i<pp.getActivation().length;i++){
