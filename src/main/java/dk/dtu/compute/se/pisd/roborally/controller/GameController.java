@@ -567,7 +567,7 @@ public class GameController {
         Space space = board.getSpace(cords[0],cords[1]);
         for (FieldObject object : space.getObjects()){
             if (object instanceof Laser l){
-                if (l.getType().equals("EMIT")){
+                if (l.getType().equals("EMIT") && space.getPlayer() == null){
                     return false;
                 }
             }
