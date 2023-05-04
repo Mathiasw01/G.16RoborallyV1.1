@@ -88,7 +88,6 @@ public class GameController {
             return;
         if(isWallBlocking(wall, backupflag, false))
             return;
-
         /*
         If the target space is free, move and return!
          */

@@ -40,6 +40,7 @@ public class RoboRallyMenuBar extends MenuBar {
     private Menu mapMenu;
     private MenuItem testMap;
     private MenuItem dizzy;
+    private MenuItem octane;
 
     private MenuItem saveGame;
 
@@ -74,6 +75,13 @@ public class RoboRallyMenuBar extends MenuBar {
             this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/DizzyHighway";
         });
         mapMenu.getItems().add(dizzy);
+
+        octane = new MenuItem("High Octane");
+        octane.setOnAction(e -> {
+            mapMenu.setText("High Octane");
+            this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/High Octane";
+        });
+        mapMenu.getItems().add(octane);
 
         newGame = new MenuItem("New Game");
         newGame.setOnAction( e ->  this.appController.newGame(map));
