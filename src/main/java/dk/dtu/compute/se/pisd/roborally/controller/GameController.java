@@ -138,11 +138,14 @@ public class GameController {
 
 
     private boolean isWallBlocking(Wall wall, boolean backupflag, boolean ownField){
-        boolean reversed = ownField == backupflag;
         if(wall == null){
             return false;
         }
-        return !reversed & wall.getDir() == (reversed ? getOriginalHeading().next().next() :
+        boolean reversed = backupflag;
+        if(!ownField){
+            reversed = !reversed;
+        }
+        return wall.getDir() == (reversed ? getOriginalHeading().next().next() :
                 getOriginalHeading());
 
 
