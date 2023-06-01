@@ -57,3 +57,5 @@ BlueCon;7;1;EAST
 BlueCon;8;1;EAST
 BlueCon;9;1;EAST
 BlueCon;10;1;EAST
+#;Reboot
+Reboot;7;0;WEST

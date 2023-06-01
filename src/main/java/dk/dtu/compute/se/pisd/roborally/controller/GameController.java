@@ -45,6 +45,7 @@ public class GameController {
     final public Board board;
     private Heading originalHeading = null;
 
+
     public Heading getOriginalHeading() {
         return originalHeading;
     }
@@ -52,9 +53,6 @@ public class GameController {
     public void setOriginalHeading(Heading originalHeading) {
         this.originalHeading = originalHeading;
     }
-
-
-
 
     public GameController(@NotNull Board board) {
         this.board = board;
@@ -559,9 +557,10 @@ public class GameController {
     public boolean testIfLaserIsBlocked(int x, int y, Laser laser){
         int[] cords = getNewCoordinates(laser.getDirection(),x,y,true);
         Space space = board.getSpace(cords[0],cords[1]);
+        System.out.println(space.x + space.y);
         for (FieldObject object : space.getObjects()){
             if (object instanceof Laser l){
-                if (l.getTYPE().equals("EMIT") && space.getPlayer() == null){
+                if (l.getTYPE().equals("EMITER") && space.getPlayer() == null){
                     return false;
                 }
             }
@@ -603,10 +602,16 @@ public class GameController {
      * @param player, the player that needs to be rebooted
      */
     private void reboot(Player player){
-        /*
-        player.setSpace(board.getSpace(7,4));
+        int x = board.getRebootField().getX();
+        int y = board.getRebootField().getY();
+        player.setHeading(board.getRebootField().getDirection());
 
-         */
+        if (board.getSpace(x,y).getPlayer() != null){
+            moveForward(board.getSpace(x,y).getPlayer());
+        }
+
+        player.setSpace(board.getSpace(x, y));
+
         player.setRebooting(true);
         player.getDiscardPile().add(new CommandCard(Command.SPAM));
         player.getDiscardPile().add(new CommandCard(Command.SPAM));
@@ -646,7 +651,9 @@ public class GameController {
      */
     public void fastForward(@NotNull Player player, int moves) {
         for (int i = 0; i < moves; i++) {
-            moveForward(player);
+            if (!player.getRebooting()) {
+                moveForward(player);
+            }
         }
     }
 

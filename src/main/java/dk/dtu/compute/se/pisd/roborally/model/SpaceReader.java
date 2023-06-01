@@ -67,6 +67,7 @@ public class SpaceReader {
                         space.addObjects(new Laser(Heading.valueOf(result[3]), result[4]));
                         break;
                     case "Reboot":
+                        board.setRebootField(new RebootField(Heading.valueOf(result[3]),Integer.parseInt(result[1]),Integer.parseInt(result[2])));
                         space.addObjects(new RebootField(Heading.valueOf(result[3]),Integer.parseInt(result[1]),Integer.parseInt(result[2])));
                         break;
                     default:

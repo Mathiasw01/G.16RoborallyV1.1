@@ -23,6 +23,61 @@
         {
           "x": 0,
           "y": 3,
+          "player": {
+            "name": "Player 2",
+            "color": "green",
+            "heading": "EAST",
+            "program": [
+              {},
+              {},
+              {},
+              {},
+              {}
+            ],
+            "cards": [
+              {
+                "card": {
+                  "command": "RIGHT"
+                }
+              },
+              {
+                "card": {
+                  "command": "FAST_FORWARD"
+                }
+              },
+              {
+                "card": {
+                  "command": "LEFT"
+                }
+              },
+              {
+                "card": {
+                  "command": "FORWARD"
+                }
+              },
+              {
+                "card": {
+                  "command": "MOVE_THREE"
+                }
+              },
+              {
+                "card": {
+                  "command": "RIGHT"
+                }
+              },
+              {
+                "card": {
+                  "command": "FORWARD"
+                }
+              },
+              {
+                "card": {
+                  "command": "RIGHT"
+                }
+              }
+            ],
+            "energyCubes": 0
+          },
           "objects": [
             {
               "type": "startField"
@@ -73,6 +128,61 @@
         {
           "x": 1,
           "y": 1,
+          "player": {
+            "name": "Player 1",
+            "color": "red",
+            "heading": "EAST",
+            "program": [
+              {},
+              {},
+              {},
+              {},
+              {}
+            ],
+            "cards": [
+              {
+                "card": {
+                  "command": "FAST_FORWARD"
+                }
+              },
+              {
+                "card": {
+                  "command": "AGAIN"
+                }
+              },
+              {
+                "card": {
+                  "command": "MOVE_BACK"
+                }
+              },
+              {
+                "card": {
+                  "command": "FORWARD"
+                }
+              },
+              {
+                "card": {
+                  "command": "LEFT"
+                }
+              },
+              {
+                "card": {
+                  "command": "RIGHT"
+                }
+              },
+              {
+                "card": {
+                  "command": "RIGHT"
+                }
+              },
+              {
+                "card": {
+                  "command": "FORWARD"
+                }
+              }
+            ],
+            "energyCubes": 0
+          },
           "objects": [
             {
               "type": "startField"
@@ -149,7 +259,7 @@
           "objects": [
             {
               "type": "conveyor",
-              "isDouble": true,
+              "isDouble": false,
               "direction": "EAST"
             }
           ]
@@ -215,7 +325,7 @@
           "objects": [
             {
               "type": "conveyor",
-              "isDouble": true,
+              "isDouble": false,
               "direction": "EAST"
             }
           ]
@@ -681,61 +791,6 @@
         {
           "x": 8,
           "y": 5,
-          "player": {
-            "name": "Player 2",
-            "color": "green",
-            "heading": "EAST",
-            "program": [
-              {},
-              {},
-              {},
-              {},
-              {}
-            ],
-            "cards": [
-              {
-                "card": {
-                  "command": "RIGHT"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "AGAIN"
-                }
-              },
-              {
-                "card": {
-                  "command": "LEFT"
-                }
-              },
-              {
-                "card": {
-                  "command": "POWERUP"
-                }
-              },
-              {
-                "card": {
-                  "command": "FAST_FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              }
-            ],
-            "energyCubes": 0
-          },
           "objects": []
         },
         {
@@ -884,61 +939,6 @@
         {
           "x": 10,
           "y": 3,
-          "player": {
-            "name": "Player 1",
-            "color": "red",
-            "heading": "WEST",
-            "program": [
-              {},
-              {},
-              {},
-              {},
-              {}
-            ],
-            "cards": [
-              {
-                "card": {
-                  "command": "POWERUP"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FAST_FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "LEFT"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FAST_FORWARD"
-                }
-              }
-            ],
-            "energyCubes": 0
-          },
           "objects": []
         },
         {
@@ -1124,63 +1124,7 @@
           "objects": [
             {
               "type": "checkPoint",
-              "playersObtained": [
-                {
-                  "name": "Player 1",
-                  "color": "red",
-                  "heading": "WEST",
-                  "program": [
-                    {},
-                    {},
-                    {},
-                    {},
-                    {}
-                  ],
-                  "cards": [
-                    {
-                      "card": {
-                        "command": "POWERUP"
-                      }
-                    },
-                    {
-                      "card": {
-                        "command": "FORWARD"
-                      }
-                    },
-                    {
-                      "card": {
-                        "command": "FAST_FORWARD"
-                      }
-                    },
-                    {
-                      "card": {
-                        "command": "FORWARD"
-                      }
-                    },
-                    {
-                      "card": {
-                        "command": "FORWARD"
-                      }
-                    },
-                    {
-                      "card": {
-                        "command": "LEFT"
-                      }
-                    },
-                    {
-                      "card": {
-                        "command": "FORWARD"
-                      }
-                    },
-                    {
-                      "card": {
-                        "command": "FAST_FORWARD"
-                      }
-                    }
-                  ],
-                  "energyCubes": 0
-                }
-              ],
+              "playersObtained": [],
               "checkpointNumber": 1
             }
           ]
@@ -1219,63 +1163,7 @@
     ],
     "checkpoints": [
       {
-        "playersObtained": [
-          {
-            "name": "Player 1",
-            "color": "red",
-            "heading": "WEST",
-            "program": [
-              {},
-              {},
-              {},
-              {},
-              {}
-            ],
-            "cards": [
-              {
-                "card": {
-                  "command": "POWERUP"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FAST_FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "LEFT"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "FAST_FORWARD"
-                }
-              }
-            ],
-            "energyCubes": 0
-          }
-        ],
+        "playersObtained": [],
         "checkpointNumber": 1
       }
     ],
@@ -1283,7 +1171,7 @@
       {
         "name": "Player 1",
         "color": "red",
-        "heading": "WEST",
+        "heading": "EAST",
         "program": [
           {},
           {},
@@ -1294,22 +1182,17 @@
         "cards": [
           {
             "card": {
-              "command": "POWERUP"
-            }
-          },
-          {
-            "card": {
-              "command": "FORWARD"
-            }
-          },
-          {
-            "card": {
               "command": "FAST_FORWARD"
             }
           },
           {
             "card": {
-              "command": "FORWARD"
+              "command": "AGAIN"
+            }
+          },
+          {
+            "card": {
+              "command": "MOVE_BACK"
             }
           },
           {
@@ -1324,12 +1207,17 @@
           },
           {
             "card": {
-              "command": "FORWARD"
+              "command": "RIGHT"
             }
           },
           {
             "card": {
-              "command": "FAST_FORWARD"
+              "command": "RIGHT"
+            }
+          },
+          {
+            "card": {
+              "command": "FORWARD"
             }
           }
         ],
@@ -1354,17 +1242,7 @@
           },
           {
             "card": {
-              "command": "FORWARD"
-            }
-          },
-          {
-            "card": {
-              "command": "FORWARD"
-            }
-          },
-          {
-            "card": {
-              "command": "AGAIN"
+              "command": "FAST_FORWARD"
             }
           },
           {
@@ -1374,17 +1252,27 @@
           },
           {
             "card": {
-              "command": "POWERUP"
+              "command": "FORWARD"
             }
           },
           {
             "card": {
-              "command": "FAST_FORWARD"
+              "command": "MOVE_THREE"
+            }
+          },
+          {
+            "card": {
+              "command": "RIGHT"
             }
           },
           {
             "card": {
               "command": "FORWARD"
+            }
+          },
+          {
+            "card": {
+              "command": "RIGHT"
             }
           }
         ],
@@ -1394,7 +1282,7 @@
     "current": {
       "name": "Player 1",
       "color": "red",
-      "heading": "WEST",
+      "heading": "EAST",
       "program": [
         {},
         {},
@@ -1405,22 +1293,17 @@
       "cards": [
         {
           "card": {
-            "command": "POWERUP"
-          }
-        },
-        {
-          "card": {
-            "command": "FORWARD"
-          }
-        },
-        {
-          "card": {
             "command": "FAST_FORWARD"
           }
         },
         {
           "card": {
-            "command": "FORWARD"
+            "command": "AGAIN"
+          }
+        },
+        {
+          "card": {
+            "command": "MOVE_BACK"
           }
         },
         {
@@ -1435,18 +1318,23 @@
         },
         {
           "card": {
-            "command": "FORWARD"
+            "command": "RIGHT"
           }
         },
         {
           "card": {
-            "command": "FAST_FORWARD"
+            "command": "RIGHT"
+          }
+        },
+        {
+          "card": {
+            "command": "FORWARD"
           }
         }
       ],
       "energyCubes": 0
     },
     "phase": "PROGRAMMING",
-    "stepMode": true
+    "stepMode": false
   }
 }

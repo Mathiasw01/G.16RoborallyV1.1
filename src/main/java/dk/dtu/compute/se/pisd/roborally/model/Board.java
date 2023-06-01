@@ -23,6 +23,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,6 +73,8 @@ public class Board extends Subject {
     private boolean stepMode;
 
     private int counter=0;
+
+    private RebootField rebootField = null;
 
     private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
 
@@ -186,6 +189,7 @@ public class Board extends Subject {
                     } else if (fo instanceof  Laser laser) {
                         spaces[s.x][s.y].addObjects(new Laser(laser.getDirection(), laser.getTYPE()));
                     } else if (fo instanceof  RebootField rebootField) {
+                        rebootField = new RebootField(rebootField.getDirection(), rebootField.getX(), rebootField.getY());
                         spaces[s.x][s.y].addObjects(new RebootField(rebootField.getDirection(), rebootField.getX(), rebootField.getY()));
                     }
 
@@ -465,5 +469,10 @@ public class Board extends Subject {
         return players;
     }
 
-
+    public void setRebootField(RebootField rebootField){
+        this.rebootField = rebootField;
+    }
+    public RebootField getRebootField() {
+        return rebootField;
+    }
 }
