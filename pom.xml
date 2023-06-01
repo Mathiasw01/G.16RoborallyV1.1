@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <groupId>dk.dtu.compute.se.pisd</groupId>
-    <artifactId>roborally</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <description>
-        RoboRally demo with database access and loading
-        some game boards from a files for the course
-        Project in Software Development (PiSD) taught at
-        DTU Compute.
-    </description>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.1.0</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.g16</groupId>
+    <artifactId>RoboRally-server</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>RoboRally-server</name>
+    <description>RoboRally-server</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -23,17 +23,25 @@
         <maven.compiler.target>17</maven.compiler.target>
 
     </properties>
-
     <dependencies>
-        <!-- Note that the dependencies here include some more dependencies
-             than are necessary right now; dependencies that might need to
-             be included later in the course of the project are added
-             already now, just to avoid missing these later. This applies
-             for example to mysql, gson, guava, ...  -->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>13.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
@@ -90,16 +98,12 @@
         </dependency>
     </dependencies>
 
-
     <build>
-        <!-- we use default maven directory structure as indicated below
-        <sourceDirectory>${basedir}/src/main/java</sourceDirectory>
-        <resources>
-            <resource>
-                <directory>${basedir}/src/resources</directory>
-            </resource>
-        </resources> -->
         <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

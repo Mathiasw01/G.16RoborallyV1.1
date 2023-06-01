@@ -21,6 +21,10 @@
  */
 package dk.dtu.compute.se.pisd.roborally;
 
+import com.g16.roborallyclient.TestConsume;
+
+import java.util.Scanner;
+
 /**
  * This is a class for starting up the RoboRally application. This is a
  * workaround for a strange quirk in the Open JavaFX project launcher,
@@ -33,6 +37,19 @@ package dk.dtu.compute.se.pisd.roborally;
 public class StartRoboRally {
 
     public static void main(String[] args) {
+        TestConsume testConsume = new TestConsume();
+        System.out.println("J join or H host");
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+
+        if (input.equals("J")) {
+            testConsume.joinGame();
+        } else if (input.equals("H")) {
+
+        } else {
+
+        }
+
         System.out.println(System.getProperty("user.dir"));
         RoboRally.main(args);
     }
