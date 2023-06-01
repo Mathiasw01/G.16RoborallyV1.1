@@ -67,8 +67,8 @@ public class GameController {
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         board.setCounter(board.getCounter() + 1);
-        Wall wall = (Wall) space.findObjectOfType(Wall.class);
-        Wall currentSpaceWall = (Wall) player.getSpace().findObjectOfType(Wall.class);
+        ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
+        ArrayList<FieldObject> currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
 
         /*
          * Stops current player from moving if there is a wall in the way
@@ -84,10 +84,14 @@ public class GameController {
         /*
          *Stops current player from moving if there is a wall in the way
          */
-        if(isWallBlocking(currentSpaceWall, backupflag, true))
-            return;
-        if(isWallBlocking(wall, backupflag, false))
-            return;
+        for (FieldObject object : walls) {
+            if (isWallBlocking((Wall) object, backupflag, false))
+                return;
+        }
+        for (FieldObject object: currentSpaceWalls) {
+            if (isWallBlocking((Wall) object, backupflag, true))
+                return;
+        }
         /*
         If the target space is free, move and return!
          */
@@ -147,8 +151,6 @@ public class GameController {
         }
         return wall.getDir() == (reversed ? getOriginalHeading().next().next() :
                 getOriginalHeading());
-
-
     }
 
     /**
@@ -589,7 +591,6 @@ public class GameController {
             boolean backupflag = false;
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, null, false);
         } else {
-
             System.out.println("OUT OF BOUNDS");
             reboot(player);
         }
