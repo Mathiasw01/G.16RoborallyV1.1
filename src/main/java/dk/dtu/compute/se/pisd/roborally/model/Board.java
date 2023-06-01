@@ -173,7 +173,7 @@ public class Board extends Subject {
                         for(Player p : cp.getPlayersObtained()){
                             for(Player bp : players){
                                 if(Objects.equals(bp.getName(), p.getName())){
-                                    cpf.addPlayerIfUnobtained(bp); // Hvad gør dette?
+                                    cpf.addPlayerIfUnobtained(bp);
                                 }
                             }
                         }

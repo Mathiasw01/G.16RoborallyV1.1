@@ -542,6 +542,7 @@ public class GameController {
                         System.out.println("Player " + player.getPlayerNum() + " got hit");
                     }
                 } else {
+                    player.getDiscardPile().add(new CommandCard(Command.SPAM));
                     System.out.println("Player " + player.getPlayerNum() + " got hit");
                 }
             }
