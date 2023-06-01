@@ -4,11 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
 import java.io.*;
-import java.util.ArrayList;
 
 public class SaveLoadController {
 
@@ -25,7 +21,8 @@ public class SaveLoadController {
             .registerSubtype(CheckpointField.class, "checkPoint")
             .registerSubtype(Gear.class, "gear")
             .registerSubtype(Conveyor.class, "conveyor")
-            .registerSubtype(Laser.class, "laser");
+            .registerSubtype(Laser.class, "laser")
+            .registerSubtype(RebootField.class, "rebootField");
 
     private static final Gson gson = new GsonBuilder()
             .excludeFieldsWithoutExposeAnnotation()
@@ -64,14 +61,12 @@ public class SaveLoadController {
     /**
      * Deserialize a JSON formatted file to a GameController object
      * <p>
-     * This method deseralized a JSON-formatted savefile to a game controller object.
+     * This method deserializes a JSON-formatted savefile to a game controller object.
      * The game controller object is returned and can be used for initializing a game from a previous game state.
      * @param filePath the path to the JSON-formatted savefile
      * @return a GameController object which contains the board and the game state.
      */
     public static GameController deserializeAndLoad(String filePath){
-
-
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
             StringBuilder sb = new StringBuilder();

@@ -1,19 +1,23 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import com.google.gson.annotations.Expose;
+
 public class Laser extends FieldObject{
 
+    @Expose
     private final Heading direction;
-    private String type;
+    @Expose
+    private final String TYPE;
 
-    public Laser(Heading direction, String type) {
+    public Laser(Heading direction, String TYPE) {
         this.direction = direction;
-        this.type = type;
+        this.TYPE = TYPE;
     }
 
     public Heading getDirection(){
         return direction;
     }
-    public String getType(){
-        return type;
+    public String getTYPE(){
+        return TYPE;
     }
 }

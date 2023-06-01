@@ -261,18 +261,6 @@ public class GameController {
         }
     }
 
-    // XXX: V2
-
-    /**
-     * Was used in an earlier version.
-     * @returns a random commandcard
-     */
-    private CommandCard generateRandomCommandCard() {
-        Command[] commands = Command.values();
-        int random = (int) (Math.random() * commands.length);
-        return new CommandCard(commands[random]);
-    }
-
     public CommandCard drawCard(List<CommandCard> deck, Player currentPLayer) {
         if (currentPLayer.getProgrammingDeck().isEmpty()) {
             shuffleDeck(currentPLayer.getProgrammingDeck(), currentPLayer.getDiscardPile());
@@ -506,12 +494,12 @@ public class GameController {
         }
         for (FieldObject object : player.getSpace().getObjects()) {
             if (object instanceof Conveyor) {
-                if (((Conveyor) object).getColor().equals(Color.BLUE)) {
+                if (((Conveyor) object).getCOLOR().equals(Color.BLUE)) {
                     moveBoardElement(player, object);
                     for (FieldObject object2 : player.getSpace().getObjects()) {
                         moveBoardElement(player, object2);
                     }
-                } else if (((Conveyor) object).getColor().equals(Color.GREEN)) {
+                } else if (((Conveyor) object).getCOLOR().equals(Color.GREEN)) {
                     moveBoardElement(player, object);
                 }
             }
@@ -544,7 +532,7 @@ public class GameController {
             }
             if (object instanceof Laser laser){
                 Space space = player.getSpace();
-                if (laser.getType().equals("SHOT")) {
+                if (laser.getTYPE().equals("SHOT")) {
                     if (testIfLaserIsBlocked(space.x, space.y, laser)){
                         System.out.println("Space is blocked");
                     } else {
@@ -570,7 +558,7 @@ public class GameController {
         Space space = board.getSpace(cords[0],cords[1]);
         for (FieldObject object : space.getObjects()){
             if (object instanceof Laser l){
-                if (l.getType().equals("EMIT") && space.getPlayer() == null){
+                if (l.getTYPE().equals("EMIT") && space.getPlayer() == null){
                     return false;
                 }
             }

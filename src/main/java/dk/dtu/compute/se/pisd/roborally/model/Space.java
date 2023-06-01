@@ -23,11 +23,7 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import javafx.scene.image.Image;
-
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * A space on the board.

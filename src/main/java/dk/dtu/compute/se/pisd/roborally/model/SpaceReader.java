@@ -70,7 +70,7 @@ public class SpaceReader {
                         space.addObjects(new RebootField(Heading.valueOf(result[3]),Integer.parseInt(result[1]),Integer.parseInt(result[2])));
                         break;
                     default:
-                        System.out.println("Unkown object in " + fileName);
+                        System.out.println("Unknown object in " + fileName);
                         System.out.println("On line " +lineNum);
                         break;
                 }

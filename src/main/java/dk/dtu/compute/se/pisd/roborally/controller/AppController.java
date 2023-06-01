@@ -34,13 +34,11 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
-import javafx.stage.FileChooser;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 
@@ -59,8 +57,7 @@ public class AppController implements Observer {
     final private RoboRally roboRally;
 
     private GameController gameController;
-    private SpaceReader spaceReader;
-    private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
+    private final ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
 
     private List<CommandCard> discardPile;
 
@@ -76,11 +73,13 @@ public class AppController implements Observer {
      * @param map the map that the user chose
      */
     public void newGame(String map) {
+        SpaceReader spaceReader = new SpaceReader(map);
+
         ChoiceDialog<Integer> dialog = new ChoiceDialog<>(PLAYER_NUMBER_OPTIONS.get(0), PLAYER_NUMBER_OPTIONS);
         dialog.setTitle("Player number");
         dialog.setHeaderText("Select number of players");
         Optional<Integer> result = dialog.showAndWait();
-        spaceReader = new SpaceReader(map);
+
 
         if (result.isPresent()) {
             if (gameController != null) {
@@ -145,14 +144,6 @@ public class AppController implements Observer {
      * TODO - implement
      */
     public void loadGame() {
-        /*
-        // XXX needs to be implemented eventually
-        // for now, we just create a new game
-        if (gameController == null) {
-            //newGame();
-        }
-
-         */
         TextInputDialog dialog = new TextInputDialog("savegame_01");
         dialog.setTitle("Load game");
         dialog.setHeaderText("Load save");

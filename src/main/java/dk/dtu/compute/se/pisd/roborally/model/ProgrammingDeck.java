@@ -1,6 +1,5 @@
 package dk.dtu.compute.se.pisd.roborally.model;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,8 +14,5 @@ public class ProgrammingDeck {
         Collections.shuffle(deck);
         return deck;
     }
-
-
-
 
 }

@@ -1,8 +1,4 @@
 package dk.dtu.compute.se.pisd.roborally.model;
-
-
-import com.google.gson.annotations.Expose;
-
 /**
  * Starting Field, where players spawn
  *<p>

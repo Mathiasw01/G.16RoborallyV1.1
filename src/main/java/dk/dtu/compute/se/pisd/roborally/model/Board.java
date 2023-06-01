@@ -72,11 +72,8 @@ public class Board extends Subject {
     private boolean stepMode;
 
     private int counter=0;
-    private SpaceReader spaceReader;
 
     private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
-
-    private List<CommandCard> discardPile = new ArrayList<>();
 
 
     /**
@@ -99,7 +96,7 @@ public class Board extends Subject {
                 spaces[x][y] = space;
             }
         }
-        spaceReader = new SpaceReader(map);
+        SpaceReader spaceReader = new SpaceReader(map);
         spaceReader.initMap(this);
         this.stepMode = false;
     }
@@ -166,7 +163,6 @@ public class Board extends Subject {
 
         for (Space[] sr : savedBoard.spaces){
             for(Space s : sr){
-
                 for(FieldObject fo : s.getObjects()){
                     if(fo instanceof Conveyor conveyor){
                         spaces[s.x][s.y].addObjects(new Conveyor(Color.BLUE, conveyor.getDirection()));
@@ -177,7 +173,7 @@ public class Board extends Subject {
                         for(Player p : cp.getPlayersObtained()){
                             for(Player bp : players){
                                 if(Objects.equals(bp.getName(), p.getName())){
-                                    cpf.addPlayerIfUnobtained(bp);
+                                    cpf.addPlayerIfUnobtained(bp); // Hvad gør dette?
                                 }
                             }
                         }
@@ -187,8 +183,10 @@ public class Board extends Subject {
                         spaces[s.x][s.y].addObjects(new Gear(gear.getDirection()));
                     }   else if (fo instanceof  Wall wall) {
                         spaces[s.x][s.y].addObjects(new Wall(wall.getDir()));
-                } else if (fo instanceof  Laser laser) {
-                        spaces[s.x][s.y].addObjects(new Laser(laser.getDirection(), laser.getType()));
+                    } else if (fo instanceof  Laser laser) {
+                        spaces[s.x][s.y].addObjects(new Laser(laser.getDirection(), laser.getTYPE()));
+                    } else if (fo instanceof  RebootField rebootField) {
+                        spaces[s.x][s.y].addObjects(new RebootField(rebootField.getDirection(), rebootField.getX(), rebootField.getY()));
                     }
 
 
@@ -416,18 +414,10 @@ public class Board extends Subject {
         int x = space.x;
         int y = space.y;
         switch (heading) {
-            case SOUTH:
-                y = (y + 1) % height;
-                break;
-            case WEST:
-                x = (x + width - 1) % width;
-                break;
-            case NORTH:
-                y = (y + height - 1) % height;
-                break;
-            case EAST:
-                x = (x + 1) % width;
-                break;
+            case SOUTH -> y = (y + 1) % height;
+            case WEST -> x = (x + width - 1) % width;
+            case NORTH -> y = (y + height - 1) % height;
+            case EAST -> x = (x + 1) % width;
         }
 
         return getSpace(x, y);

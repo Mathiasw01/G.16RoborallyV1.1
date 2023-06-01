@@ -14,22 +14,22 @@ import javafx.scene.paint.Paint;
 
 public class Conveyor extends MovementField {
 
-    public Paint getColor() {
-        return color;
+    public Paint getCOLOR() {
+        return COLOR;
     }
 
 
 
-    private Color color;
+    private final Color COLOR;
 
 
     @Expose
     private final boolean isDouble;
 
-    public Conveyor(Color color, Heading heading) {
+    public Conveyor(Color COLOR, Heading heading) {
         super(heading);
-        this.color=color;
-        this.isDouble = color.equals(Color.BLUE);
+        this.COLOR = COLOR;
+        this.isDouble = COLOR.equals(Color.BLUE);
 
     }
 

@@ -219,7 +219,7 @@ public class SpaceView extends StackPane implements ViewObserver {
                     conveyorGfx.setRotate(-90);
                     break;
             }
-            if (conveyor.getColor().equals(Color.BLUE)) {
+            if (conveyor.getCOLOR().equals(Color.BLUE)) {
                 Image blueCon = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/blueConveyor.png");
                 conveyorGfx.setFill(new ImagePattern(blueCon,0,0,1,1,true));
             }else {
@@ -236,29 +236,29 @@ public class SpaceView extends StackPane implements ViewObserver {
             switch (laserField.getDirection()) {
                 case SOUTH:
                     laserShot.setRotate(180);
-                    if (laserField.getType().equals("EMITER")){
+                    if (laserField.getTYPE().equals("EMITER")){
                         laserShot.setTranslateY(SPACE_WIDTH*0.15);
                     }
                     break;
                 case NORTH:
-                    if (laserField.getType().equals("EMITER")){
+                    if (laserField.getTYPE().equals("EMITER")){
                         laserShot.setTranslateY(-SPACE_WIDTH*0.15);
                     }
                     break;
                 case EAST:
                     laserShot.setRotate(90);
-                    if (laserField.getType().equals("EMITER")){
+                    if (laserField.getTYPE().equals("EMITER")){
                         laserShot.setTranslateX(SPACE_HEIGHT*0.15);
                     }
                     break;
                 case WEST:
                     laserShot.setRotate(-90);
-                    if (laserField.getType().equals("EMITER")){
+                    if (laserField.getTYPE().equals("EMITER")){
                         laserShot.setTranslateX(-SPACE_HEIGHT*0.15);
                     }
                     break;
             }
-            if (laserField.getType().equals("SHOT")) {
+            if (laserField.getTYPE().equals("SHOT")) {
                 Image laser = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/SingleLaser.png");
                 laserShot.setFill(new ImagePattern(laser, 0, 0, 1, 1, true));
             } else {
