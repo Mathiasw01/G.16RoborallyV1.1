@@ -21,7 +21,9 @@
  */
 package dk.dtu.compute.se.pisd.roborally;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.g16.roborallyclient.ClientConsume;
+import com.g16.roborallyclient.GameSession;
 import org.springframework.web.client.RestClientException;
 
 import java.util.List;
@@ -53,14 +55,7 @@ public class StartRoboRally {
         String input = scanner.nextLine();
 
         if (input.equals("J") || input.equals("j")) {
-            System.out.println("Input game ID");
-            String gameID = scanner.nextLine();
-            try {
-                clientConsume.joinGame(gameID);
-            } catch (RestClientException e) {
-                System.out.println("Lobby does not exist");
-                startMultiplayer(clientConsume);
-            }
+            join(clientConsume, scanner);
 
         } else if (input.equals("H") || input.equals("h")) {
             System.out.println("Input game ID");
@@ -80,6 +75,29 @@ public class StartRoboRally {
             }
         } else {
             System.out.println("Not a command");
+            startMultiplayer(clientConsume);
+        }
+    }
+
+    private static void join(ClientConsume clientConsume, Scanner scanner) {
+        System.out.println("Active lobbies");
+        List<GameSession> lobbies = clientConsume.getLobbies();
+        if (!lobbies.isEmpty()){
+            for (GameSession session: lobbies) {
+                System.out.println(session.gameID);
+            }
+        } else {
+            System.out.println("No active lobbies");
+        }
+
+
+        System.out.println("Input game ID");
+
+        String gameID = scanner.nextLine();
+        try {
+            clientConsume.joinGame(gameID);
+        } catch (RestClientException e) {
+            System.out.println("Lobby does not exist");
             startMultiplayer(clientConsume);
         }
     }
