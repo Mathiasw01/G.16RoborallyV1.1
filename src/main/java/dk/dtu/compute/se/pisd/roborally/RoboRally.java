@@ -39,7 +39,7 @@ import javafx.stage.Stage;
  */
 public class RoboRally extends Application {
 
-    private static final int MIN_APP_WIDTH = 600;
+    private final int MIN_APP_WIDTH = 600;
 
     private Stage stage;
     private BorderPane boardRoot;
@@ -105,4 +105,7 @@ public class RoboRally extends Application {
         launch(args);
     }
 
+    public int getMIN_APP_WIDTH() {
+        return MIN_APP_WIDTH;
+    }
 }

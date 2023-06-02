@@ -42,9 +42,11 @@ public class StartRoboRally {
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
 
-        if (input.equals("J")) {
-            testConsume.joinGame();
-        } else if (input.equals("H")) {
+        if (input.equals("J") || input.equals("j")) {
+            System.out.println("Input game ID");
+            String gameID = scanner.nextLine();
+            testConsume.joinGame(gameID);
+        } else if (input.equals("H") || input.equals("h")) {
 
         } else {
 

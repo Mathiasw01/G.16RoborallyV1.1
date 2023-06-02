@@ -6,7 +6,7 @@ public class Connection {
 
     public String userID;
 
-    public GameSession gameSession;
+    public GameSession gameSession = new GameSession();
 
     public Connection(){
 
