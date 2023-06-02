@@ -21,8 +21,11 @@
  */
 package dk.dtu.compute.se.pisd.roborally;
 
-import com.g16.roborallyclient.TestConsume;
+import com.g16.roborallyclient.ClientConsume;
+import org.springframework.web.client.RestClientException;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 /**
@@ -37,7 +40,14 @@ import java.util.Scanner;
 public class StartRoboRally {
 
     public static void main(String[] args) {
-        TestConsume testConsume = new TestConsume();
+        ClientConsume clientConsume = new ClientConsume();
+        startMultiplayer(clientConsume);
+
+        System.out.println(System.getProperty("user.dir"));
+        RoboRally.main(args);
+    }
+
+    private static void startMultiplayer(ClientConsume clientConsume) {
         System.out.println("J join or H host");
         Scanner scanner = new Scanner(System.in);
         String input = scanner.nextLine();
@@ -45,15 +55,40 @@ public class StartRoboRally {
         if (input.equals("J") || input.equals("j")) {
             System.out.println("Input game ID");
             String gameID = scanner.nextLine();
-            testConsume.joinGame(gameID);
-        } else if (input.equals("H") || input.equals("h")) {
+            clientConsume.joinGame(gameID);
 
+        } else if (input.equals("H") || input.equals("h")) {
+            System.out.println("Input game ID");
+            String gameID = scanner.nextLine();
+            try {
+                clientConsume.hostGame(gameID);
+                List<String> maps = clientConsume.getMap();
+                System.out.println("Choose map");
+                for (String str: maps) {
+                    System.out.println(str);
+                }
+                String map = choseMap(scanner, maps);
+                System.out.println(map);
+            } catch (RestClientException e){
+                System.out.println("This lobby already exist");
+                startMultiplayer(clientConsume);
+            }
         } else {
 
         }
+    }
 
-        System.out.println(System.getProperty("user.dir"));
-        RoboRally.main(args);
+    private static String choseMap(Scanner scanner, List<String> maps) {
+        String chosenMap = scanner.nextLine();
+        String finalMap = null;
+        Optional<String> result = maps.stream().filter(map -> map.equals(chosenMap)).findFirst();
+        if (result.isPresent()){
+            finalMap = result.get();
+        } else {
+            System.out.println("This map does not exist, try again");
+            return choseMap(scanner, maps);
+        }
+        return finalMap;
     }
 
 }
