@@ -55,7 +55,12 @@ public class StartRoboRally {
         if (input.equals("J") || input.equals("j")) {
             System.out.println("Input game ID");
             String gameID = scanner.nextLine();
-            clientConsume.joinGame(gameID);
+            try {
+                clientConsume.joinGame(gameID);
+            } catch (RestClientException e) {
+                System.out.println("Lobby does not exist");
+                startMultiplayer(clientConsume);
+            }
 
         } else if (input.equals("H") || input.equals("h")) {
             System.out.println("Input game ID");
@@ -74,7 +79,8 @@ public class StartRoboRally {
                 startMultiplayer(clientConsume);
             }
         } else {
-
+            System.out.println("Not a command");
+            startMultiplayer(clientConsume);
         }
     }
 

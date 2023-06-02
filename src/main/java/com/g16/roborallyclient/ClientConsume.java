@@ -9,7 +9,7 @@ import java.util.List;
 public class ClientConsume {
    String uri = "http://10.209.211.242:8081";
    //String uri = "http://localhost:8081/game";
-    public Connection joinGame(String gameID) {
+    public Connection joinGame(String gameID) throws RestClientException {
         String endPoint = uri + "/game/join/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
