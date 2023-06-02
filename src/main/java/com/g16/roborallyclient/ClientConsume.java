@@ -17,6 +17,8 @@ public class ClientConsume {
    //String uri = "http://10.209.211.242:8081";
    String uri = "http://localhost:8081";
 
+   Connection conn;
+
     public List<GameSession> getLobbies(){
         String endPoint = uri + "/lobby";
         ResponseEntity<List<GameSession>> response = getListResponseEntity(endPoint);
@@ -42,6 +44,7 @@ public class ClientConsume {
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
         GameSession gs = connection.gameSession;
 
+        conn = connection;
         return connection;
     }
 
@@ -51,6 +54,7 @@ public class ClientConsume {
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
         GameSession gs = connection.gameSession;
 
+        conn = connection;
         return connection;
 
     }
@@ -61,6 +65,12 @@ public class ClientConsume {
 
         List<String> maps = restTemplate.getForObject(endPoint, List.class);
         return maps;
+    }
+
+    public String startGame(String gameID, String mapName){
+        String endPoint = uri + "/game/start/" + gameID + "?mapName=" + mapName + "&uuid=" + conn.userID;
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(endPoint, String.class);
     }
 
 }

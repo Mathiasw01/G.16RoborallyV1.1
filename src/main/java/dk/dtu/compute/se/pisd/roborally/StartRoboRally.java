@@ -24,6 +24,7 @@ package dk.dtu.compute.se.pisd.roborally;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.GameSession;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 
 import java.util.List;
@@ -56,26 +57,53 @@ public class StartRoboRally {
 
         if (input.equals("J") || input.equals("j")) {
             join(clientConsume, scanner);
-
         } else if (input.equals("H") || input.equals("h")) {
-            System.out.println("Input game ID");
-            String gameID = scanner.nextLine();
-            try {
-                clientConsume.hostGame(gameID);
-                List<String> maps = clientConsume.getMap();
-                System.out.println("Choose map");
-                for (String str: maps) {
-                    System.out.println(str);
-                }
-                String map = choseMap(scanner, maps);
-                System.out.println(map);
-            } catch (RestClientException e){
-                System.out.println("This lobby already exist");
-                startMultiplayer(clientConsume);
-            }
+            host(clientConsume, scanner);
         } else {
             System.out.println("Not a command");
             startMultiplayer(clientConsume);
+        }
+    }
+
+    private static void host(ClientConsume clientConsume, Scanner scanner) {
+        System.out.println("Input game ID");
+        String gameID = scanner.nextLine();
+        String map = "testbeepboop";
+        try {
+            clientConsume.hostGame(gameID);
+            List<String> maps = clientConsume.getMap();
+            System.out.println("Choose map");
+            for (String str: maps) {
+                System.out.println(str);
+            }
+            map = choseMap(scanner, maps);
+        } catch (Exception e){
+            System.out.println(e);
+            if (e instanceof ResourceAccessException){
+                System.out.println("The server is down");
+            }
+            if (e instanceof RestClientException){
+                System.out.println("This lobby already exist");
+            }
+            startMultiplayer(clientConsume);
+        }
+        startGame(clientConsume, scanner, gameID, map);
+
+    }
+
+    private static void startGame(ClientConsume clientConsume, Scanner scanner, String gameID, String map) {
+        System.out.println("press s to start");
+        String keyPress = scanner.nextLine();
+        if (keyPress.equals("s") || keyPress.equals("S")) {
+            if (clientConsume.startGame(gameID, map).equals("100")){
+
+            } else if (clientConsume.startGame(gameID, map).equals("200")){
+                System.out.println("You are not authenticated!");
+                startGame(clientConsume, scanner, gameID, map);
+            } else if (clientConsume.startGame(gameID, map).equals("300")){
+                System.out.println("You need to be at least 2 players!");
+                startGame(clientConsume, scanner, gameID, map);
+            }
         }
     }
 
