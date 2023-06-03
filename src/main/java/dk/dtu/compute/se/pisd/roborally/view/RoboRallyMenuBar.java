@@ -47,6 +47,7 @@ public class RoboRallyMenuBar extends MenuBar {
     private MenuItem newGame;
 
     private MenuItem loadGame;
+    private MenuItem startMulti;
 
     private MenuItem stopGame;
 
@@ -98,6 +99,10 @@ public class RoboRallyMenuBar extends MenuBar {
         loadGame = new MenuItem("Load Game");
         loadGame.setOnAction( e -> this.appController.loadGame());
         controlMenu.getItems().add(loadGame);
+
+        startMulti = new MenuItem("Start multiplayer");
+        startMulti.setOnAction( e -> this.appController.loadFromServer());
+        controlMenu.getItems().add(startMulti);
 
         exitApp = new MenuItem("Exit");
         exitApp.setOnAction( e -> this.appController.exit());

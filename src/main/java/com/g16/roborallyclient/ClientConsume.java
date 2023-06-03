@@ -1,6 +1,7 @@
 package com.g16.roborallyclient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -9,7 +10,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
+import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
 
+import javax.swing.text.GapContent;
 import java.util.List;
 
 
@@ -17,13 +20,15 @@ public class ClientConsume {
    //String uri = "http://10.209.211.242:8081";
    String uri = "http://localhost:8081";
 
-   Connection conn;
+   public static Connection conn;
 
-    public List<GameSession> getLobbies(){
+    public String getLobbies(){
         String endPoint = uri + "/lobby";
-        ResponseEntity<List<GameSession>> response = getListResponseEntity(endPoint);
+       // ResponseEntity<List<GameSession>> response = getListResponseEntity(endPoint);
+        RestTemplate restTemplate = new RestTemplate();
+        String lobbies = restTemplate.getForObject(endPoint, String.class);
 
-        return response.getBody();
+        return lobbies;
     }
 
     @NotNull
@@ -71,6 +76,14 @@ public class ClientConsume {
         String endPoint = uri + "/game/start/" + gameID + "?mapName=" + mapName + "&uuid=" + conn.userID;
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(endPoint, String.class);
+    }
+
+
+    public GameController updateBoard(String gameID, String userID){
+        String endPoint = uri + "/game/update/" + gameID + "?uuid=" +userID;
+        RestTemplate restTemplate = new RestTemplate();
+        String str = restTemplate.getForObject(endPoint, String.class);
+        return SaveLoadController.deserializeString(str);
     }
 
 }

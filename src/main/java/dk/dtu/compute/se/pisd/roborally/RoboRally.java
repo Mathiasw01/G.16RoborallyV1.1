@@ -43,6 +43,7 @@ public class RoboRally extends Application {
 
     private Stage stage;
     private BorderPane boardRoot;
+    private GameController gm;
     // private RoboRallyMenuBar menuBar;
 
     // private AppController appController;
@@ -58,7 +59,7 @@ public class RoboRally extends Application {
 
         AppController appController = new AppController(this);
 
-        // create the primary scene with the a menu bar and a pane for
+        // create the primary scene with a menu bar and a pane for
         // the board view (which initially is empty); it will be filled
         // when the user creates a new game or loads a game
         RoboRallyMenuBar menuBar = new RoboRallyMenuBar(appController);
@@ -102,7 +103,7 @@ public class RoboRally extends Application {
     }
 
     public static void main(String[] args) {
-        launch(args);
+       launch(args);
     }
 
 }

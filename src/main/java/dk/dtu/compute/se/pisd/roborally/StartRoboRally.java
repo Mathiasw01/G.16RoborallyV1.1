@@ -22,11 +22,16 @@
 package dk.dtu.compute.se.pisd.roborally;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.GameSession;
+import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import netscape.javascript.JSObject;
+import org.json.JSONObject;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -42,12 +47,16 @@ import java.util.Scanner;
  */
 public class StartRoboRally {
 
+    private static RoboRally roboRally = new RoboRally();
+
     public static void main(String[] args) {
         ClientConsume clientConsume = new ClientConsume();
         startMultiplayer(clientConsume);
-
+        /*
         System.out.println(System.getProperty("user.dir"));
         RoboRally.main(args);
+
+         */
     }
 
     private static void startMultiplayer(ClientConsume clientConsume) {
@@ -95,8 +104,11 @@ public class StartRoboRally {
         System.out.println("press s to start");
         String keyPress = scanner.nextLine();
         if (keyPress.equals("s") || keyPress.equals("S")) {
+            System.out.println(clientConsume.startGame(gameID, map));
             if (clientConsume.startGame(gameID, map).equals("100")){
-
+                GameController gm = clientConsume.updateBoard(gameID, ClientConsume.conn.userID);
+                ClientConsume.conn.gameSession.setController(gm);
+                RoboRally.main(null);
             } else if (clientConsume.startGame(gameID, map).equals("200")){
                 System.out.println("You are not authenticated!");
                 startGame(clientConsume, scanner, gameID, map);
@@ -109,20 +121,29 @@ public class StartRoboRally {
 
     private static void join(ClientConsume clientConsume, Scanner scanner) {
         System.out.println("Active lobbies");
-        List<GameSession> lobbies = clientConsume.getLobbies();
-        if (!lobbies.isEmpty()){
-            for (GameSession session: lobbies) {
-                System.out.println(session.gameID);
-            }
-        } else {
-            System.out.println("No active lobbies");
-        }
+        JSONObject jsonObject = new JSONObject(clientConsume.getLobbies().trim());
 
+        Iterator<String> keys = jsonObject.keys();
+
+        if (!keys.hasNext()){
+            System.out.println("No active lobbies");
+        } else {
+            while(keys.hasNext()) {
+                String key = keys.next();
+                System.out.print("Lobby ID: " + key + ": Player count: ");
+                System.out.println(jsonObject.get(key));
+            }
+        }
 
         System.out.println("Input game ID");
 
+
         String gameID = scanner.nextLine();
         try {
+            if ((int)jsonObject.get(gameID) >= 6 ){
+                System.out.println("The lobby is full");
+                startMultiplayer(clientConsume);
+            }
             clientConsume.joinGame(gameID);
         } catch (RestClientException e) {
             System.out.println("Lobby does not exist");

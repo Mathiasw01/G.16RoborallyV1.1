@@ -85,8 +85,9 @@ public class SaveLoadController {
             System.out.println("Couldn't load file.. ");
         }
         return null;
+    }
 
-
-
+    public static GameController deserializeString(String str){
+        return gson.fromJson(str, GameController.class);
     }
 }

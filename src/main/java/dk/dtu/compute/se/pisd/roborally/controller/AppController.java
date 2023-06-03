@@ -21,6 +21,7 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import com.g16.roborallyclient.ClientConsume;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Observer;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 
@@ -171,9 +172,6 @@ public class AppController implements Observer {
         gameController.startProgrammingPhase();
 
         roboRally.createBoardView(gameController);
-
-
-
     }
 
     /**
@@ -237,6 +235,29 @@ public class AppController implements Observer {
     @Override
     public void update(Subject subject) {
         // XXX do nothing for now
+    }
+
+    public void loadFromServer() {
+
+        GameController gm = ClientConsume.conn.gameSession.getController();
+
+        if(gm== null){
+            System.out.println("gm was null");
+            return;
+        }
+        if (gameController != null) {
+            // The UI should not allow this, but in case this happens anyway.
+            // give the user the option to save the game or abort this operation!
+            stopGame();
+        }
+        Board board = new Board(gm.board.width,gm.board.height, gm.board, PLAYER_COLORS);
+        gameController = new GameController(board);
+
+
+        gameController.startProgrammingPhase();
+
+        roboRally.createBoardView(gameController);
+
     }
 
 }
