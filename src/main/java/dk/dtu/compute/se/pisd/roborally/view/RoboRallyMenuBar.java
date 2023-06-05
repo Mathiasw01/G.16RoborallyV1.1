@@ -53,78 +53,88 @@ public class RoboRallyMenuBar extends MenuBar {
 
     private MenuItem exitApp;
     private String map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap";
+    boolean isOnline;
 
-    public RoboRallyMenuBar(AppController appController) {
+    public RoboRallyMenuBar(AppController appController, boolean isOnline) {
         this.appController = appController;
+        this.isOnline = isOnline;
+
 
         controlMenu = new Menu("File");
         this.getMenus().add(controlMenu);
 
-        mapMenu = new Menu("Select Map");
-        this.getMenus().add(mapMenu);
+        if(!isOnline) {
+            mapMenu = new Menu("Select Map");
+            this.getMenus().add(mapMenu);
 
-        testMap = new MenuItem("Test Map");
-        testMap.setOnAction(e -> {
-            this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap";
-            mapMenu.setText("Test Map");
-        });
-        mapMenu.getItems().add(testMap);
+            testMap = new MenuItem("Test Map");
+            testMap.setOnAction(e -> {
+                this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap";
+                mapMenu.setText("Test Map");
+            });
+            mapMenu.getItems().add(testMap);
 
-        dizzy = new MenuItem("Dizzy Highway");
-        dizzy.setOnAction(e -> {
-            mapMenu.setText("Dizzy Highway");
-            this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/DizzyHighway";
-        });
-        mapMenu.getItems().add(dizzy);
+            dizzy = new MenuItem("Dizzy Highway");
+            dizzy.setOnAction(e -> {
+                mapMenu.setText("Dizzy Highway");
+                this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/DizzyHighway";
+            });
+            mapMenu.getItems().add(dizzy);
 
-        octane = new MenuItem("High Octane");
-        octane.setOnAction(e -> {
-            mapMenu.setText("High Octane");
-            this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/High Octane";
-        });
-        mapMenu.getItems().add(octane);
+            octane = new MenuItem("High Octane");
+            octane.setOnAction(e -> {
+                mapMenu.setText("High Octane");
+                this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/High Octane";
+            });
+            mapMenu.getItems().add(octane);
 
-        newGame = new MenuItem("New Game");
-        newGame.setOnAction( e ->  this.appController.newGame(map));
-        controlMenu.getItems().add(newGame);
+            newGame = new MenuItem("New Game");
+            newGame.setOnAction(e -> this.appController.newGame(map));
+            controlMenu.getItems().add(newGame);
 
-        stopGame = new MenuItem("Stop Game");
-        stopGame.setOnAction( e -> this.appController.stopGame());
-        controlMenu.getItems().add(stopGame);
+            stopGame = new MenuItem("Stop Game");
+            stopGame.setOnAction(e -> this.appController.stopGame());
+            controlMenu.getItems().add(stopGame);
 
-        saveGame = new MenuItem("Save Game");
-        saveGame.setOnAction( e -> this.appController.saveGame());
-        controlMenu.getItems().add(saveGame);
+            saveGame = new MenuItem("Save Game");
+            saveGame.setOnAction(e -> this.appController.saveGame());
+            controlMenu.getItems().add(saveGame);
 
-        loadGame = new MenuItem("Load Game");
-        loadGame.setOnAction( e -> this.appController.loadGame());
-        controlMenu.getItems().add(loadGame);
+            loadGame = new MenuItem("Load Game");
+            loadGame.setOnAction(e -> this.appController.loadGame());
+            controlMenu.getItems().add(loadGame);
 
-        startMulti = new MenuItem("Start multiplayer");
-        startMulti.setOnAction( e -> this.appController.loadFromServer());
-        controlMenu.getItems().add(startMulti);
 
-        exitApp = new MenuItem("Exit");
-        exitApp.setOnAction( e -> this.appController.exit());
-        controlMenu.getItems().add(exitApp);
+            exitApp = new MenuItem("Exit");
+            exitApp.setOnAction(e -> this.appController.exit());
+            controlMenu.getItems().add(exitApp);
+        } else if (isOnline) {
+            startMulti = new MenuItem("Start multiplayer");
+            startMulti.setOnAction( e -> this.appController.loadFromServer());
+            controlMenu.getItems().add(startMulti);
+        }
 
-        controlMenu.setOnShowing(e -> update());
+
+        controlMenu.setOnShowing(e -> update(isOnline));
         controlMenu.setOnShown(e -> this.updateBounds());
-        update();
+        update(isOnline);
     }
 
-    public void update() {
-        if (appController.isGameRunning()) {
-            newGame.setVisible(false);
-            stopGame.setVisible(true);
-            saveGame.setVisible(true);
-            loadGame.setVisible(false);
-        } else {
-            newGame.setVisible(true);
-            stopGame.setVisible(false);
-            saveGame.setVisible(false);
-            loadGame.setVisible(true);
+    public void update(boolean isOnline) {
+        if (!isOnline) {
+            if (appController.isGameRunning()) {
+                newGame.setVisible(false);
+                stopGame.setVisible(true);
+                saveGame.setVisible(true);
+                loadGame.setVisible(false);
+            } else {
+                newGame.setVisible(true);
+                stopGame.setVisible(false);
+                saveGame.setVisible(false);
+                loadGame.setVisible(true);
+            }
         }
+
     }
 
 }

@@ -44,9 +44,8 @@ public class RoboRally extends Application {
     private Stage stage;
     private BorderPane boardRoot;
     private GameController gm;
-    // private RoboRallyMenuBar menuBar;
 
-    // private AppController appController;
+    public static boolean isOnline;
 
     @Override
     public void init() throws Exception {
@@ -62,7 +61,7 @@ public class RoboRally extends Application {
         // create the primary scene with a menu bar and a pane for
         // the board view (which initially is empty); it will be filled
         // when the user creates a new game or loads a game
-        RoboRallyMenuBar menuBar = new RoboRallyMenuBar(appController);
+        RoboRallyMenuBar menuBar = new RoboRallyMenuBar(appController, isOnline);
         boardRoot = new BorderPane();
         VBox vbox = new VBox(menuBar, boardRoot);
         vbox.setMinWidth(MIN_APP_WIDTH);
@@ -103,6 +102,11 @@ public class RoboRally extends Application {
     }
 
     public static void main(String[] args) {
+        if (args[0].equals("online")){
+            isOnline = true;
+        } else if (args[0].equals("offline")){
+            isOnline = false;
+        }
        launch(args);
     }
 

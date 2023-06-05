@@ -51,7 +51,7 @@ public class StartRoboRally {
 
     public static void main(String[] args) {
         ClientConsume clientConsume = new ClientConsume();
-        startMultiplayer(clientConsume);
+        localOrOnline(clientConsume);
         /*
         System.out.println(System.getProperty("user.dir"));
         RoboRally.main(args);
@@ -59,9 +59,24 @@ public class StartRoboRally {
          */
     }
 
-    private static void startMultiplayer(ClientConsume clientConsume) {
-        System.out.println("J join or H host");
+    private static void localOrOnline(ClientConsume clientConsume) {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("S singleplayer or M multiplayer");
+        String in = scanner.nextLine();
+
+        if (in.equals("S") || in.equals("s")) {
+            RoboRally.main(new String[]{"offline"});
+        } else if (in.equals("O") || in.equals("o")) {
+            startMultiplayer(clientConsume);
+        } else {
+            System.out.println("Not a command");
+            localOrOnline(clientConsume);
+        }
+    }
+
+    private static void startMultiplayer(ClientConsume clientConsume) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("J join or H host");
         String input = scanner.nextLine();
 
         if (input.equals("J") || input.equals("j")) {
@@ -108,7 +123,7 @@ public class StartRoboRally {
             if (clientConsume.startGame(gameID, map).equals("100")){
                 GameController gm = clientConsume.updateBoard(gameID, ClientConsume.conn.userID);
                 ClientConsume.conn.gameSession.setController(gm);
-                RoboRally.main(null);
+                RoboRally.main(new String[]{"online"});
             } else if (clientConsume.startGame(gameID, map).equals("200")){
                 System.out.println("You are not authenticated!");
                 startGame(clientConsume, scanner, gameID, map);
