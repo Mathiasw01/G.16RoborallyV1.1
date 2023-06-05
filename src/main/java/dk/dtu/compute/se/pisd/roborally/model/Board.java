@@ -151,17 +151,22 @@ public class Board extends Subject {
             }
         }
 
-        int currentp = 0;
+        int currentPlayerIndex = 0;
         for (int i = 0; i < savedBoard.getPlayersNumber(); i++) {
             Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1), i+1, programmingDeckInit.init());
-            player.setHeading(savedBoard.getPlayer(i).getHeading());
+            Player savedPlayer = savedBoard.getPlayer(i);
+
+            player.setHeading(savedPlayer.getHeading());
+            player.setCards(savedPlayer.getCards());
+            player.setProgram(savedPlayer.getProgram());
             this.addPlayer(player);
-            if(Objects.equals(savedBoard.getPlayers().get(i).getName(), savedBoard.getCurrentPlayer().getName())){
-                currentp = i;
+
+            if(Objects.equals(savedPlayer.getName(), savedBoard.getCurrentPlayer().getName())){
+                currentPlayerIndex = i;
             }
         }
 
-        setCurrentPlayer(getPlayer(currentp));
+        setCurrentPlayer(getPlayer(currentPlayerIndex));
 
 
         for (Space[] sr : savedBoard.spaces){

@@ -118,6 +118,31 @@ public class Player extends Subject {
         return color;
     }
 
+    public void setProgram(CommandCardField[] cards){
+        if(cards.length != NO_REGISTERS){
+            return;
+        }
+        for(int i = 0; i < NO_REGISTERS; i++){
+            this.program[i].setCard(cards[i].getCard());
+        }
+    }
+    public void setCards(CommandCardField[] cards){
+        if(cards.length != NO_CARDS){
+            return;
+        }
+        for(int i = 0; i < NO_CARDS; i++){
+            this.cards[i].setCard(cards[i].getCard());
+        }
+
+    }
+
+    public CommandCardField[] getProgram(){
+        return program;
+    }
+    public CommandCardField[] getCards(){
+        return cards;
+    }
+
     public void setColor(String color) {
         this.color = color;
         notifyChange();

@@ -252,6 +252,7 @@ public class AppController implements Observer {
         }
         Board board = new Board(gm.board.width,gm.board.height, gm.board, PLAYER_COLORS);
         gameController = new GameController(board);
+        
 
 
         gameController.startProgrammingPhase();

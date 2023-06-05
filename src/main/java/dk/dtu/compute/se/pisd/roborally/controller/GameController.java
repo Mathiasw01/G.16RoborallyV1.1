@@ -247,16 +247,21 @@ public class GameController {
                     field.setCard(null);
                     field.setVisible(true);
                 }
+
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
-                    /*
-                    field.setCard(generateRandomCommandCard());
-                    field.setVisible(true);
-                     */
-                    field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
+
+                  //field.setCard(generateRandomCommandCard());
+                  //field.setVisible(true);
+                    /* Get new cards from server...
+                    if(field.getCard() == null){
+                        field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
+                    }
+                    */
                     field.setVisible(true);
 
                 }
+
             }
         }
     }
@@ -557,6 +562,12 @@ public class GameController {
     public boolean testIfLaserIsBlocked(int x, int y, Laser laser){
         int[] cords = getNewCoordinates(laser.getDirection(),x,y,true);
         Space space = board.getSpace(cords[0],cords[1]);
+        /*
+        #TODO Find out why space is null
+         */
+        if(space == null){
+            return false;
+        }
         System.out.println(space.x + space.y);
         for (FieldObject object : space.getObjects()){
             if (object instanceof Laser l){
