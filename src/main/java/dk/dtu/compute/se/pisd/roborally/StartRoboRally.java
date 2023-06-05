@@ -66,7 +66,7 @@ public class StartRoboRally {
 
         if (in.equals("S") || in.equals("s")) {
             RoboRally.main(new String[]{"offline"});
-        } else if (in.equals("O") || in.equals("o")) {
+        } else if (in.equals("M") || in.equals("m")) {
             startMultiplayer(clientConsume);
         } else {
             System.out.println("Not a command");
