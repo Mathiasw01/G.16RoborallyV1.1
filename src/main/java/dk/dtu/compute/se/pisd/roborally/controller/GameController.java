@@ -45,6 +45,8 @@ public class GameController {
     final public Board board;
     private Heading originalHeading = null;
 
+    private boolean isOnline;
+
 
     public Heading getOriginalHeading() {
         return originalHeading;
@@ -54,8 +56,9 @@ public class GameController {
         this.originalHeading = originalHeading;
     }
 
-    public GameController(@NotNull Board board) {
+    public GameController(@NotNull Board board, boolean isOnline) {
         this.board = board;
+        this.isOnline = isOnline;
     }
 
     /**
@@ -252,12 +255,10 @@ public class GameController {
                     CommandCardField field = player.getCardField(j);
 
                   //field.setCard(generateRandomCommandCard());
-                  //field.setVisible(true);
-                    /* Get new cards from server...
-                    if(field.getCard() == null){
+                    /* Get new cards from server...*/
+                    if(!isOnline && field.getCard() == null){
                         field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
                     }
-                    */
                     field.setVisible(true);
 
                 }

@@ -63,8 +63,10 @@ public class AppController implements Observer {
 
     private List<CommandCard> discardPile;
 
-    public AppController(@NotNull RoboRally roboRally) {
-        this.roboRally = roboRally;
+    private boolean isOnline = false;
+
+    public AppController(@NotNull RoboRally roboRally, boolean isOnline) {
+        this.roboRally = roboRally;this.isOnline = isOnline;
     }
 
     /**
@@ -95,7 +97,7 @@ public class AppController implements Observer {
             // XXX the board should eventually be created programmatically or loaded from a file
             //     here we just create an empty board with the required number of players.
             Board board = new Board(13,10, map);
-            gameController = new GameController(board);
+            gameController = new GameController(board, isOnline);
             int no = result.get();
 
             for (int i = 0; i < no; i++) {
@@ -166,7 +168,7 @@ public class AppController implements Observer {
            stopGame();
         }
         Board board = new Board(g.board.width,g.board.height, g.board, PLAYER_COLORS);
-        gameController = new GameController(board);
+        gameController = new GameController(board, isOnline);
 
 
         gameController.startProgrammingPhase();
@@ -251,8 +253,8 @@ public class AppController implements Observer {
             stopGame();
         }
         Board board = new Board(gm.board.width,gm.board.height, gm.board, PLAYER_COLORS);
-        gameController = new GameController(board);
-        
+        gameController = new GameController(board, isOnline);
+
 
 
         gameController.startProgrammingPhase();

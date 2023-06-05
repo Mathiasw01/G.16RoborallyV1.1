@@ -48,8 +48,8 @@ public class ClientConsume {
         RestTemplate restTemplate = new RestTemplate();
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
         GameSession gs = connection.gameSession;
-
         conn = connection;
+
         return connection;
     }
 
@@ -60,6 +60,7 @@ public class ClientConsume {
         GameSession gs = connection.gameSession;
 
         conn = connection;
+
         return connection;
 
     }
@@ -75,7 +76,9 @@ public class ClientConsume {
     public String startGame(String gameID, String mapName){
         String endPoint = uri + "/game/start/" + gameID + "?mapName=" + mapName + "&uuid=" + conn.userID;
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(endPoint, String.class);
+        String response = restTemplate.getForObject(endPoint, String.class);
+
+        return response;
     }
 
 
@@ -84,6 +87,12 @@ public class ClientConsume {
         RestTemplate restTemplate = new RestTemplate();
         String str = restTemplate.getForObject(endPoint, String.class);
         return SaveLoadController.deserializeString(str);
+    }
+
+    public String getPlayerToken(String gameID, String userID){
+        String endPoint = uri + "/game/playertoken/" + gameID + "?uuid=" +userID;
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(endPoint, String.class);
     }
 
 }

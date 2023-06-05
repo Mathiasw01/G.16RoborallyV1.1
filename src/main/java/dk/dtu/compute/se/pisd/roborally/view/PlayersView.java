@@ -21,11 +21,14 @@
  */
 package dk.dtu.compute.se.pisd.roborally.view;
 
+import com.g16.roborallyclient.Connection;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Board;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import javafx.scene.control.TabPane;
+
+import java.util.Objects;
 
 /**
  * ...
@@ -39,16 +42,39 @@ public class PlayersView extends TabPane implements ViewObserver {
 
     private PlayerView[] playerViews;
 
-    public PlayersView(GameController gameController) {
+    public PlayersView(GameController gameController, boolean isOnline) {
         board = gameController.board;
 
         this.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 
-        playerViews = new PlayerView[board.getPlayersNumber()];
+        if(!isOnline){
+            playerViews = new PlayerView[board.getPlayersNumber()];
+            for (int i = 0; i < board.getPlayersNumber();  i++) {
+
+
+
+                playerViews[i] = new PlayerView(gameController, board.getPlayer(i));
+                this.getTabs().add(playerViews[i]);
+
+            }
+        } else {
+
+        playerViews = new PlayerView[1];
         for (int i = 0; i < board.getPlayersNumber();  i++) {
-            playerViews[i] = new PlayerView(gameController, board.getPlayer(i));
-            this.getTabs().add(playerViews[i]);
+
+
+
+            if(Objects.equals(board.getPlayer(i).getName(), Connection.getPlayerToken())){
+                playerViews[0] = new PlayerView(gameController, board.getPlayer(i));
+                this.getTabs().add(playerViews[0]);
+            }
+
         }
+
+        }
+
+
+
         board.attach(this);
         update(board);
     }

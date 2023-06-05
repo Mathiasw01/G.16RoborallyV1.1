@@ -21,12 +21,9 @@
  */
 package dk.dtu.compute.se.pisd.roborally;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.g16.roborallyclient.ClientConsume;
-import com.g16.roborallyclient.GameSession;
+import com.g16.roborallyclient.Connection;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import netscape.javascript.JSObject;
 import org.json.JSONObject;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
@@ -95,12 +92,13 @@ public class StartRoboRally {
         String map = "testbeepboop";
         try {
             clientConsume.hostGame(gameID);
+
             List<String> maps = clientConsume.getMap();
             System.out.println("Choose map");
             for (String str: maps) {
                 System.out.println(str);
             }
-            map = choseMap(scanner, maps);
+            map = chooseMap(scanner, maps);
         } catch (Exception e){
             System.out.println(e);
             if (e instanceof ResourceAccessException){
@@ -111,6 +109,9 @@ public class StartRoboRally {
             }
             startMultiplayer(clientConsume);
         }
+
+
+
         startGame(clientConsume, scanner, gameID, map);
 
     }
@@ -121,8 +122,12 @@ public class StartRoboRally {
         if (keyPress.equals("s") || keyPress.equals("S")) {
             System.out.println(clientConsume.startGame(gameID, map));
             if (clientConsume.startGame(gameID, map).equals("100")){
+
                 GameController gm = clientConsume.updateBoard(gameID, ClientConsume.conn.userID);
+
                 ClientConsume.conn.gameSession.setController(gm);
+                String playerToken = clientConsume.getPlayerToken(gameID, ClientConsume.conn.userID);
+                Connection.setPlayerToken(playerToken);
                 RoboRally.main(new String[]{"online"});
             } else if (clientConsume.startGame(gameID, map).equals("200")){
                 System.out.println("You are not authenticated!");
@@ -158,15 +163,27 @@ public class StartRoboRally {
             if ((int)jsonObject.get(gameID) >= 6 ){
                 System.out.println("The lobby is full");
                 startMultiplayer(clientConsume);
+
             }
             clientConsume.joinGame(gameID);
+
         } catch (RestClientException e) {
             System.out.println("Lobby does not exist");
             startMultiplayer(clientConsume);
         }
+        System.out.println("Press 'j' to start");
+        scanner.nextLine();
+        GameController gm = clientConsume.updateBoard(gameID, ClientConsume.conn.userID);
+
+        ClientConsume.conn.gameSession.setController(gm);
+        String playerToken = clientConsume.getPlayerToken(gameID, ClientConsume.conn.userID);
+        Connection.setPlayerToken(playerToken);
+        RoboRally.main(new String[]{"online"});
+
+
     }
 
-    private static String choseMap(Scanner scanner, List<String> maps) {
+    private static String chooseMap(Scanner scanner, List<String> maps) {
         String chosenMap = scanner.nextLine();
         String finalMap = null;
         Optional<String> result = maps.stream().filter(map -> map.equals(chosenMap)).findFirst();
@@ -174,7 +191,7 @@ public class StartRoboRally {
             finalMap = result.get();
         } else {
             System.out.println("This map does not exist, try again");
-            return choseMap(scanner, maps);
+            return chooseMap(scanner, maps);
         }
         return finalMap;
     }

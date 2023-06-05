@@ -56,7 +56,7 @@ public class RoboRally extends Application {
     public void start(Stage primaryStage) {
         stage = primaryStage;
 
-        AppController appController = new AppController(this);
+        AppController appController = new AppController(this, isOnline);
 
         // create the primary scene with a menu bar and a pane for
         // the board view (which initially is empty); it will be filled
@@ -84,7 +84,7 @@ public class RoboRally extends Application {
 
         if (gameController != null) {
             // create and add view for new board
-            BoardView boardView = new BoardView(gameController);
+            BoardView boardView = new BoardView(gameController, isOnline);
             boardRoot.setCenter(boardView);
         }
 
