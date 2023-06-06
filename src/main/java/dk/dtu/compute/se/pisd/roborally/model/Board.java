@@ -74,6 +74,7 @@ public class Board extends Subject {
 
     private int counter=0;
 
+    @Expose
     private RebootField rebootField = null;
 
     private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
