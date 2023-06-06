@@ -1,3 +1,4 @@
+/*
 package dk.dtu.compute.se.pisd.roborally;
 
 import com.g16.roborallyclient.ClientConsume;
@@ -52,7 +53,7 @@ public class InitRoboRally extends Application {
             public void handle(ActionEvent e)
             {
                 l.setText("Imaginary friend mode selected");
-                startMultiplayer();
+                //startMultiplayer();
             }
         };
 
@@ -72,25 +73,14 @@ public class InitRoboRally extends Application {
         s.show();
     }
 
+
     public static void main(String[] args) {
         launch(args);
         //localOrOnline(clientConsume);
     }
 
-    /*private static void localOrOnline(ClientConsume clientConsume) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("S singleplayer or M multiplayer");
-        String in = scanner.nextLine();
 
-        if (in.equals("S") || in.equals("s")) {
-            RoboRally.main(new String[]{"offline"});
-        } else if (in.equals("M") || in.equals("m")) {
-            startMultiplayer(clientConsume);
-        } else {
-            System.out.println("Not a command");
-            localOrOnline(clientConsume);
-        }
-    }*/
+
     private static void startMultiplayer() {
         Scanner scanner = new Scanner(System.in);
         System.out.println("J join or H host");
@@ -228,4 +218,8 @@ public class InitRoboRally extends Application {
         }
         return finalMap;
     }
+
+
 }
+
+ */
