@@ -331,11 +331,34 @@ public class GameController {
 
         do {
             TimeUnit.SECONDS.sleep(2);
-
             cards = ClientConsume.executeProgrammedCards(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
         } while (cards[0].equals("500"));
 
+        int playerIndex = 0;
+        for (Player player: board.getPlayers()) {
+            for (int i = 0; i < 5; i++){
+                player.getProgramField(i).setCard(convertCommand(cards[i+(playerIndex*5)]));
+            }
+            playerIndex++;
+        }
         board.setPhase(Phase.ACTIVATION);
+    }
+
+    private CommandCard convertCommand(String sCom){
+        return switch (sCom) {
+            case "Move 1" -> new CommandCard(Command.FORWARD);
+            case "Move 2" -> new CommandCard(Command.FAST_FORWARD);
+            case "Move 3" -> new CommandCard(Command.MOVE_THREE);
+            case "Turn Right" -> new CommandCard(Command.RIGHT);
+            case "Turn Left" -> new CommandCard(Command.LEFT);
+            case "Do a u-turn" -> new CommandCard(Command.UTURN);
+            case "Power Up" -> new CommandCard(Command.POWERUP);
+            case "Back Up" -> new CommandCard(Command.MOVE_BACK);
+            case "Repeat last card" -> new CommandCard(Command.AGAIN);
+            case "Turn left or right" -> new CommandCard(Command.CHOOSETURN);
+            case "Spam" -> new CommandCard(Command.SPAM);
+            default -> null;
+        };
     }
 
     // XXX: V2
