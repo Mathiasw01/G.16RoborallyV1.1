@@ -175,6 +175,7 @@ public class StartRoboRally {
             }
             if (clientConsume.isStarted(gameID)) {
                 System.out.println("You can't join this because the game has started");
+                startMultiplayer(clientConsume);
             } else {
                 clientConsume.joinGame(gameID);
             }
