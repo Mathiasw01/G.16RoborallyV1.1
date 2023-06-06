@@ -100,7 +100,6 @@ public class StartRoboRally {
             }
             map = chooseMap(scanner, maps);
         } catch (Exception e){
-            System.out.println(e);
             if (e instanceof ResourceAccessException){
                 System.out.println("The server is down");
             }
@@ -141,7 +140,13 @@ public class StartRoboRally {
 
     private static void join(ClientConsume clientConsume, Scanner scanner) {
         System.out.println("Active lobbies");
-        JSONObject jsonObject = new JSONObject(clientConsume.getLobbies().trim());
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(clientConsume.getLobbies().trim());
+        } catch (ResourceAccessException e) {
+            System.out.println("The server is down");
+            localOrOnline(clientConsume);
+        }
 
         Iterator<String> keys = jsonObject.keys();
 

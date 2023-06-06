@@ -8,6 +8,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
@@ -22,7 +23,7 @@ public class ClientConsume {
 
    public static Connection conn;
 
-    public String getLobbies(){
+    public String getLobbies() throws ResourceAccessException {
         String endPoint = uri + "/lobby";
        // ResponseEntity<List<GameSession>> response = getListResponseEntity(endPoint);
         RestTemplate restTemplate = new RestTemplate();

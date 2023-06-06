@@ -37,6 +37,11 @@
             "cards": [
               {
                 "card": {
+                  "command": "FORWARD"
+                }
+              },
+              {
+                "card": {
                   "command": "RIGHT"
                 }
               },
@@ -47,7 +52,12 @@
               },
               {
                 "card": {
-                  "command": "LEFT"
+                  "command": "FORWARD"
+                }
+              },
+              {
+                "card": {
+                  "command": "FORWARD"
                 }
               },
               {
@@ -62,17 +72,7 @@
               },
               {
                 "card": {
-                  "command": "RIGHT"
-                }
-              },
-              {
-                "card": {
-                  "command": "FORWARD"
-                }
-              },
-              {
-                "card": {
-                  "command": "RIGHT"
+                  "command": "LEFT"
                 }
               }
             ],
@@ -142,12 +142,17 @@
             "cards": [
               {
                 "card": {
-                  "command": "FAST_FORWARD"
+                  "command": "AGAIN"
                 }
               },
               {
                 "card": {
-                  "command": "AGAIN"
+                  "command": "UTURN"
+                }
+              },
+              {
+                "card": {
+                  "command": "RIGHT"
                 }
               },
               {
@@ -167,12 +172,7 @@
               },
               {
                 "card": {
-                  "command": "RIGHT"
-                }
-              },
-              {
-                "card": {
-                  "command": "RIGHT"
+                  "command": "MOVE_THREE"
                 }
               },
               {
@@ -1182,12 +1182,17 @@
         "cards": [
           {
             "card": {
-              "command": "FAST_FORWARD"
+              "command": "AGAIN"
             }
           },
           {
             "card": {
-              "command": "AGAIN"
+              "command": "UTURN"
+            }
+          },
+          {
+            "card": {
+              "command": "RIGHT"
             }
           },
           {
@@ -1207,12 +1212,7 @@
           },
           {
             "card": {
-              "command": "RIGHT"
-            }
-          },
-          {
-            "card": {
-              "command": "RIGHT"
+              "command": "MOVE_THREE"
             }
           },
           {
@@ -1237,6 +1237,11 @@
         "cards": [
           {
             "card": {
+              "command": "FORWARD"
+            }
+          },
+          {
+            "card": {
               "command": "RIGHT"
             }
           },
@@ -1247,7 +1252,12 @@
           },
           {
             "card": {
-              "command": "LEFT"
+              "command": "FORWARD"
+            }
+          },
+          {
+            "card": {
+              "command": "FORWARD"
             }
           },
           {
@@ -1262,17 +1272,7 @@
           },
           {
             "card": {
-              "command": "RIGHT"
-            }
-          },
-          {
-            "card": {
-              "command": "FORWARD"
-            }
-          },
-          {
-            "card": {
-              "command": "RIGHT"
+              "command": "LEFT"
             }
           }
         ],
@@ -1293,12 +1293,17 @@
       "cards": [
         {
           "card": {
-            "command": "FAST_FORWARD"
+            "command": "AGAIN"
           }
         },
         {
           "card": {
-            "command": "AGAIN"
+            "command": "UTURN"
+          }
+        },
+        {
+          "card": {
+            "command": "RIGHT"
           }
         },
         {
@@ -1318,12 +1323,7 @@
         },
         {
           "card": {
-            "command": "RIGHT"
-          }
-        },
-        {
-          "card": {
-            "command": "RIGHT"
+            "command": "MOVE_THREE"
           }
         },
         {

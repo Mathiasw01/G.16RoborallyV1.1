@@ -806,10 +806,4 @@ public class GameController {
         }
         continuePrograms();
     }
-
-
-
-
-
-
 }
