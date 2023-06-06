@@ -165,13 +165,15 @@ public class StartRoboRally {
 
         String gameID = scanner.nextLine();
         try {
-            if ((int)jsonObject.get(gameID) >= 6 ){
+            if ((int)jsonObject.get(gameID) >= 6 ) {
                 System.out.println("The lobby is full");
                 startMultiplayer(clientConsume);
-
             }
-            clientConsume.joinGame(gameID);
-
+            if (clientConsume.isStarted(gameID, ClientConsume.conn.userID)) {
+                System.out.println("You can't join this because the game has started");
+            } else {
+                clientConsume.joinGame(gameID);
+            }
         } catch (RestClientException e) {
             System.out.println("Lobby does not exist");
             startMultiplayer(clientConsume);

@@ -96,4 +96,11 @@ public class ClientConsume {
         return restTemplate.getForObject(endPoint, String.class);
     }
 
+    public boolean isStarted(String gameID, String userID){
+        String endPoint = uri + "/isstarted/" + gameID + "?uuid=" +userID;
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(endPoint, String.class);
+        return response.equals("true");
+    }
+
 }
