@@ -259,7 +259,7 @@ public class GameController {
 
                   //field.setCard(generateRandomCommandCard());
                     /* Get new cards from server...*/
-                    if(!isOnline && field.getCard() == null){
+                    if(field.getCard() == null){
                         field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
                     }
                     field.setVisible(true);
