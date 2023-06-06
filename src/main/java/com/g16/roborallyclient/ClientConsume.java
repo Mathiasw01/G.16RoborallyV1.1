@@ -2,12 +2,15 @@ package com.g16.roborallyclient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
+import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
@@ -18,11 +21,13 @@ import java.util.List;
 
 public class ClientConsume {
    //String uri = "http://10.209.211.242:8081";
-   static String uri = "http://localhost:8081";
+   static String uri = "http://10.209.211.220:8081";
+    //String uri = "http://localhost:8081";
+
 
    public static Connection conn;
 
-    public static String getLobbies(){
+    public static String getLobbies() throws ResourceAccessException {
         String endPoint = uri + "/lobby";
        // ResponseEntity<List<GameSession>> response = getListResponseEntity(endPoint);
         RestTemplate restTemplate = new RestTemplate();
@@ -95,4 +100,25 @@ public class ClientConsume {
         return restTemplate.getForObject(endPoint, String.class);
     }
 
+    public static boolean isStarted(String gameID){
+        String endPoint = uri + "/game/isstarted/" + gameID;
+        RestTemplate restTemplate = new RestTemplate();
+        String response = restTemplate.getForObject(endPoint, String.class);
+        return response.equals("true");
+    }
+
+    public static void sendProgram(String gameID, String userID, CommandCardField[] cards){
+        String endPoint = uri + "/game/program/" + gameID + "?uuid=" +userID;
+        RestTemplate restTemplate = new RestTemplate();
+        String[] program = new String[5];
+        int i = 0;
+        for (CommandCardField commandCardField : cards){
+            if (commandCardField.getCard() != null)
+                program[i] = commandCardField.getCard().command.displayName;
+            else
+                program[i] = "null";
+            i++;
+        }
+        restTemplate.postForObject(endPoint, program, String.class);
+    }
 }

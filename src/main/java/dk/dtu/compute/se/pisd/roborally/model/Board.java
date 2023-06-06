@@ -173,7 +173,11 @@ public class Board extends Subject {
             for(Space s : sr){
                 for(FieldObject fo : s.getObjects()){
                     if(fo instanceof Conveyor conveyor){
-                        spaces[s.x][s.y].addObjects(new Conveyor(Color.BLUE, conveyor.getDirection()));
+                        if (conveyor.isDouble()){
+                            spaces[s.x][s.y].addObjects(new Conveyor(Color.BLUE, conveyor.getDirection()));
+                        } else {
+                            spaces[s.x][s.y].addObjects(new Conveyor(Color.ORANGE, conveyor.getDirection()));
+                        }
                     } else if (fo instanceof  StartField sf) {
                         spaces[s.x][s.y].addObjects(new StartField());
                     }  else if (fo instanceof  CheckpointField cp) {

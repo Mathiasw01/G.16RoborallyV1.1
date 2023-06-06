@@ -14,15 +14,8 @@ import javafx.scene.paint.Paint;
 
 public class Conveyor extends MovementField {
 
-    public Paint getCOLOR() {
-        return COLOR;
-    }
-
-
 
     private final Color COLOR;
-
-
     @Expose
     private final boolean isDouble;
 
@@ -30,7 +23,14 @@ public class Conveyor extends MovementField {
         super(heading);
         this.COLOR = COLOR;
         this.isDouble = COLOR.equals(Color.BLUE);
+    }
 
+    public Color getCOLOR() {
+        return COLOR;
+    }
+
+    public boolean isDouble(){
+        return isDouble;
     }
 
 

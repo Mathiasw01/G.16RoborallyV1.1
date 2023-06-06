@@ -20,10 +20,6 @@ public class Connection {
     public static void setPlayerToken(String playerToken) {
         Connection.playerToken = playerToken;
     }
-
-
-
-
     public Connection(){
 
     }

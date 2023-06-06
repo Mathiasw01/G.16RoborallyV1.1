@@ -21,6 +21,9 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import com.g16.roborallyclient.ClientConsume;
+import com.g16.roborallyclient.Connection;
+import com.g16.roborallyclient.GameSession;
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.scene.paint.Color;
@@ -318,6 +321,13 @@ public class GameController {
         board.setPhase(Phase.ACTIVATION);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
+        for (Player player : board.getPlayers()) {
+            if (player.getName().equals(Connection.getPlayerToken())){
+                ClientConsume.sendProgram(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, player.getProgram());
+                break;
+            }
+        }
+
     }
 
     // XXX: V2
@@ -807,10 +817,4 @@ public class GameController {
         }
         continuePrograms();
     }
-
-
-
-
-
-
 }
