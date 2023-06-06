@@ -27,7 +27,7 @@ public class ClientConsume {
 
    public static Connection conn;
 
-    public String getLobbies() throws ResourceAccessException {
+    public static String getLobbies() throws ResourceAccessException {
         String endPoint = uri + "/lobby";
        // ResponseEntity<List<GameSession>> response = getListResponseEntity(endPoint);
         RestTemplate restTemplate = new RestTemplate();
@@ -48,29 +48,30 @@ public class ClientConsume {
         return response;
     }
 
-    public Connection joinGame(String gameID) throws RestClientException {
+    public static Connection joinGame(String gameID) throws RestClientException {
         String endPoint = uri + "/game/join/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
         GameSession gs = connection.gameSession;
         conn = connection;
-
+        System.out.println("UUID: " + connection.userID);
         return connection;
     }
 
-    public Connection hostGame(String gameID) throws RestClientException{
+    public static Connection hostGame(String gameID) throws RestClientException{
         String endPoint = uri + "/game/host/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
         GameSession gs = connection.gameSession;
 
         conn = connection;
+        System.out.println("UUID: " + connection.userID);
 
         return connection;
 
     }
 
-    public List<String> getMap (){
+    public static List<String> getMap (){
         String endPoint = uri + "/map/";
         RestTemplate restTemplate = new RestTemplate();
 
@@ -78,7 +79,7 @@ public class ClientConsume {
         return maps;
     }
 
-    public String startGame(String gameID, String mapName){
+    public static String startGame(String gameID, String mapName){
         String endPoint = uri + "/game/start/" + gameID + "?mapName=" + mapName + "&uuid=" + conn.userID;
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(endPoint, String.class);
@@ -87,20 +88,20 @@ public class ClientConsume {
     }
 
 
-    public GameController updateBoard(String gameID, String userID){
+    public static GameController updateBoard(String gameID, String userID){
         String endPoint = uri + "/game/update/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
         String str = restTemplate.getForObject(endPoint, String.class);
         return SaveLoadController.deserializeString(str);
     }
 
-    public String getPlayerToken(String gameID, String userID){
+    public static String getPlayerToken(String gameID, String userID){
         String endPoint = uri + "/game/playertoken/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(endPoint, String.class);
     }
 
-    public boolean isStarted(String gameID){
+    public static boolean isStarted(String gameID){
         String endPoint = uri + "/game/isstarted/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(endPoint, String.class);
@@ -120,5 +121,12 @@ public class ClientConsume {
             i++;
         }
         restTemplate.postForObject(endPoint, program, String.class);
+    }
+
+    public static String[] executeProgrammedCards(String gameID, String userID){
+        String endPoint = uri + "/game/getCards/" + gameID + "?uuid=" +userID;
+        RestTemplate restTemplate = new RestTemplate();
+        String[] response = restTemplate.getForObject(endPoint, String[].class);
+        return response;
     }
 }

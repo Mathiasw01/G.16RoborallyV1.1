@@ -107,7 +107,23 @@ public class RoboRally extends Application {
         } else if (args[0].equals("offline")){
             isOnline = false;
         }
-       launch(args);
+
+        launch(args);
+
     }
+
+
+    /*
+    public RoboRally(String[] args, Stage stage){
+        if (args[0].equals("online")){
+            isOnline = true;
+        } else if (args[0].equals("offline")){
+            isOnline = false;
+        }
+        this.start(stage);
+    }
+
+
+     */
 
 }

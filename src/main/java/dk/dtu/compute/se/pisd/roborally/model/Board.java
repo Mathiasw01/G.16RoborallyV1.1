@@ -74,6 +74,7 @@ public class Board extends Subject {
 
     private int counter=0;
 
+    @Expose
     private RebootField rebootField = null;
 
     private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
@@ -199,7 +200,8 @@ public class Board extends Subject {
                         spaces[s.x][s.y].addObjects(new Laser(laser.getDirection(), laser.getTYPE()));
                     } else if (fo instanceof  RebootField rebootField) {
                         rebootField = new RebootField(rebootField.getDirection(), rebootField.getX(), rebootField.getY());
-                        spaces[s.x][s.y].addObjects(new RebootField(rebootField.getDirection(), rebootField.getX(), rebootField.getY()));
+                        spaces[s.x][s.y].addObjects(rebootField);
+                        this.rebootField=rebootField;
                     }
 
 

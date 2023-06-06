@@ -1,30 +1,18 @@
 /*
- *  This file is part of the initial project provided for the
- *  course "Project in Software Development (02362)" held at
- *  DTU Compute at the Technical University of Denmark.
- *
- *  Copyright (C) 2019, 2020,2021: Ekkart Kindler, ekki@dtu.dk
- *
- *  This software is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; version 2 of the License.
- *
- *  This project is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this project; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- *
- */
 package dk.dtu.compute.se.pisd.roborally;
 
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import javafx.scene.control.Alert;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.Label;
+import javafx.stage.Stage;
 import org.json.JSONObject;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
@@ -35,38 +23,63 @@ import java.util.Optional;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
-/**
- * This is a class for starting up the RoboRally application. This is a
- * workaround for a strange quirk in the Open JavaFX project launcher,
- * which prevents starting a JavaFX application in IntelliJ directly:
- *
- *   https://stackoverflow.com/questions/52569724/javafx-11-create-a-jar-file-with-gradle/52571719#52571719
- *
- * @author Ekkart Kindler, ekki@dtu.dk
- */
-public class StartRoboRally {
+public class InitRoboRally extends Application {
+
+    private static final int MIN_APP_WIDTH = 600;
+
+    public void init() throws Exception {
+        super.init();
+    }
+
+    public void start(Stage s) throws Exception {
+
+        // create the primary scene with a menu bar and a pane for
+        // the board view (which initially is empty); it will be filled
+        // when the user creates a new game or loads a game
+        s.setTitle("InitRoboRally");
+        Button S = new Button("Singleplayer");
+        Button M = new Button("Multiplayer");
+        TilePane r = new TilePane();
+        Label l = new Label("Choose a gamemode");
+
+        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+            {
+                l.setText("No friends mode selected");
+                new RoboRally(new String[]{"offline"}, s);
+            }
+        };
+        EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent e)
+            {
+                l.setText("Imaginary friend mode selected");
+                //startMultiplayer();
+            }
+        };
+
+        S.setOnAction(event);
+        M.setOnAction(event1);
+
+        r.getChildren().add(S);
+        r.getChildren().add(M);
+        r.getChildren().add(l);
+
+        VBox vbox = new VBox(r);
+        vbox.setMinWidth(MIN_APP_WIDTH);
+        Scene primaryScene = new Scene(vbox);
+        s.setScene(primaryScene);
+        s.setResizable(false);
+        s.sizeToScene();
+        s.show();
+    }
+
 
     public static void main(String[] args) {
-        System.out.println(System.getProperty("user.dir"));
-        localOrOnline();
-       // InitRoboRally.main(args);
+        launch(args);
+        //localOrOnline(clientConsume);
     }
-    private static void localOrOnline() {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("S singleplayer or M multiplayer");
 
 
-        String in = scanner.nextLine();
-
-        if (in.equals("S") || in.equals("s")) {
-            RoboRally.main(new String[]{"offline"});
-        } else if (in.equals("M") || in.equals("m")) {
-            startMultiplayer();
-        } else {
-            System.out.println("Not a command");
-            localOrOnline();
-        }
-    }
 
     private static void startMultiplayer() {
         Scanner scanner = new Scanner(System.in);
@@ -82,7 +95,6 @@ public class StartRoboRally {
             startMultiplayer();
         }
     }
-
     private static void host(Scanner scanner) {
         System.out.println("Input game ID");
         String gameID = scanner.nextLine();
@@ -97,6 +109,7 @@ public class StartRoboRally {
             }
             map = chooseMap(scanner, maps);
         } catch (Exception e){
+            System.out.println(e);
             if (e instanceof ResourceAccessException){
                 System.out.println("The server is down");
             }
@@ -135,14 +148,13 @@ public class StartRoboRally {
         }
     }
 
-    private static void join(Scanner scanner){
+    private static void join(Scanner scanner) {
         System.out.println("Active lobbies");
-        JSONObject jsonObject = null;
+        JSONObject jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
         try {
             jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
         } catch (ResourceAccessException e) {
             System.out.println("The server is down");
-            localOrOnline();
         }
 
         Iterator<String> keys = jsonObject.keys();
@@ -162,7 +174,7 @@ public class StartRoboRally {
 
         String gameID = scanner.nextLine();
         try {
-            if ((int)jsonObject.get(gameID) >= 6 ) {
+            if ((int)jsonObject.get(gameID) >= 6 ){
                 System.out.println("The lobby is full");
                 startMultiplayer();
             }
@@ -190,6 +202,8 @@ public class StartRoboRally {
         String playerToken = ClientConsume.getPlayerToken(gameID, ClientConsume.conn.userID);
         Connection.setPlayerToken(playerToken);
         RoboRally.main(new String[]{"online"});
+
+
     }
 
     private static String chooseMap(Scanner scanner, List<String> maps) {
@@ -205,5 +219,7 @@ public class StartRoboRally {
         return finalMap;
     }
 
+
 }
 
+ */
