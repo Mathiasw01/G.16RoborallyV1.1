@@ -95,6 +95,7 @@ public class PlayerView extends Tab implements ViewObserver {
         finishButton = new Button("Finish Programming");
         finishButton.setOnAction( e -> {
             try {
+                this.setDisable(true);
                 gameController.finishProgrammingPhase();
             } catch (InterruptedException ex) {
                 System.out.println("interupt");
