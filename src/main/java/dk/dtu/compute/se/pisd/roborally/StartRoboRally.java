@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This is a class for starting up the RoboRally application. This is a
@@ -138,7 +139,7 @@ public class StartRoboRally {
         }
     }
 
-    private static void join(ClientConsume clientConsume, Scanner scanner) {
+    private static void join(ClientConsume clientConsume, Scanner scanner){
         System.out.println("Active lobbies");
         JSONObject jsonObject = null;
         try {
@@ -178,8 +179,16 @@ public class StartRoboRally {
             System.out.println("Lobby does not exist");
             startMultiplayer(clientConsume);
         }
-        System.out.println("Press 'j' to start");
-        scanner.nextLine();
+        //System.out.println("Press any key to start");
+        //scanner.nextLine();
+        while (!clientConsume.isStarted(gameID, ClientConsume.conn.userID)){
+            System.out.println("Waiting for game to start");
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e){
+                System.out.println("Sleep was interrupted");
+            }
+        }
         GameController gm = clientConsume.updateBoard(gameID, ClientConsume.conn.userID);
 
         ClientConsume.conn.gameSession.setController(gm);
