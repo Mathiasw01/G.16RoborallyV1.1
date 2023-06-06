@@ -19,7 +19,9 @@ import java.util.List;
 
 public class ClientConsume {
    //String uri = "http://10.209.211.242:8081";
-   String uri = "http://localhost:8081";
+   String uri = "http://10.209.211.220:8081";
+    //String uri = "http://localhost:8081";
+
 
    public static Connection conn;
 
@@ -96,8 +98,8 @@ public class ClientConsume {
         return restTemplate.getForObject(endPoint, String.class);
     }
 
-    public boolean isStarted(String gameID, String userID){
-        String endPoint = uri + "/isstarted/" + gameID + "?uuid=" +userID;
+    public boolean isStarted(String gameID){
+        String endPoint = uri + "/isstarted/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(endPoint, String.class);
         return response.equals("true");

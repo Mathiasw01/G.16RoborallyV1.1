@@ -24,6 +24,7 @@ package dk.dtu.compute.se.pisd.roborally;
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import javafx.scene.control.Alert;
 import org.json.JSONObject;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
@@ -60,6 +61,8 @@ public class StartRoboRally {
     private static void localOrOnline(ClientConsume clientConsume) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("S singleplayer or M multiplayer");
+
+
         String in = scanner.nextLine();
 
         if (in.equals("S") || in.equals("s")) {
@@ -170,7 +173,7 @@ public class StartRoboRally {
                 System.out.println("The lobby is full");
                 startMultiplayer(clientConsume);
             }
-            if (clientConsume.isStarted(gameID, ClientConsume.conn.userID)) {
+            if (clientConsume.isStarted(gameID)) {
                 System.out.println("You can't join this because the game has started");
             } else {
                 clientConsume.joinGame(gameID);
@@ -181,7 +184,7 @@ public class StartRoboRally {
         }
         //System.out.println("Press any key to start");
         //scanner.nextLine();
-        while (!clientConsume.isStarted(gameID, ClientConsume.conn.userID)){
+        while (!clientConsume.isStarted(gameID)){
             System.out.println("Waiting for game to start");
             try {
                 TimeUnit.SECONDS.sleep(2);
