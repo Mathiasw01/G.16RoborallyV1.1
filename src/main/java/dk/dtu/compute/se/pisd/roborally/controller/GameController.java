@@ -318,7 +318,7 @@ public class GameController {
     public void finishProgrammingPhase() {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
-        board.setPhase(Phase.ACTIVATION);
+
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
         for (Player player : board.getPlayers()) {
@@ -327,7 +327,13 @@ public class GameController {
                 break;
             }
         }
+        List<String> cards;
 
+        do {
+            cards = ClientConsume.executeProgrammedCards(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
+        } while (cards.size() > 1);
+
+        board.setPhase(Phase.ACTIVATION);
     }
 
     // XXX: V2

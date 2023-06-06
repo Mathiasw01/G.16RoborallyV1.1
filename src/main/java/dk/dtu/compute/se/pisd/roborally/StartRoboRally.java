@@ -197,8 +197,6 @@ public class StartRoboRally {
         String playerToken = clientConsume.getPlayerToken(gameID, ClientConsume.conn.userID);
         Connection.setPlayerToken(playerToken);
         RoboRally.main(new String[]{"online"});
-
-
     }
 
     private static String chooseMap(Scanner scanner, List<String> maps) {
