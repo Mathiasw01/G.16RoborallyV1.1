@@ -54,7 +54,7 @@ public class ClientConsume {
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
         GameSession gs = connection.gameSession;
         conn = connection;
-
+        System.out.println("UUID: " + connection.userID);
         return connection;
     }
 
@@ -65,6 +65,7 @@ public class ClientConsume {
         GameSession gs = connection.gameSession;
 
         conn = connection;
+        System.out.println("UUID: " + connection.userID);
 
         return connection;
 
