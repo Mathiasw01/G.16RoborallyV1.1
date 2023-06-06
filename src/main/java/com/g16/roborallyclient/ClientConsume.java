@@ -99,7 +99,7 @@ public class ClientConsume {
     }
 
     public boolean isStarted(String gameID){
-        String endPoint = uri + "/isstarted/" + gameID;
+        String endPoint = uri + "/game/isstarted/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(endPoint, String.class);
         return response.equals("true");
