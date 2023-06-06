@@ -315,7 +315,7 @@ public class GameController {
      * the card in register 0. Afterwards changes the game phase to acivation phase and sets the current
      * player and step to index 0
      */
-    public void finishProgrammingPhase() {
+    public void finishProgrammingPhase() throws InterruptedException {
         makeProgramFieldsInvisible();
         makeProgramFieldsVisible(0);
 
@@ -330,6 +330,8 @@ public class GameController {
         String[] cards = new String[board.getPlayersNumber()*5];
 
         do {
+            TimeUnit.SECONDS.sleep(2);
+
             cards = ClientConsume.executeProgrammedCards(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
         } while (cards[0].equals("500"));
 
