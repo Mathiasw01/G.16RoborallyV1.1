@@ -4,7 +4,6 @@ import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.TilePane;
@@ -21,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 public class InitRoboRally extends Application {
 
@@ -161,6 +161,11 @@ public class InitRoboRally extends Application {
     private static void join(Scanner scanner) {
         System.out.println("Active lobbies");
         JSONObject jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
+        try {
+            jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
+        } catch (ResourceAccessException e) {
+            System.out.println("The server is down");
+        }
 
         Iterator<String> keys = jsonObject.keys();
 
@@ -182,16 +187,25 @@ public class InitRoboRally extends Application {
             if ((int)jsonObject.get(gameID) >= 6 ){
                 System.out.println("The lobby is full");
                 startMultiplayer();
-
             }
-            ClientConsume.joinGame(gameID);
-
+            if (ClientConsume.isStarted(gameID)) {
+                System.out.println("You can't join this because the game has started");
+                startMultiplayer();
+            } else {
+                ClientConsume.joinGame(gameID);
+            }
         } catch (RestClientException e) {
             System.out.println("Lobby does not exist");
             startMultiplayer();
         }
-        System.out.println("Press 'j' to start");
-        scanner.nextLine();
+        while (!ClientConsume.isStarted(gameID)){
+            System.out.println("Waiting for game to start");
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e){
+                System.out.println("Sleep was interrupted");
+            }
+        }
         GameController gm = ClientConsume.updateBoard(gameID, ClientConsume.conn.userID);
 
         ClientConsume.conn.gameSession.setController(gm);
