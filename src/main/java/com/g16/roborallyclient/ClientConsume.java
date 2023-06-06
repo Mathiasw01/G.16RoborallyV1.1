@@ -122,10 +122,10 @@ public class ClientConsume {
         restTemplate.postForObject(endPoint, program, String.class);
     }
 
-    public static List<String> executeProgrammedCards(String gameID, String userID){
+    public static String[] executeProgrammedCards(String gameID, String userID){
         String endPoint = uri + "/game/getCards/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
-        List<String> response = restTemplate.getForObject(endPoint, List.class);
+        String[] response = restTemplate.getForObject(endPoint, String[].class);
         return response;
     }
 }

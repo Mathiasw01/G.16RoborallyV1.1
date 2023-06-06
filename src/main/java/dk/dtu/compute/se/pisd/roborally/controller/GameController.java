@@ -327,11 +327,11 @@ public class GameController {
                 break;
             }
         }
-        List<String> cards;
+        String[] cards = new String[board.getPlayersNumber()*5];
 
         do {
             cards = ClientConsume.executeProgrammedCards(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
-        } while (cards.size() > 1);
+        } while (cards[0].equals("500"));
 
         board.setPhase(Phase.ACTIVATION);
     }
