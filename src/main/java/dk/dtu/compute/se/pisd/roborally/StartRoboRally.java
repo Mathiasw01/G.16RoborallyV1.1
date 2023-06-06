@@ -183,8 +183,6 @@ public class StartRoboRally {
             System.out.println("Lobby does not exist");
             startMultiplayer(clientConsume);
         }
-        //System.out.println("Press any key to start");
-        //scanner.nextLine();
         while (!clientConsume.isStarted(gameID)){
             System.out.println("Waiting for game to start");
             try {

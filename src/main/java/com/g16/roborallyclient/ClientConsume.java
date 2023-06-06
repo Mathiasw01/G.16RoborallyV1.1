@@ -2,6 +2,8 @@ package com.g16.roborallyclient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
+import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -19,7 +21,7 @@ import java.util.List;
 
 public class ClientConsume {
    //String uri = "http://10.209.211.242:8081";
-   String uri = "http://10.209.211.220:8081";
+   static String uri = "http://10.209.211.220:8081";
     //String uri = "http://localhost:8081";
 
 
@@ -105,4 +107,9 @@ public class ClientConsume {
         return response.equals("true");
     }
 
+    public static void sendProgram(String gameID, String userID, CommandCardField[] commandCards){
+        String endPoint = uri + "/game/program/" + gameID + "?uuid=" +userID;
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.postForObject(endPoint, commandCards, CommandCardField.class);
+    }
 }
