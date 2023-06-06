@@ -107,9 +107,18 @@ public class ClientConsume {
         return response.equals("true");
     }
 
-    public static void sendProgram(String gameID, String userID, CommandCardField[] commandCards){
+    public static void sendProgram(String gameID, String userID, CommandCardField[] cards){
         String endPoint = uri + "/game/program/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.postForObject(endPoint, commandCards, CommandCardField.class);
+        String[] program = new String[5];
+        int i = 0;
+        for (CommandCardField commandCardField : cards){
+            if (commandCardField.getCard() != null)
+                program[i] = commandCardField.getCard().command.displayName;
+            else
+                program[i] = "null";
+            i++;
+        }
+        restTemplate.postForObject(endPoint, program, String.class);
     }
 }

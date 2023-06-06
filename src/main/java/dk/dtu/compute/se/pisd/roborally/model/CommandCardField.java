@@ -21,6 +21,7 @@
  */
 package dk.dtu.compute.se.pisd.roborally.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
 
@@ -32,6 +33,7 @@ import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
  */
 public class CommandCardField extends Subject {
 
+    @JsonIgnore
     final public Player player;
 
     @Expose
@@ -41,7 +43,7 @@ public class CommandCardField extends Subject {
 
     public CommandCardField(Player player) {
         this.player = player;
-        this. card = null;
+        this.card = null;
         this.visible = true;
     }
 
