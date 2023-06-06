@@ -18,11 +18,11 @@ import java.util.List;
 
 public class ClientConsume {
    //String uri = "http://10.209.211.242:8081";
-   String uri = "http://localhost:8081";
+   static String uri = "http://localhost:8081";
 
    public static Connection conn;
 
-    public String getLobbies(){
+    public static String getLobbies(){
         String endPoint = uri + "/lobby";
        // ResponseEntity<List<GameSession>> response = getListResponseEntity(endPoint);
         RestTemplate restTemplate = new RestTemplate();
@@ -43,7 +43,7 @@ public class ClientConsume {
         return response;
     }
 
-    public Connection joinGame(String gameID) throws RestClientException {
+    public static Connection joinGame(String gameID) throws RestClientException {
         String endPoint = uri + "/game/join/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
@@ -53,7 +53,7 @@ public class ClientConsume {
         return connection;
     }
 
-    public Connection hostGame(String gameID) throws RestClientException{
+    public static Connection hostGame(String gameID) throws RestClientException{
         String endPoint = uri + "/game/host/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
@@ -65,7 +65,7 @@ public class ClientConsume {
 
     }
 
-    public List<String> getMap (){
+    public static List<String> getMap (){
         String endPoint = uri + "/map/";
         RestTemplate restTemplate = new RestTemplate();
 
@@ -73,7 +73,7 @@ public class ClientConsume {
         return maps;
     }
 
-    public String startGame(String gameID, String mapName){
+    public static String startGame(String gameID, String mapName){
         String endPoint = uri + "/game/start/" + gameID + "?mapName=" + mapName + "&uuid=" + conn.userID;
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(endPoint, String.class);
@@ -82,14 +82,14 @@ public class ClientConsume {
     }
 
 
-    public GameController updateBoard(String gameID, String userID){
+    public static GameController updateBoard(String gameID, String userID){
         String endPoint = uri + "/game/update/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
         String str = restTemplate.getForObject(endPoint, String.class);
         return SaveLoadController.deserializeString(str);
     }
 
-    public String getPlayerToken(String gameID, String userID){
+    public static String getPlayerToken(String gameID, String userID){
         String endPoint = uri + "/game/playertoken/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(endPoint, String.class);

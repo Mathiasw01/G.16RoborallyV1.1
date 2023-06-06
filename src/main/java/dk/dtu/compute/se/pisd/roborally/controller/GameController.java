@@ -718,6 +718,7 @@ public class GameController {
      * that the player is facing. If the destination space is not valid, the player will not move.
      * @param  player  the player which will move one space back.
      */
+
     public void backup (@NotNull Player player){
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
