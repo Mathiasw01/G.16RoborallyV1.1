@@ -24,8 +24,12 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import com.g16.roborallyclient.GameSession;
+import com.g16.roborallyclient.WaitForProgramming;
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
@@ -321,6 +325,18 @@ public class GameController {
 
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
+
+        if(isOnline){
+            board.setPhase(Phase.WAITING);
+            waitForOtherPlayersToFinishProgramming();
+        } else {
+            board.setPhase(Phase.ACTIVATION);
+        }
+
+
+    }
+
+    private void waitForOtherPlayersToFinishProgramming() throws InterruptedException {
         for (Player player : board.getPlayers()) {
             if (player.getName().equals(Connection.getPlayerToken())){
                 ClientConsume.sendProgram(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, player.getProgram());
@@ -328,23 +344,24 @@ public class GameController {
             }
         }
         String[] cards = new String[board.getPlayersNumber()*5];
+        WaitForProgramming waitForProgramming = new WaitForProgramming(this, cards);
+        Thread thread = new Thread(waitForProgramming);
+        thread.start();
 
-        do {
-            TimeUnit.SECONDS.sleep(2);
-            if (ClientConsume.conn == null){
-                break;
-            }
-            cards = ClientConsume.executeProgrammedCards(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
-        } while (cards[0].equals("500"));
+
+    }
+
+    public void executeCommandsFromServer(String[] cards){
+
 
         int playerIndex = 0;
-        if (ClientConsume.conn != null) {
-            for (Player player : board.getPlayers()) {
-                for (int i = 0; i < 5; i++) {
-                    player.getProgramField(i).setCard(convertCommand(cards[i + (playerIndex * 5)]));
-                }
-                playerIndex++;
+
+
+        for (Player player : board.getPlayers()) {
+            for (int i = 0; i < 5; i++) {
+                player.getProgramField(i).setCard(convertCommand(cards[i + (playerIndex * 5)]));
             }
+            playerIndex++;
         }
         board.setPhase(Phase.ACTIVATION);
     }
