@@ -19,9 +19,9 @@ import java.util.List;
 
 
 public class ClientConsume {
-   static String uri = "http://10.209.211.242:8081";
+   //static String uri = "http://10.209.211.242:8081";
    //static String uri = "http://10.209.211.220:8081";
-    //String uri = "http://localhost:8081";
+    static String uri = "http://localhost:8081";
 
 
    public static Connection conn;
