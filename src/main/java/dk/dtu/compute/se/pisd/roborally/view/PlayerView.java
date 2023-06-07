@@ -223,5 +223,4 @@ public class PlayerView extends Tab implements ViewObserver {
             }
         }
     }
-
 }
