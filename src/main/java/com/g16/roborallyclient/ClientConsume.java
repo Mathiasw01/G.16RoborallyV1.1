@@ -83,10 +83,17 @@ public class ClientConsume {
     public static String startGame(String gameID, String mapName){
         String endPoint = uri + "/game/start/" + gameID + "?mapName=" + mapName + "&uuid=" + conn.userID;
         RestTemplate restTemplate = new RestTemplate();
-        String response = restTemplate.getForObject(endPoint, String.class);
 
-        return response;
+        return restTemplate.getForObject(endPoint, String.class);
     }
+
+    public static String startGameFromSave(String gameID, String saveName){
+        String endPoint = uri + "/storage/load/" + saveName + "?uuid=" + conn.userID + "&gameID=" + gameID;
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.getForObject(endPoint, String.class);
+    }
+
 
 
     public static GameController updateBoard(String gameID, String userID){
