@@ -463,11 +463,13 @@ public class GameController {
                 if (card != null) {
                     Command command = card.command;
                     if (command.isInteractive()){
-                        if (currentPlayer.getName() == Connection.getPlayerToken()) {
+                        if (Objects.equals(currentPlayer.getName(), Connection.getPlayerToken())) {
                             board.setPhase(Phase.PLAYER_INTERACTION);
                             return;
                         } else {
-                            command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID )).command;
+                            if (isOnline) {
+                                command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID)).command;
+                            }
                         }
                     }
                     if (!currentPlayer.getRebooting()) {

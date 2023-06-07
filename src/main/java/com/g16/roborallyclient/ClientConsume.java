@@ -138,7 +138,7 @@ public class ClientConsume {
         restTemplate.postForObject(endPoint,comm,String.class);
     }
 
-    public static String  getInteractive(String gameID, String uuid) {
+    public static String getInteractive(String gameID, String uuid) {
         String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(endPoint,String.class);
