@@ -2,6 +2,7 @@ package com.g16.roborallyclient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.model.Command;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import org.jetbrains.annotations.NotNull;
@@ -21,8 +22,8 @@ import java.util.Objects;
 
 public class ClientConsume {
    //static String uri = "http://10.209.211.242:8081";
-   //static String uri = "http://10.209.211.220:8081";
-    static String uri = "http://localhost:8081";
+   static String uri = "http://10.209.211.220:8081";
+    //String uri = "http://localhost:8081";
 
 
    public static Connection conn;
@@ -135,6 +136,19 @@ public class ClientConsume {
         RestTemplate restTemplate = new RestTemplate();
         String[] response = restTemplate.getForObject(endPoint, String[].class);
         return response;
+    }
+
+    public static void sendInteractiveCommand(String gameID, String uuid, Command command){
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
+        RestTemplate restTemplate = new RestTemplate();
+        String comm = command.displayName;
+        restTemplate.postForObject(endPoint,comm,String.class);
+    }
+
+    public static String  getInteractive(String gameID, String uuid) {
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(endPoint,String.class);
     }
 
     public static void saveGame(String saveName, String json) throws ResourceAccessException {
