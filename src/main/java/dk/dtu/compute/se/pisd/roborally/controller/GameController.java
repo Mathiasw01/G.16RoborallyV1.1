@@ -453,13 +453,16 @@ public class GameController {
             int step = board.getStep();
             if (step >= 0 && step < Player.NO_REGISTERS) {
                 originalHeading = null;
-
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
                 if (card != null) {
                     Command command = card.command;
                     if (command.isInteractive()){
-                        board.setPhase(Phase.PLAYER_INTERACTION);
-                        return;
+                        if (currentPlayer.getName() == Connection.getPlayerToken()) {
+                            board.setPhase(Phase.PLAYER_INTERACTION);
+                            return;
+                        } else {
+                            command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID )).command;
+                        }
                     }
                     if (!currentPlayer.getRebooting()) {
                         executeCommand(currentPlayer, command);
@@ -881,6 +884,9 @@ public class GameController {
      */
     public void executeCommandOptionAndContinue(Command command){
         executeCommand(board.getCurrentPlayer(),command);
+        if (isOnline) {
+            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, command);
+        }
         board.setPhase(Phase.ACTIVATION);
         int step = board.getStep();
         int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;
