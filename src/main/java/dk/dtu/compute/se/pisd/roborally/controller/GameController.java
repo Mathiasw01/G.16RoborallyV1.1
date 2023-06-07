@@ -463,9 +463,14 @@ public class GameController {
                 if (card != null) {
                     Command command = card.command;
                     if (command.isInteractive()){
-                        if (Objects.equals(currentPlayer.getName(), Connection.getPlayerToken())) {
-                            board.setPhase(Phase.PLAYER_INTERACTION);
-                            return;
+                        if (isOnline){
+                            if (Objects.equals(currentPlayer.getName(), Connection.getPlayerToken())) {
+                                board.setPhase(Phase.PLAYER_INTERACTION);
+                                return;
+                            } else {
+                                board.setPhase(Phase.PLAYER_INTERACTION);
+                                return;
+                            }
                         } else {
                             if (isOnline) {
                                 command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID)).command;
