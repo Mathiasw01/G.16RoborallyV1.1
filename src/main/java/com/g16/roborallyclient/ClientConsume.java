@@ -14,7 +14,6 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
-
 import javax.swing.text.GapContent;
 import java.util.List;
 

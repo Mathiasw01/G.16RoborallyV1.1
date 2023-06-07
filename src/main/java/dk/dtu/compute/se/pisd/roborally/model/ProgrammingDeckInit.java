@@ -33,7 +33,7 @@ public class ProgrammingDeckInit {
         deck.add(new CommandCard(Command.FAST_FORWARD));
         deck.add(new CommandCard(Command.MOVE_THREE));
         deck.add(new CommandCard(Command.POWERUP));
-
+        deck.add(new CommandCard(Command.CHOOSETURN));
         Collections.shuffle(deck);
         return deck;
     }

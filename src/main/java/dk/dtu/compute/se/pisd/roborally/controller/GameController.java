@@ -248,7 +248,6 @@ public class GameController {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
-
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
             if (player != null) {
@@ -257,19 +256,13 @@ public class GameController {
                     field.setCard(null);
                     field.setVisible(true);
                 }
-
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
-
                   //field.setCard(generateRandomCommandCard());
                     /* Get new cards from server...*/
-                    if(field.getCard() == null){
                         field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
-                    }
                     field.setVisible(true);
-
                 }
-
             }
         }
     }
