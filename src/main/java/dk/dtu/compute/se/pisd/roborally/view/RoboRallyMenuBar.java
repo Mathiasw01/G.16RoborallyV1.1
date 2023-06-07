@@ -106,23 +106,21 @@ public class RoboRallyMenuBar extends MenuBar {
             controlMenu.getItems().add(loadGame);
 
 
-            exitApp = new MenuItem("Exit");
-            exitApp.setOnAction(e -> this.appController.exit());
-            controlMenu.getItems().add(exitApp);
-        } else if (isOnline) {
-            startMulti = new MenuItem("Start multiplayer");
-            startMulti.setOnAction( e -> this.appController.loadFromServer());
-            controlMenu.getItems().add(startMulti);
+        } else {
 
             saveGame = new MenuItem("Save Game");
             saveGame.setOnAction(e -> this.appController.saveGame());
             controlMenu.getItems().add(saveGame);
 
-            loadGame = new MenuItem("Load Game");
-            loadGame.setOnAction(e -> this.appController.loadGame());
-            controlMenu.getItems().add(loadGame);
+            saveGame = new MenuItem("Save Game To Server");
+            saveGame.setOnAction(e -> this.appController.saveGameToServer());
+            controlMenu.getItems().add(saveGame);
+
 
         }
+        exitApp = new MenuItem("Exit");
+        exitApp.setOnAction(e -> this.appController.exit());
+        controlMenu.getItems().add(exitApp);
 
 
         controlMenu.setOnShowing(e -> update(isOnline));

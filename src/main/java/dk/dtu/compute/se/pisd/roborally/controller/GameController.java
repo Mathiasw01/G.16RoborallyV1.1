@@ -24,9 +24,18 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import com.g16.roborallyclient.GameSession;
+import com.g16.roborallyclient.WaitForProgramming;
 import com.google.gson.annotations.Expose;
+import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -49,6 +58,9 @@ public class GameController {
     private Heading originalHeading = null;
 
     private boolean isOnline;
+
+    private boolean winnerFound = false;
+    private Player winner;
 
 
     public Heading getOriginalHeading() {
@@ -244,7 +256,6 @@ public class GameController {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
-
         for (int i = 0; i < board.getPlayersNumber(); i++) {
             Player player = board.getPlayer(i);
             if (player != null) {
@@ -253,19 +264,13 @@ public class GameController {
                     field.setCard(null);
                     field.setVisible(true);
                 }
-
                 for (int j = 0; j < Player.NO_CARDS; j++) {
                     CommandCardField field = player.getCardField(j);
-
                   //field.setCard(generateRandomCommandCard());
                     /* Get new cards from server...*/
-                    if(field.getCard() == null){
                         field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
-                    }
                     field.setVisible(true);
-
                 }
-
             }
         }
     }
@@ -321,6 +326,18 @@ public class GameController {
 
         board.setCurrentPlayer(board.getPlayer(0));
         board.setStep(0);
+
+        if(isOnline){
+            board.setPhase(Phase.WAITING);
+            waitForOtherPlayersToFinishProgramming();
+        } else {
+            board.setPhase(Phase.ACTIVATION);
+        }
+
+
+    }
+
+    private void waitForOtherPlayersToFinishProgramming() throws InterruptedException {
         for (Player player : board.getPlayers()) {
             if (player.getName().equals(Connection.getPlayerToken())){
                 ClientConsume.sendProgram(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, player.getProgram());
@@ -328,23 +345,24 @@ public class GameController {
             }
         }
         String[] cards = new String[board.getPlayersNumber()*5];
+        WaitForProgramming waitForProgramming = new WaitForProgramming(this, cards);
+        Thread thread = new Thread(waitForProgramming);
+        thread.start();
 
-        do {
-            TimeUnit.SECONDS.sleep(2);
-            if (ClientConsume.conn == null){
-                break;
-            }
-            cards = ClientConsume.executeProgrammedCards(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
-        } while (cards[0].equals("500"));
+
+    }
+
+    public void executeCommandsFromServer(String[] cards){
+
 
         int playerIndex = 0;
-        if (ClientConsume.conn != null) {
-            for (Player player : board.getPlayers()) {
-                for (int i = 0; i < 5; i++) {
-                    player.getProgramField(i).setCard(convertCommand(cards[i + (playerIndex * 5)]));
-                }
-                playerIndex++;
+
+
+        for (Player player : board.getPlayers()) {
+            for (int i = 0; i < 5; i++) {
+                player.getProgramField(i).setCard(convertCommand(cards[i + (playerIndex * 5)]));
             }
+            playerIndex++;
         }
         board.setPhase(Phase.ACTIVATION);
     }
@@ -418,6 +436,12 @@ public class GameController {
         do {
             executeNextStep();
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
+
+
+        if (winnerFound){
+            displayWinner();
+        }
+
     }
 
     /**
@@ -435,13 +459,23 @@ public class GameController {
             int step = board.getStep();
             if (step >= 0 && step < Player.NO_REGISTERS) {
                 originalHeading = null;
-
                 CommandCard card = currentPlayer.getProgramField(step).getCard();
                 if (card != null) {
                     Command command = card.command;
                     if (command.isInteractive()){
-                        board.setPhase(Phase.PLAYER_INTERACTION);
-                        return;
+                        if (isOnline){
+                            if (Objects.equals(currentPlayer.getName(), Connection.getPlayerToken())) {
+                                board.setPhase(Phase.PLAYER_INTERACTION);
+                                return;
+                            } else {
+                                board.setPhase(Phase.PLAYER_INTERACTION);
+                                return;
+                            }
+                        } else {
+                            if (isOnline) {
+                                command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID)).command;
+                            }
+                        }
                     }
                     if (!currentPlayer.getRebooting()) {
                         executeCommand(currentPlayer, command);
@@ -455,6 +489,13 @@ public class GameController {
                         player.setRebooting(false);
                     }
                     multiThreadExecute(step);
+                    /*
+                    if (winnerFound){
+                        displayWinner();
+                        return;
+                    }
+
+                     */
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -472,6 +513,28 @@ public class GameController {
             // this should not happen
             assert false;
         }
+    }
+
+    private void displayWinner(){
+
+        //board.setPhase(Phase.INITIALISATION);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "The winner is Player " + winner.getPlayerNum());
+        alert.setTitle("WINNER FOUND");
+        ImageView imageView;
+        System.out.println(Connection.getPlayerToken());
+        if (Connection.getPlayerToken() == null || Connection.getPlayerToken().equals(winner.getName())){
+            Image image = new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Twemoji_1f60e.svg/1024px-Twemoji_1f60e.svg.png");
+            imageView = new ImageView(image);
+            imageView.setFitHeight(64);
+            imageView.setFitWidth(64);
+        } else {
+            Image image = new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Emojione_1F62D.svg/64px-Emojione_1F62D.svg.png");
+            imageView = new ImageView(image);
+        }
+        alert.setGraphic(imageView);
+        alert.showAndWait();
+
+        System.exit(0);
     }
 
     /**
@@ -568,7 +631,9 @@ public class GameController {
 
                     if(obtainedCheckpoints+1 == cps.size()){
                         //Player won!
-                        System.out.println(player.getName() + " won!");
+                        winnerFound = true;
+                        winner = player;
+
                         //ALERT DOESN'T WORK AS IT IS NOT IN JAVA FX THREAD
                         // FIX FIX FIX
 
@@ -835,6 +900,9 @@ public class GameController {
      */
     public void executeCommandOptionAndContinue(Command command){
         executeCommand(board.getCurrentPlayer(),command);
+        if (isOnline) {
+            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, command);
+        }
         board.setPhase(Phase.ACTIVATION);
         int step = board.getStep();
         int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;

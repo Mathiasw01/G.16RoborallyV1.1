@@ -76,6 +76,10 @@ public class RoboRally extends Application {
         stage.setResizable(false);
         stage.sizeToScene();
         stage.show();
+        if(isOnline){
+            appController.loadFromServer();
+        }
+
     }
 
     public void createBoardView(GameController gameController) {
@@ -108,12 +112,10 @@ public class RoboRally extends Application {
             isOnline = false;
         }
 
-        launch(args);
+        //launch(args);
 
     }
 
-
-    /*
     public RoboRally(String[] args, Stage stage){
         if (args[0].equals("online")){
             isOnline = true;
@@ -122,8 +124,4 @@ public class RoboRally extends Application {
         }
         this.start(stage);
     }
-
-
-     */
-
 }

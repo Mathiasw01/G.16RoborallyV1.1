@@ -2,6 +2,7 @@ package com.g16.roborallyclient;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+import dk.dtu.compute.se.pisd.roborally.model.Command;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import org.jetbrains.annotations.NotNull;
@@ -14,13 +15,13 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
-
 import javax.swing.text.GapContent;
 import java.util.List;
+import java.util.Objects;
 
 
 public class ClientConsume {
-   //String uri = "http://10.209.211.242:8081";
+   //static String uri = "http://10.209.211.242:8081";
    static String uri = "http://10.209.211.220:8081";
     //String uri = "http://localhost:8081";
 
@@ -82,10 +83,17 @@ public class ClientConsume {
     public static String startGame(String gameID, String mapName){
         String endPoint = uri + "/game/start/" + gameID + "?mapName=" + mapName + "&uuid=" + conn.userID;
         RestTemplate restTemplate = new RestTemplate();
-        String response = restTemplate.getForObject(endPoint, String.class);
 
-        return response;
+        return restTemplate.getForObject(endPoint, String.class);
     }
+
+    public static String startGameFromSave(String gameID, String saveName){
+        String endPoint = uri + "/storage/load/" + saveName + "?uuid=" + conn.userID + "&gameID=" + gameID;
+        RestTemplate restTemplate = new RestTemplate();
+
+        return restTemplate.getForObject(endPoint, String.class);
+    }
+
 
 
     public static GameController updateBoard(String gameID, String userID){
@@ -128,5 +136,31 @@ public class ClientConsume {
         RestTemplate restTemplate = new RestTemplate();
         String[] response = restTemplate.getForObject(endPoint, String[].class);
         return response;
+    }
+
+    public static void sendInteractiveCommand(String gameID, String uuid, Command command){
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
+        RestTemplate restTemplate = new RestTemplate();
+        String comm = command.displayName;
+        restTemplate.postForObject(endPoint,comm,String.class);
+    }
+
+    public static String getInteractive(String gameID, String uuid) {
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
+        RestTemplate restTemplate = new RestTemplate();
+        return restTemplate.getForObject(endPoint,String.class);
+    }
+
+    public static void saveGame(String saveName, String json) throws ResourceAccessException {
+        String endPoint = uri + "/storage/save/"+saveName;
+        RestTemplate restTemplate = new RestTemplate();
+        String resp = restTemplate.postForObject(endPoint, json, String.class);
+
+        if(Objects.equals(resp, "100")){
+            System.out.println("Saved game to server");
+        } else {
+            System.out.println("Couldn't save to server");
+        }
+
     }
 }

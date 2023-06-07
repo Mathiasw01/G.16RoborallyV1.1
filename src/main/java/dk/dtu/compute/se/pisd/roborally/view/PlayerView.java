@@ -191,7 +191,6 @@ public class PlayerView extends Tab implements ViewObserver {
                         executeButton.setDisable(false);
                         stepButton.setDisable(false);
                         break;
-
                     default:
                         finishButton.setDisable(true);
                         executeButton.setDisable(true);
@@ -220,9 +219,11 @@ public class PlayerView extends Tab implements ViewObserver {
                         optionButton.setDisable(false);
                         playerInteractionPanel.getChildren().add(optionButton);
                     }
+                }else {
+                    // Clear the playerInteractionPanel
+                    playerInteractionPanel.getChildren().clear();
                 }
             }
         }
     }
-
 }
