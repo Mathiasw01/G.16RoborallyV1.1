@@ -14,14 +14,13 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
-
 import javax.swing.text.GapContent;
 import java.util.List;
 
 
 public class ClientConsume {
-   //String uri = "http://10.209.211.242:8081";
-   static String uri = "http://10.209.211.220:8081";
+   static String uri = "http://10.209.211.242:8081";
+   //static String uri = "http://10.209.211.220:8081";
     //String uri = "http://localhost:8081";
 
 
