@@ -36,6 +36,8 @@ public class InitRoboRally extends Application {
         super.init();
     }
 
+    static String saveGame = null;
+
     public void start(Stage s) throws Exception {
 
         // create the primary scene with a menu bar and a pane for
@@ -132,7 +134,7 @@ public class InitRoboRally extends Application {
         EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent ev)
             {
-                chooseMap(gameID.getText(), s);
+                newGameOrLoad(gameID.getText(), s);
             }
         };
 
@@ -142,6 +144,64 @@ public class InitRoboRally extends Application {
 
         vbox(s, r);
     }
+
+
+    public static void newGameOrLoad(String gameID, Stage s){
+        s.setTitle("New game or continue?");
+        Button a = new Button("New game");
+        Button b = new Button("Continue from save");
+        TilePane r = new TilePane(Orientation.VERTICAL);
+        r.setAlignment(Pos.CENTER);
+        r.setVgap(10);
+        Label l = new Label("Do you want to start a new game or continue an existing game?");
+        saveGame = null;
+        EventHandler<ActionEvent> newGame = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent ev)
+            {
+                chooseMap(gameID,  s);
+            }
+        };
+        EventHandler<ActionEvent> continueGame = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent ev)
+            {
+                loadGame(gameID, s);
+            }
+        };
+
+
+        a.setOnAction(newGame);
+        b.setOnAction(continueGame);
+
+        r.getChildren().addAll(l, a, b);
+
+        vbox(s, r);
+    }
+
+
+    private static void loadGame(String gameID, Stage s){
+        TextField saveInput = new TextField("savegame_01");
+        Button b = new Button("Continue");
+        TilePane r = new TilePane(Orientation.VERTICAL);
+        r.setAlignment(Pos.CENTER);
+        r.setVgap(10);
+
+        EventHandler<ActionEvent> continueGame = new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent ev)
+            {
+                saveGame = saveInput.getText();
+                startGame(gameID, null, s);
+            }
+        };
+
+        b.setOnAction(continueGame);
+
+        Label l = new Label("Enter savegame name");
+        r.getChildren().addAll(l, saveInput, b);
+        vbox(s,r);
+
+
+    }
+
 
     public static void chooseMap(String gameID, Stage s){
         s.setTitle("Maps");
@@ -203,21 +263,29 @@ public class InitRoboRally extends Application {
         EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent ev)
             {
-                System.out.println(ClientConsume.startGame(gameID, map));
-                if (ClientConsume.startGame(gameID, map).equals("100")){
-
-                    GameController gm = ClientConsume.updateBoard(gameID, ClientConsume.conn.userID);
-
-                    ClientConsume.conn.gameSession.setController(gm);
-                    String playerToken = ClientConsume.getPlayerToken(gameID, ClientConsume.conn.userID);
-                    Connection.setPlayerToken(playerToken);
-                    new RoboRally(new String[]{"online"}, s);
-                } else if (ClientConsume.startGame(gameID, map).equals("200")){
-                    System.out.println("You are not authenticated!");
-                    startGame(gameID, map, s);
-                } else if (ClientConsume.startGame(gameID, map).equals("300")){
-                    System.out.println("You need to be at least 2 players!");
-                    startGame(gameID, map, s);
+                String response;
+                if(saveGame == null)
+               {
+                response = ClientConsume.startGame(gameID, map);
+                } else {
+                    response = ClientConsume.startGameFromSave(gameID, saveGame);
+                }
+                switch (response) {
+                    case "100" -> {
+                        GameController gm = ClientConsume.updateBoard(gameID, ClientConsume.conn.userID);
+                        ClientConsume.conn.gameSession.setController(gm);
+                        String playerToken = ClientConsume.getPlayerToken(gameID, ClientConsume.conn.userID);
+                        Connection.setPlayerToken(playerToken);
+                        new RoboRally(new String[]{"online"}, s);
+                    }
+                    case "200" -> {
+                        System.out.println("You are not authenticated!");
+                        startGame(gameID, map, s);
+                    }
+                    case "300" -> {
+                        System.out.println("You need to be at least 2 players!");
+                        startGame(gameID, map, s);
+                    }
                 }
             }
         };
