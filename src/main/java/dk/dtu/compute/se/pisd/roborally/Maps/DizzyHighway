@@ -5,7 +5,7 @@ P;1;5
 P;0;6
 P;1;8
 #;Reboot
-Reboot;7;4;SOUTH
+Reboot;7;3;SOUTH
 #;Walls
 #;
 Wall;1;2;NORTH
@@ -80,4 +80,8 @@ BlueCon;11;9;NORTH
 #;Line 12
 BlueCon;12;1;WEST
 BlueCon;12;2;WEST
-Gear;2;2;RIGHT
+#;Gears
+Gear;5;2;RIGHT
+Gear;7;5;RIGHT
+Gear;8;4;LEFT
+Gear;10;7;LEFT
