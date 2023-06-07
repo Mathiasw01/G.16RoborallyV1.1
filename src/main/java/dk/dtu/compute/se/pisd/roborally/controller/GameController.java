@@ -331,15 +331,20 @@ public class GameController {
 
         do {
             TimeUnit.SECONDS.sleep(2);
+            if (ClientConsume.conn == null){
+                break;
+            }
             cards = ClientConsume.executeProgrammedCards(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
         } while (cards[0].equals("500"));
 
         int playerIndex = 0;
-        for (Player player: board.getPlayers()) {
-            for (int i = 0; i < 5; i++){
-                player.getProgramField(i).setCard(convertCommand(cards[i+(playerIndex*5)]));
+        if (ClientConsume.conn != null) {
+            for (Player player : board.getPlayers()) {
+                for (int i = 0; i < 5; i++) {
+                    player.getProgramField(i).setCard(convertCommand(cards[i + (playerIndex * 5)]));
+                }
+                playerIndex++;
             }
-            playerIndex++;
         }
         board.setPhase(Phase.ACTIVATION);
     }
