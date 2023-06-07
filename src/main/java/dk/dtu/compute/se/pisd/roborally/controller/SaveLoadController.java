@@ -1,5 +1,6 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import com.g16.roborallyclient.ClientConsume;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.typeadapters.RuntimeTypeAdapterFactory;
@@ -40,18 +41,26 @@ public class SaveLoadController {
      */
 
     public static void serializeAndSave(GameController gc, String filePath) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+        writer.write(serializeGameController(gc));
+        writer.close();
+        System.out.println("Saved game to " + filePath);
+
+    }
+
+    private static String serializeGameController(GameController gc){
         Gson gson = new GsonBuilder()
                 .excludeFieldsWithoutExposeAnnotation()
                 .setPrettyPrinting()
                 .registerTypeAdapterFactory(runtimeTypeAdapterFactory)
                 .create();
 
-        String jso = gson.toJson(gc);
+        return gson.toJson(gc);
+    }
 
-        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
-        writer.write(jso);
-        writer.close();
-        System.out.println("Saved game to " + filePath);
+    public static void serializeAndSaveToServer(GameController gc, String fileName) throws IOException {
+
+        ClientConsume.saveGame(fileName, serializeGameController(gc));
 
     }
 

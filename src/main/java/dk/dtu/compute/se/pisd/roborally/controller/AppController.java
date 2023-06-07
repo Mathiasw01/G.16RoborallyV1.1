@@ -130,7 +130,7 @@ public class AppController implements Observer {
 
 
             Optional<String> result = dialog.showAndWait();
-            if (!result.isPresent()){
+            if (result.isEmpty()){
                 return;
             }
             SaveLoadController.serializeAndSave(gameController, result.get());
@@ -140,6 +140,31 @@ public class AppController implements Observer {
 
 
     }
+
+    public void saveGameToServer() {
+
+        try {
+            TextInputDialog dialog = new TextInputDialog("savegame_01");
+            dialog.setTitle("Save game to server");
+            dialog.setHeaderText("Save game to server");
+            dialog.setContentText("Please enter the name of the save file");
+
+            Optional<String> result = dialog.showAndWait();
+            if (result.isEmpty()){
+                return;
+            }
+            SaveLoadController.serializeAndSaveToServer(gameController, result.get());
+        } catch (IOException ioe){
+            System.out.println("Couldn't save game as file doesnt exist!!!");
+        }
+
+
+    }
+
+    public void loadGameFromServer() {
+        //Implement
+    }
+
 
     /**
      * Load game
