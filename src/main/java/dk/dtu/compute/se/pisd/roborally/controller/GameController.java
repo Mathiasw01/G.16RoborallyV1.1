@@ -436,6 +436,12 @@ public class GameController {
         do {
             executeNextStep();
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
+
+
+        if (winnerFound){
+            displayWinner();
+        }
+
     }
 
     /**
@@ -476,10 +482,13 @@ public class GameController {
                         player.setRebooting(false);
                     }
                     multiThreadExecute(step);
+                    /*
                     if (winnerFound){
                         displayWinner();
                         return;
                     }
+
+                     */
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
