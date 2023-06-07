@@ -26,7 +26,12 @@ import com.g16.roborallyclient.Connection;
 import com.g16.roborallyclient.GameSession;
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.roborally.model.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TextInputDialog;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
@@ -49,6 +54,9 @@ public class GameController {
     private Heading originalHeading = null;
 
     private boolean isOnline;
+
+    private boolean winnerFound = false;
+    private Player winner;
 
 
     public Heading getOriginalHeading() {
@@ -455,6 +463,9 @@ public class GameController {
                         player.setRebooting(false);
                     }
                     multiThreadExecute(step);
+                    if (winnerFound){
+                        displayWinner();
+                    }
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
@@ -472,6 +483,33 @@ public class GameController {
             // this should not happen
             assert false;
         }
+    }
+
+    private void displayWinner(){
+
+        /*
+        TextInputDialog dialog = new TextInputDialog("Player " + winner.getPlayerNum());
+        dialog.setTitle("Winner found");
+        dialog.setHeaderText("Winner");
+        dialog.setContentText("This is the winner");
+        dialog.show();
+
+         */
+
+        Alert alert = new Alert(Alert.AlertType.NONE, "The winner is Player " + winner.getPlayerNum());
+        alert.setTitle("WINNER FOUND");
+        ImageView imageView;
+        if (Objects.equals(Connection.getPlayerToken(), winner.getName())) {
+            Image image = new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Twemoji_1f60e.svg/1024px-Twemoji_1f60e.svg.png");
+            imageView = new ImageView(image);
+        } else {
+            Image image = new Image("https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Emojione_1F62D.svg/64px-Emojione_1F62D.svg.png");
+            imageView = new ImageView(image);
+        }
+        alert.setGraphic(imageView);
+        alert.show();
+
+        System.out.println(" won!");
     }
 
     /**
@@ -568,7 +606,9 @@ public class GameController {
 
                     if(obtainedCheckpoints+1 == cps.size()){
                         //Player won!
-                        System.out.println(player.getName() + " won!");
+                        winnerFound = true;
+                        winner = player;
+
                         //ALERT DOESN'T WORK AS IT IS NOT IN JAVA FX THREAD
                         // FIX FIX FIX
 
