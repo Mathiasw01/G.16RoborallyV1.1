@@ -9,6 +9,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.TilePane;
@@ -182,7 +183,16 @@ public class InitRoboRally extends Application {
     }
 
     private static void startGame(String gameID, String map, Stage s) {
-        ClientConsume.hostGame(gameID);
+        try {
+            ClientConsume.hostGame(gameID);
+
+        } catch (Exception e){
+            Alert notEnoughAlert = new Alert(Alert.AlertType.WARNING, "You need to be at least 2 players!");
+            notEnoughAlert.showAndWait();
+            ClientConsume.hostGame(gameID);
+            return;
+        }
+
         s.setTitle("Start");
         Button start = new Button("Start");
         TilePane r = new TilePane(Orientation.VERTICAL);
@@ -236,6 +246,8 @@ public class InitRoboRally extends Application {
             jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
         } catch (ResourceAccessException e) {
             l2.setText("The server is down");
+            startMultiplayer(s);
+            return;
         }
 
         Iterator<String> keys = jsonObject.keys();
@@ -251,11 +263,15 @@ public class InitRoboRally extends Application {
         EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
             public void handle(ActionEvent ev)
             {
-                JSONObject jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
+                JSONObject jsonObject;
+
+
                 try {
                     jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
-                } catch (ResourceAccessException e) {
+                } catch (Exception e) {
                     l2.setText("The server is down");
+                    startMultiplayer(s);
+                    return;
                 }
 
                 Iterator<String> keys = jsonObject.keys();
@@ -277,29 +293,41 @@ public class InitRoboRally extends Application {
                     }
                     if (ClientConsume.isStarted(gameID.getText())) {
                         l2.setText("You can't join this lobby because the game has started");
+                        vbox(s, r);
                         startMultiplayer(s);
                     } else {
                         ClientConsume.joinGame(gameID.getText());
                     }
                 } catch (Exception e) {
                     l2.setText("Lobby does not exist");
+                    vbox(s, r);
                     startMultiplayer(s);
+                    return;
                 }
                 l2.setText("Waiting for game to start");
+                vbox(s, r);
                 while (!ClientConsume.isStarted(gameID.getText())){
 
                     try {
                         TimeUnit.SECONDS.sleep(2);
                     } catch (InterruptedException e){
                         l2.setText("Sleep was interrupted");
+                        vbox(s, r);
                     }
                 }
-                GameController gm = ClientConsume.updateBoard(gameID.getText(), ClientConsume.conn.userID);
+                try {
+                    GameController gm = ClientConsume.updateBoard(gameID.getText(), ClientConsume.conn.userID);
+                    ClientConsume.conn.gameSession.setController(gm);
+                    String playerToken = ClientConsume.getPlayerToken(gameID.getText(), ClientConsume.conn.userID);
+                    Connection.setPlayerToken(playerToken);
+                    new RoboRally(new String[]{"online"}, s);
+                } catch (Exception e){
+                    startMultiplayer(s);
+                    return;
+                }
 
-                ClientConsume.conn.gameSession.setController(gm);
-                String playerToken = ClientConsume.getPlayerToken(gameID.getText(), ClientConsume.conn.userID);
-                Connection.setPlayerToken(playerToken);
-                new RoboRally(new String[]{"online"}, s);
+
+
             }
         };
 
