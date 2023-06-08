@@ -25,8 +25,8 @@ import java.util.Objects;
 
 public class ClientConsume {
    //static String uri = "http://10.209.211.242:8081";
-   static String uri = "http://10.209.211.220:8081";
-    //String uri = "http://localhost:8081";
+   //static String uri = "http://10.209.211.220:8081";
+    static String uri = "http://localhost:8081";
 
 
    public static Connection conn;
@@ -147,17 +147,13 @@ public class ClientConsume {
         restTemplate.postForObject(endPoint,comm,String.class);
     }
 
-    public static Interactive getInteractive(String gameID, String uuid, String step) {
+    public static Interactive getInteractive(String gameID, String uuid, String step) throws JsonProcessingException {
         String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid + "&step=" + step;
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(endPoint, String.class);
         ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(response, Interactive.class);
-        } catch (JsonProcessingException e){
-            System.out.println(e);
-        }
-        return null;
+
+        return mapper.readValue(response, Interactive.class);
     }
 
     public static void saveGame(String saveName, String json) throws ResourceAccessException {

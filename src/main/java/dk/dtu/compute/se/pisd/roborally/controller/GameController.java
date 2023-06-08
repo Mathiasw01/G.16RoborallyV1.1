@@ -21,6 +21,7 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import com.g16.roborallyclient.GameSession;
@@ -435,7 +436,11 @@ public class GameController {
      */
     private void continuePrograms() {
         do {
-            executeNextStep();
+            try {
+                executeNextStep();
+            } catch (JsonProcessingException e){
+                System.out.println("help");
+            }
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
 
 
@@ -453,7 +458,7 @@ public class GameController {
      * increase the step by one. If the step is larger than the number of registers the players have, the
      * method will change the game's phase to the programing phase.
      */
-    private void executeNextStep() {
+    private void executeNextStep() throws JsonProcessingException {
         List<Player> players = board.getPlayers();
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
