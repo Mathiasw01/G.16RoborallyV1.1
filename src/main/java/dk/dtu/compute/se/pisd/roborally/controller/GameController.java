@@ -923,7 +923,7 @@ public class GameController {
         int step = board.getStep();
         if (isOnline) {
             String comm = ClientConsume.conn.userID + ":" +  step + ":" + "Done" + ":" + command.displayName;
-            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, comm);
+            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, comm, String.valueOf(step));
         }
         board.setPhase(Phase.ACTIVATION);
         int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;

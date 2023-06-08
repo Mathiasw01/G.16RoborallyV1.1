@@ -138,8 +138,8 @@ public class ClientConsume {
         return response;
     }
 
-    public static void sendInteractiveCommand(String gameID, String uuid, String comm){
-        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
+    public static void sendInteractiveCommand(String gameID, String uuid, String comm, String step){
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid + "&step=" + step;
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.postForObject(endPoint,comm,String.class);
     }
