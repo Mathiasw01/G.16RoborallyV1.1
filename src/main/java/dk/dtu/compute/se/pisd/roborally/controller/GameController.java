@@ -484,19 +484,6 @@ public class GameController {
                                 } while (!ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).isChosen());
                                 String respone = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).getCommand();
                                 command = convertCommand(respone).command;
-
-                                /*
-                                String response;
-                                do {
-                                    try {
-                                        TimeUnit.SECONDS.sleep(2);
-                                    } catch (InterruptedException e){
-                                        System.out.println("interrupt");
-                                    }
-                                    response = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
-                                } while (response.equals("wait"));
-
-                                 */
                             }
                         } else {
                             board.setPhase(Phase.PLAYER_INTERACTION);
@@ -512,13 +499,6 @@ public class GameController {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
                     multiThreadExecute(step);
-                    /*
-                    if (winnerFound){
-                        displayWinner();
-                        return;
-                    }
-
-                     */
                     step++;
                     if (step < Player.NO_REGISTERS) {
                         makeProgramFieldsVisible(step);
