@@ -4,14 +4,14 @@ import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import javafx.application.Application;
-import javafx.event.Event;
-import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.event.ActionEvent;
@@ -20,12 +20,8 @@ import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.json.JSONObject;
 import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
-
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 
 public class InitRoboRally extends Application {
@@ -53,18 +49,9 @@ public class InitRoboRally extends Application {
         TilePane r = new TilePane(Orientation.VERTICAL);
         r.setAlignment(Pos.CENTER);
         r.setVgap(10);
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                new RoboRally(new String[]{"offline"}, s);
-            }
-        };
-        EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                startMultiplayer(s);
-            }
-        };
+
+        EventHandler<ActionEvent> event = ev -> new RoboRally(new String[]{"offline"}, s);
+        EventHandler<ActionEvent> event1 = ev -> startMultiplayer(s);
 
         S.setOnAction(event);
         M.setOnAction(event1);
@@ -99,18 +86,8 @@ public class InitRoboRally extends Application {
         r.setAlignment(Pos.CENTER);
         r.setVgap(10);
 
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                join(s);
-            }
-        };
-        EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                host(s);
-            }
-        };
+        EventHandler<ActionEvent> event = ev -> join(s);
+        EventHandler<ActionEvent> event1 = ev -> host(s);
 
         J.setOnAction(event);
         H.setOnAction(event1);
@@ -131,12 +108,7 @@ public class InitRoboRally extends Application {
         r.setVgap(10);
         final TextField gameID = new TextField();
 
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                newGameOrLoad(gameID.getText(), s);
-            }
-        };
+        EventHandler<ActionEvent> event = ev -> newGameOrLoad(gameID.getText(), s);
 
         H.setOnAction(event);
 
@@ -155,19 +127,9 @@ public class InitRoboRally extends Application {
         r.setVgap(10);
         Label l = new Label("Do you want to start a new game or continue an existing game?");
         saveGame = null;
-        EventHandler<ActionEvent> newGame = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                chooseMap(gameID,  s);
-            }
-        };
-        EventHandler<ActionEvent> continueGame = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                loadGame(gameID, s);
-            }
-        };
 
+        EventHandler<ActionEvent> newGame = ev -> chooseMap(gameID,  s);
+        EventHandler<ActionEvent> continueGame = ev -> loadGame(gameID, s);
 
         a.setOnAction(newGame);
         b.setOnAction(continueGame);
@@ -185,12 +147,9 @@ public class InitRoboRally extends Application {
         r.setAlignment(Pos.CENTER);
         r.setVgap(10);
 
-        EventHandler<ActionEvent> continueGame = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                saveGame = saveInput.getText();
-                startGame(gameID, null, s);
-            }
+        EventHandler<ActionEvent> continueGame = ev -> {
+            saveGame = saveInput.getText();
+            startGame(gameID, null, s);
         };
 
         b.setOnAction(continueGame);
@@ -205,115 +164,216 @@ public class InitRoboRally extends Application {
 
     public static void chooseMap(String gameID, Stage s){
         s.setTitle("Maps");
-        Button a = new Button("Dizzy Highway");
-        Button b = new Button("High Octane");
-        Button t = new Button("Test Map");
-        TilePane r = new TilePane(Orientation.VERTICAL);
-        r.setAlignment(Pos.CENTER);
-        r.setVgap(10);
-        Label l = new Label("Choose a Map");
+        TilePane tilePane = new TilePane(Orientation.VERTICAL);
+        tilePane.setAlignment(Pos.CENTER);
+        tilePane.setVgap(10);
 
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                startGame(gameID, "DizzyHighway", s);
+        Button C = new Button("Choose Map");
+
+        ListView listView = new ListView();
+        listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        try {
+            List<String> maps = ClientConsume.getMap();
+
+            for (String map:maps){
+                listView.getItems().add(map);
             }
+        } catch (ResourceAccessException e) {
+            Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot connect to server!");
+            ccServerAlert.showAndWait();
+            startMultiplayer(s);
+            return;
+        }
+
+        EventHandler<ActionEvent> event = ev -> {
+            String selected = listView.getSelectionModel().getSelectedItems().toString();
+            selected = selected.replace("[", "");
+            selected = selected.replace("]", "");
+            System.out.print(selected);
+            startGame(gameID, selected, s);
         };
-        EventHandler<ActionEvent> event1 = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                startGame(gameID, "High Octane", s);
-            }
-        };
-        EventHandler<ActionEvent> event2 = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
 
-                startGame(gameID, "testMap", s);
-            }
-        };
+        C.setOnAction(event);
 
-        a.setOnAction(event);
-        b.setOnAction(event1);
-        t.setOnAction(event2);
+        tilePane.getChildren().addAll(C);
 
-        r.getChildren().addAll(l, a, b, t);
-
-        vbox(s, r);
+        VBox vbox = new VBox(listView, tilePane);
+        vbox.setMinWidth(MIN_APP_WIDTH);
+        Scene primaryScene = new Scene(vbox);
+        s.setScene(primaryScene);
+        s.setResizable(false);
+        s.sizeToScene();
+        s.show();
     }
 
     private static void startGame(String gameID, String map, Stage s) {
         try {
             ClientConsume.hostGame(gameID);
-
-        } catch (Exception e){
-            Alert notEnoughAlert = new Alert(Alert.AlertType.WARNING, "You need to be at least 2 players!");
-            notEnoughAlert.showAndWait();
+        } catch (ResourceAccessException e){
+            Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot connect to server!");
+            ccServerAlert.showAndWait();
             ClientConsume.hostGame(gameID);
             return;
         }
 
         s.setTitle("Start");
         Button start = new Button("Start");
-        TilePane r = new TilePane(Orientation.VERTICAL);
-        r.setAlignment(Pos.CENTER);
-        r.setVgap(10);
-        Label l = new Label("Press start, when you are ready to begin the game");
+        TilePane tilePane = new TilePane(Orientation.VERTICAL);
+        tilePane.setAlignment(Pos.CENTER);
+        tilePane.setVgap(10);
+        Label l = new Label("Lobby name: " + gameID);
+        Label l1 = new Label("Press start, when you are ready to begin the game");
 
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                String response;
-                if(saveGame == null)
-               {
-                response = ClientConsume.startGame(gameID, map);
-                } else {
-                    response = ClientConsume.startGameFromSave(gameID, saveGame);
+        EventHandler<ActionEvent> event = ev -> {
+            String response;
+            if(saveGame == null)
+           {
+            response = ClientConsume.startGame(gameID, map);
+            } else {
+                response = ClientConsume.startGameFromSave(gameID, saveGame);
+            }
+            switch (response) {
+                case "100" ->
+                    gameLaunch(gameID, s);
+                case "200" -> {
+                    System.out.println("You are not authenticated!");
+                    Alert authenticationAlert = new Alert(Alert.AlertType.WARNING, "You are not authenticated!");
+                    authenticationAlert.showAndWait();
+                    startGame(gameID, map, s);
                 }
-                switch (response) {
-                    case "100" -> {
-                        GameController gm = ClientConsume.updateBoard(gameID, ClientConsume.conn.userID);
-                        ClientConsume.conn.gameSession.setController(gm);
-                        String playerToken = ClientConsume.getPlayerToken(gameID, ClientConsume.conn.userID);
-                        Connection.setPlayerToken(playerToken);
-                        new RoboRally(new String[]{"online"}, s);
-                    }
-                    case "200" -> {
-                        System.out.println("You are not authenticated!");
-                        startGame(gameID, map, s);
-                    }
-                    case "300" -> {
-                        System.out.println("You need to be at least 2 players!");
-                        startGame(gameID, map, s);
-                    }
+                case "300" -> {
+                    System.out.println("You need to be at least 2 players!");
+                    Alert notEnoughAlert = new Alert(Alert.AlertType.WARNING, "You need to be at least 2 players!");
+                    notEnoughAlert.showAndWait();
+                    startGame(gameID, map, s);
                 }
             }
         };
 
         start.setOnAction(event);
 
-        r.getChildren().addAll(l, start);
+        tilePane.getChildren().addAll(l, l1, start);
 
-        vbox(s, r);
+        vbox(s, tilePane);
+    }
+
+    private static void gameLaunch(String gameID, Stage s) {
+        GameController gm = ClientConsume.updateBoard(gameID, ClientConsume.conn.userID);
+        ClientConsume.conn.gameSession.setController(gm);
+        String playerToken = ClientConsume.getPlayerToken(gameID, ClientConsume.conn.userID);
+        Connection.setPlayerToken(playerToken);
+        new RoboRally(new String[]{"online"}, s);
     }
 
     private static void join(Stage s) {
         s.setTitle("Join Server");
+
+        TilePane tilePane1 = new TilePane(Orientation.HORIZONTAL);
+        tilePane1.setAlignment(Pos.CENTER);
+        TilePane tilePane2 = new TilePane(Orientation.VERTICAL);
+        tilePane2.setAlignment(Pos.CENTER);
+        tilePane2.setVgap(10);
+        TilePane tilePane3 = new TilePane(Orientation.VERTICAL);
+        tilePane3.setAlignment(Pos.CENTER);
+        tilePane3.setVgap(10);
+
         Button J = new Button("Join");
-        TilePane r = new TilePane(Orientation.VERTICAL);
-        r.setAlignment(Pos.CENTER);
-        r.setVgap(10);
+        Button R = new Button("Refresh");
         Label l = new Label("Active lobbies");
-        Label l1 = new Label("Input game ID");
-        Label l2 = new Label("");
+        Label l1 = new Label("Choose a server");
+        Label l2 = new Label("Waiting for game to start");
 
-        final TextField gameID = new TextField();
+        ListView listView = new ListView();
+        listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        JSONObject jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
+        jsonObject(s, l, listView);
+
+        EventHandler<ActionEvent> eventJ = ev -> {
+            JSONObject jsonObject;
+
+            try {
+                jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
+            } catch (Exception e) {
+                Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot connect to server!");
+                ccServerAlert.showAndWait();
+                startMultiplayer(s);
+                return;
+            }
+
+            String selected = listView.getSelectionModel().getSelectedItems().toString();
+            selected = selected.replace("[", "");
+            selected = selected.replace("]", "");
+            System.out.print(selected);
+            try {
+                if ((int)jsonObject.get(selected) >= 6 ){
+                    l1.setText("The lobby is full");
+                    System.out.println("The lobby is full");
+                    return;
+                }
+                if (ClientConsume.isStarted(selected)) {
+                    l1.setText("You can't join this lobby because the game has started");
+                    System.out.println("You can't join this lobby because the game has started");
+                    return;
+                } else {
+                    VBox vbox = new VBox(tilePane3);
+                    vbox.setMinWidth(MIN_APP_WIDTH);
+                    Scene primaryScene = new Scene(vbox);
+                    s.setScene(primaryScene);
+                    s.setResizable(false);
+                    s.sizeToScene();
+                    s.show();
+                    ClientConsume.joinGame(selected);
+                }
+            } catch (Exception e) {
+                l1.setText("Lobby does not exist");
+                return;
+            }
+
+            while (!ClientConsume.isStarted(selected)){
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e){
+                    startMultiplayer(s);
+                    return;
+                }
+            }
+            try {
+                gameLaunch(selected, s);
+            } catch (Exception e){
+                startMultiplayer(s);
+                System.out.println("Error");
+            }
+        };
+
+        EventHandler<ActionEvent> eventR = ev -> {
+            listView.getItems().clear();
+            jsonObject(s, l, listView);
+        };
+
+        J.setOnAction(eventJ);
+        R.setOnAction(eventR);
+
+        tilePane1.getChildren().add(l);
+        tilePane2.getChildren().addAll(l1, J, R);
+        tilePane3.getChildren().add(l2);
+
+        VBox vbox = new VBox(tilePane1, listView, tilePane2);
+        vbox.setMinWidth(MIN_APP_WIDTH);
+        Scene primaryScene = new Scene(vbox);
+        s.setScene(primaryScene);
+        s.setResizable(false);
+        s.sizeToScene();
+        s.show();
+    }
+
+    private static void jsonObject(Stage s, Label l, ListView listView) {
+        JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
         } catch (ResourceAccessException e) {
-            l2.setText("The server is down");
+            Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot connect to server!");
+            ccServerAlert.showAndWait();
             startMultiplayer(s);
             return;
         }
@@ -321,89 +381,12 @@ public class InitRoboRally extends Application {
         Iterator<String> keys = jsonObject.keys();
 
         if (!keys.hasNext()){
-            l2.setText("No active lobbies");
+            l.setText("No active lobbies");
         } else {
             while(keys.hasNext()) {
                 String key = keys.next();
+                listView.getItems().add(key);
             }
         }
-
-        EventHandler<ActionEvent> event = new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent ev)
-            {
-                JSONObject jsonObject;
-
-
-                try {
-                    jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
-                } catch (Exception e) {
-                    l2.setText("The server is down");
-                    startMultiplayer(s);
-                    return;
-                }
-
-                Iterator<String> keys = jsonObject.keys();
-
-                if (!keys.hasNext()){
-                    l2.setText("No active lobbies");
-                } else {
-                    while(keys.hasNext()) {
-                        String key = keys.next();
-                        //System.out.print("Lobby ID: " + key + ": Player count: ");
-                        //System.out.println(jsonObject.get(key));
-                    }
-                }
-
-                try {
-                    if ((int)jsonObject.get(gameID.getText()) >= 6 ){
-                        l2.setText("The lobby is full");
-                        startMultiplayer(s);
-                    }
-                    if (ClientConsume.isStarted(gameID.getText())) {
-                        l2.setText("You can't join this lobby because the game has started");
-                        vbox(s, r);
-                        startMultiplayer(s);
-                    } else {
-                        ClientConsume.joinGame(gameID.getText());
-                    }
-                } catch (Exception e) {
-                    l2.setText("Lobby does not exist");
-                    vbox(s, r);
-                    startMultiplayer(s);
-                    return;
-                }
-                l2.setText("Waiting for game to start");
-                vbox(s, r);
-                while (!ClientConsume.isStarted(gameID.getText())){
-
-                    try {
-                        TimeUnit.SECONDS.sleep(2);
-                    } catch (InterruptedException e){
-                        l2.setText("Sleep was interrupted");
-                        vbox(s, r);
-                    }
-                }
-                try {
-                    GameController gm = ClientConsume.updateBoard(gameID.getText(), ClientConsume.conn.userID);
-                    ClientConsume.conn.gameSession.setController(gm);
-                    String playerToken = ClientConsume.getPlayerToken(gameID.getText(), ClientConsume.conn.userID);
-                    Connection.setPlayerToken(playerToken);
-                    new RoboRally(new String[]{"online"}, s);
-                } catch (Exception e){
-                    startMultiplayer(s);
-                    return;
-                }
-
-
-
-            }
-        };
-
-        J.setOnAction(event);
-
-        r.getChildren().addAll(l, l1, gameID, J, l2);
-
-        vbox(s, r);
-
     }
 }
