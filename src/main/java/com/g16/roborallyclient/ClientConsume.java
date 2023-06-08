@@ -1,11 +1,14 @@
 package com.g16.roborallyclient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Command;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -147,7 +150,14 @@ public class ClientConsume {
     public static Interactive getInteractive(String gameID, String uuid, String step) {
         String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid + "&step=" + step;
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(endPoint,Interactive.class);
+        String response = restTemplate.getForObject(endPoint, String.class);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.readValue(response, Interactive.class);
+        } catch (JsonProcessingException e){
+            System.out.println(e);
+        }
+        return null;
     }
 
     public static void saveGame(String saveName, String json) throws ResourceAccessException {
