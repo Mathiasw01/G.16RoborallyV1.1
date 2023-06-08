@@ -380,6 +380,7 @@ public class GameController {
             case "Repeat last card" -> new CommandCard(Command.AGAIN);
             case "Turn left or right" -> new CommandCard(Command.CHOOSETURN);
             case "Spam" -> new CommandCard(Command.SPAM);
+            //case "wait" -> new CommandCard(Command.WAIT);
             default -> null;
         };
     }
@@ -478,6 +479,7 @@ public class GameController {
                                     response = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
                                 } while (response.equals("wait"));
                                 command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID)).command;
+                                ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, Command.WAIT);
                             }
                         } else {
                             board.setPhase(Phase.PLAYER_INTERACTION);
@@ -907,11 +909,11 @@ public class GameController {
      */
     public void executeCommandOptionAndContinue(Command command){
         executeCommand(board.getCurrentPlayer(),command);
+        int step = board.getStep();
         if (isOnline) {
             ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, command);
         }
         board.setPhase(Phase.ACTIVATION);
-        int step = board.getStep();
         int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;
         if (nextPlayerNumber < board.getPlayersNumber()) {
             board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
