@@ -329,8 +329,6 @@ public class GameController {
      * @param command The command that you want to be removed
      */
     public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
-
-
         Iterator<CommandCard> discardIterator = discardPile.iterator();
         while (discardIterator.hasNext()) {
             CommandCard card = discardIterator.next();
@@ -382,8 +380,6 @@ public class GameController {
     }
 
     public void executeCommandsFromServer(String[] cards){
-
-
         int playerIndex = 0;
 
 
