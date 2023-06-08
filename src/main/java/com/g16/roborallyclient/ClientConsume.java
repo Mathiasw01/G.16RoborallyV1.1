@@ -138,17 +138,16 @@ public class ClientConsume {
         return response;
     }
 
-    public static void sendInteractiveCommand(String gameID, String uuid, Command command){
+    public static void sendInteractiveCommand(String gameID, String uuid, String comm){
         String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
         RestTemplate restTemplate = new RestTemplate();
-        String comm = command.displayName;
         restTemplate.postForObject(endPoint,comm,String.class);
     }
 
-    public static String getInteractive(String gameID, String uuid) {
-        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
+    public static Interactive getInteractive(String gameID, String uuid, String step) {
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid + "&step=" + step;
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(endPoint,String.class);
+        return restTemplate.getForObject(endPoint,Interactive.class);
     }
 
     public static void saveGame(String saveName, String json) throws ResourceAccessException {

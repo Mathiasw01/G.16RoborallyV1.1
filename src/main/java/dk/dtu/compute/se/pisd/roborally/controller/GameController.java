@@ -469,6 +469,17 @@ public class GameController {
                                 board.setPhase(Phase.PLAYER_INTERACTION);
                                 return;
                             } else {
+                                do {
+                                    try {
+                                        TimeUnit.SECONDS.sleep(2);
+                                    } catch (InterruptedException e){
+                                        System.out.println("interrupt");
+                                    }
+                                } while (ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)) == null);
+                                String respone = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).getCommand();
+                                command = convertCommand(respone).command;
+
+                                /*
                                 String response;
                                 do {
                                     try {
@@ -478,8 +489,8 @@ public class GameController {
                                     }
                                     response = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
                                 } while (response.equals("wait"));
-                                command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID)).command;
-                                ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, Command.WAIT);
+
+                                 */
                             }
                         } else {
                             board.setPhase(Phase.PLAYER_INTERACTION);
@@ -911,7 +922,8 @@ public class GameController {
         executeCommand(board.getCurrentPlayer(),command);
         int step = board.getStep();
         if (isOnline) {
-            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, command);
+            String comm = ClientConsume.conn.userID + ":" +  step + ":" + "Done" + ":" + command.displayName;
+            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, comm);
         }
         board.setPhase(Phase.ACTIVATION);
         int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;
