@@ -440,6 +440,7 @@ public class GameController {
                 executeNextStep();
             } catch (JsonProcessingException e){
                 System.out.println("help");
+                System.out.println(e.getMessage());
             }
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
 

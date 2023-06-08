@@ -151,7 +151,9 @@ public class ClientConsume {
         String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid + "&step=" + step;
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(endPoint, String.class);
+        System.out.println(response);
         ObjectMapper mapper = new ObjectMapper();
+
 
         return mapper.readValue(response, Interactive.class);
     }
@@ -160,6 +162,7 @@ public class ClientConsume {
         String endPoint = uri + "/storage/save/"+saveName;
         RestTemplate restTemplate = new RestTemplate();
         String resp = restTemplate.postForObject(endPoint, json, String.class);
+
 
         if(Objects.equals(resp, "100")){
             System.out.println("Saved game to server");
