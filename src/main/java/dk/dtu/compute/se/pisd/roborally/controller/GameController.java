@@ -475,7 +475,7 @@ public class GameController {
                                     } catch (InterruptedException e){
                                         System.out.println("interrupt");
                                     }
-                                } while (ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)) == null);
+                                } while (!ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).isChosen());
                                 String respone = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).getCommand();
                                 command = convertCommand(respone).command;
 
