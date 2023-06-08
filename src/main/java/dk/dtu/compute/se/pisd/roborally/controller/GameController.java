@@ -380,6 +380,7 @@ public class GameController {
             case "Repeat last card" -> new CommandCard(Command.AGAIN);
             case "Turn left or right" -> new CommandCard(Command.CHOOSETURN);
             case "Spam" -> new CommandCard(Command.SPAM);
+            //case "wait" -> new CommandCard(Command.WAIT);
             default -> null;
         };
     }
@@ -468,13 +469,32 @@ public class GameController {
                                 board.setPhase(Phase.PLAYER_INTERACTION);
                                 return;
                             } else {
-                                board.setPhase(Phase.PLAYER_INTERACTION);
-                                return;
+                                do {
+                                    try {
+                                        TimeUnit.SECONDS.sleep(2);
+                                    } catch (InterruptedException e){
+                                        System.out.println("interrupt");
+                                    }
+                                } while (!ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).isChosen());
+                                String respone = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).getCommand();
+                                command = convertCommand(respone).command;
+
+                                /*
+                                String response;
+                                do {
+                                    try {
+                                        TimeUnit.SECONDS.sleep(2);
+                                    } catch (InterruptedException e){
+                                        System.out.println("interrupt");
+                                    }
+                                    response = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
+                                } while (response.equals("wait"));
+
+                                 */
                             }
                         } else {
-                            if (isOnline) {
-                                command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID)).command;
-                            }
+                            board.setPhase(Phase.PLAYER_INTERACTION);
+                            return;
                         }
                     }
                     if (!currentPlayer.getRebooting()) {
@@ -485,9 +505,6 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
-                    for (Player player: players) {
-                        player.setRebooting(false);
-                    }
                     multiThreadExecute(step);
                     /*
                     if (winnerFound){
@@ -502,6 +519,9 @@ public class GameController {
                         board.setStep(step);
                         board.setCurrentPlayer(board.getPlayer(0));
                     } else {
+                        for (Player player: players) {
+                            player.setRebooting(false);
+                        }
                         startProgrammingPhase();
                     }
                 }
@@ -900,11 +920,12 @@ public class GameController {
      */
     public void executeCommandOptionAndContinue(Command command){
         executeCommand(board.getCurrentPlayer(),command);
+        int step = board.getStep();
         if (isOnline) {
-            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, command);
+            String comm = ClientConsume.conn.userID + ":" +  step + ":" + "Done" + ":" + command.displayName;
+            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, comm, String.valueOf(step));
         }
         board.setPhase(Phase.ACTIVATION);
-        int step = board.getStep();
         int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;
         if (nextPlayerNumber < board.getPlayersNumber()) {
             board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
