@@ -505,9 +505,6 @@ public class GameController {
                 if (nextPlayerNumber < board.getPlayersNumber()) {
                     board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
                 } else {
-                    for (Player player: players) {
-                        player.setRebooting(false);
-                    }
                     multiThreadExecute(step);
                     /*
                     if (winnerFound){
@@ -522,6 +519,9 @@ public class GameController {
                         board.setStep(step);
                         board.setCurrentPlayer(board.getPlayer(0));
                     } else {
+                        for (Player player: players) {
+                            player.setRebooting(false);
+                        }
                         startProgrammingPhase();
                     }
                 }
