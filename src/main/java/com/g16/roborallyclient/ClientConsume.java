@@ -7,6 +7,7 @@ import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Command;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
+import dk.dtu.compute.se.pisd.roborally.model.Player;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,13 +15,19 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
 import javax.swing.text.GapContent;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 public class ClientConsume {
@@ -159,7 +166,7 @@ public class ClientConsume {
     }
 
     public static void saveGame(String saveName, String json) throws ResourceAccessException {
-        String endPoint = uri + "/storage/save/"+saveName;
+        String endPoint = uri + "/storage/save/"+saveName + "?gameID="+ClientConsume.conn.gameSession.gameID;
         RestTemplate restTemplate = new RestTemplate();
         String resp = restTemplate.postForObject(endPoint, json, String.class);
 
@@ -170,5 +177,48 @@ public class ClientConsume {
             System.out.println("Couldn't save to server");
         }
 
+    }
+
+
+    public static void saveCardState(List<Player> players){
+
+        Optional<Player> playerReq = players.stream().filter(p -> p.getName().equals(Connection.getPlayerToken())).findFirst();
+        if(playerReq.isEmpty()){
+            System.out.println("Error cannot save to server");
+            return;
+        }
+        Player player = playerReq.get();
+        String endPoint = uri + "/storage/saveHand/"+conn.gameSession.gameID+"?uuid="+conn.userID;
+
+        CommandCardField[] cardHand = player.getCards();
+        CommandCardField[] program = player.getProgram();
+
+        String[] simpleCardHand = new String[cardHand.length];
+        String[] simpleProgram = new String[program.length];
+
+        for(int i = 0; i < cardHand.length; i++){
+            if(cardHand[i].getCard() == null){
+                simpleCardHand[i] = "null";
+            } else {
+                simpleCardHand[i] = cardHand[i].getCard().command.displayName;
+            }
+        }
+
+        for(int i = 0; i < program.length; i++){
+            if(program[i].getCard() == null){
+                simpleProgram[i] = "null";
+            } else {
+                simpleProgram[i] = program[i].getCard().command.displayName;
+            }
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        String resp = restTemplate.postForObject(endPoint, new String[][]{simpleCardHand,simpleProgram}, String.class);
+
+        if(Objects.equals(resp, "100")){
+            System.out.println("Saved card state to server");
+        } else {
+            System.out.println("Couldn't save card state to server");
+        }
     }
 }
