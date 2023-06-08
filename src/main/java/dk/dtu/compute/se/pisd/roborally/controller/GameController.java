@@ -468,13 +468,11 @@ public class GameController {
                                 board.setPhase(Phase.PLAYER_INTERACTION);
                                 return;
                             } else {
-                                board.setPhase(Phase.PLAYER_INTERACTION);
-                                return;
-                            }
-                        } else {
-                            if (isOnline) {
                                 command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID)).command;
                             }
+                        } else {
+                            board.setPhase(Phase.PLAYER_INTERACTION);
+                            return;
                         }
                     }
                     if (!currentPlayer.getRebooting()) {
