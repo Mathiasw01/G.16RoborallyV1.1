@@ -63,39 +63,42 @@ public class GameController {
      * <p>
      * Moves current player to the parsed space if the space is empty
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
+    public void moveCurrentPlayerToSpace(Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         board.setCounter(board.getCounter() + 1);
-        ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
-        ArrayList<FieldObject> currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
+        if(space!=null) {
+            ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
+            ArrayList<FieldObject> currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
 
-        /*
-         * Stops current player from moving if there is a wall in the way
-         */
-        if (originalHeading == null) {
-            if (conPush){
-                setOriginalHeading(conveyorHeading);
-            } else {
-                setOriginalHeading(player.getHeading());
+            /*
+             * Stops current player from moving if there is a wall in the way
+             */
+            if (originalHeading == null) {
+                if (conPush) {
+                    setOriginalHeading(conveyorHeading);
+                } else {
+                    setOriginalHeading(player.getHeading());
+                }
             }
-        }
 
-        /*
-         *Stops current player from moving if there is a wall in the way
-         */
-        for (FieldObject object : walls) {
-            if (isWallBlocking((Wall) object, backupflag, false))
-                return;
-        }
-        for (FieldObject object: currentSpaceWalls) {
-            if (isWallBlocking((Wall) object, backupflag, true))
-                return;
-        }
+            /*
+             *Stops current player from moving if there is a wall in the way
+             */
+            for (FieldObject object : walls) {
+                if (isWallBlocking((Wall) object, backupflag, false))
+                    return;
+            }
+            for (FieldObject object : currentSpaceWalls) {
+                if (isWallBlocking((Wall) object, backupflag, true))
+                    return;
+            }
         /*
         If the target space is free, move and return!
          */
-        if (space.getPlayer() == null) {
-            player.setSpace(space);
-            return;
+
+            if (space.getPlayer() == null) {
+                player.setSpace(space);
+                return;
+            }
         }
 
         /*
@@ -104,10 +107,9 @@ public class GameController {
          * Stops if there is a wall in the way
          */
         handleRobotCollision(space, backupflag, player, conveyorHeading, conPush);
-
     }
 
-    private void handleRobotCollision(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
+    private void handleRobotCollision(Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         Player player2 = space.getPlayer();
         Wall player2CurrentSpaceWall = (Wall) player2.getSpace().findObjectOfType(Wall.class);
         int x = space.x;
@@ -128,13 +130,18 @@ public class GameController {
             y = newCoordinates[1];
         }
 
+        /*
         if(board.getSpace(x,y) == null){
             return;
         }
+         */
 
-        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player)) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player2, conveyorHeading, conPush);
-            player.setSpace(space);
+
+        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player2)) {
+            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, conveyorHeading, conPush);
+            if (!player2.getRebooting()) {
+                player2.setSpace(space);
+            }
         }
     }
 
@@ -183,11 +190,16 @@ public class GameController {
     }
 
     public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player) {
+
         if (space == null) {
             reboot(player);
-            return false;
+            return true;
         }
+
+
         player = space.getPlayer();
+
+
         int x = space.x;
         int y = space.y;
         int prvx;
