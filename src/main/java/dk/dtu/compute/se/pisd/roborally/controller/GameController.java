@@ -21,6 +21,7 @@
  */
 package dk.dtu.compute.se.pisd.roborally.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import com.g16.roborallyclient.GameSession;
@@ -463,7 +464,12 @@ public class GameController {
      */
     private void continuePrograms() {
         do {
-            executeNextStep();
+            try {
+                executeNextStep();
+            } catch (JsonProcessingException e){
+                System.out.println("help");
+                System.out.println(e.getMessage());
+            }
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
 
 
@@ -481,7 +487,7 @@ public class GameController {
      * increase the step by one. If the step is larger than the number of registers the players have, the
      * method will change the game's phase to the programing phase.
      */
-    private void executeNextStep() {
+    private void executeNextStep() throws JsonProcessingException {
         List<Player> players = board.getPlayers();
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
@@ -497,6 +503,17 @@ public class GameController {
                                 board.setPhase(Phase.PLAYER_INTERACTION);
                                 return;
                             } else {
+                                do {
+                                    try {
+                                        TimeUnit.SECONDS.sleep(2);
+                                    } catch (InterruptedException e){
+                                        System.out.println("interrupt");
+                                    }
+                                } while (!ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).isChosen());
+                                String respone = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).getCommand();
+                                command = convertCommand(respone).command;
+
+                                /*
                                 String response;
                                 do {
                                     try {
@@ -506,8 +523,8 @@ public class GameController {
                                     }
                                     response = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
                                 } while (response.equals("wait"));
-                                command = convertCommand(ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID)).command;
-                                ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, Command.WAIT);
+
+                                 */
                             }
                         } else {
                             board.setPhase(Phase.PLAYER_INTERACTION);
@@ -939,7 +956,8 @@ public class GameController {
         executeCommand(board.getCurrentPlayer(),command);
         int step = board.getStep();
         if (isOnline) {
-            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, command);
+            String comm = ClientConsume.conn.userID + ":" +  step + ":" + "Done" + ":" + command.displayName;
+            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, comm, String.valueOf(step));
         }
         board.setPhase(Phase.ACTIVATION);
         int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;

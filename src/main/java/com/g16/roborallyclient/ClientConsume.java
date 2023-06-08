@@ -1,12 +1,15 @@
 package com.g16.roborallyclient;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.Command;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -145,23 +148,28 @@ public class ClientConsume {
         return response;
     }
 
-    public static void sendInteractiveCommand(String gameID, String uuid, Command command){
-        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
+    public static void sendInteractiveCommand(String gameID, String uuid, String comm, String step){
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid + "&step=" + step;
         RestTemplate restTemplate = new RestTemplate();
-        String comm = command.displayName;
         restTemplate.postForObject(endPoint,comm,String.class);
     }
 
-    public static String getInteractive(String gameID, String uuid) {
-        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
+    public static Interactive getInteractive(String gameID, String uuid, String step) throws JsonProcessingException {
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid + "&step=" + step;
         RestTemplate restTemplate = new RestTemplate();
-        return restTemplate.getForObject(endPoint,String.class);
+        String response = restTemplate.getForObject(endPoint, String.class);
+        System.out.println(response);
+        ObjectMapper mapper = new ObjectMapper();
+
+
+        return mapper.readValue(response, Interactive.class);
     }
 
     public static void saveGame(String saveName, String json) throws ResourceAccessException {
         String endPoint = uri + "/storage/save/"+saveName + "?gameID="+ClientConsume.conn.gameSession.gameID;
         RestTemplate restTemplate = new RestTemplate();
         String resp = restTemplate.postForObject(endPoint, json, String.class);
+
 
         if(Objects.equals(resp, "100")){
             System.out.println("Saved game to server");
