@@ -6,7 +6,7 @@ public class Connection {
 
     public String userID;
 
-    public GameSession gameSession = new GameSession();
+    public final GameSession gameSession = new GameSession();
 
 
     private static String playerToken;

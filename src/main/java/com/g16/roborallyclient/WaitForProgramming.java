@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 public class WaitForProgramming implements Runnable{
     private volatile String[] cards;
-    private volatile GameController gc;
+    private final GameController gc;
 
 
     public WaitForProgramming(GameController gc, String[] cards){

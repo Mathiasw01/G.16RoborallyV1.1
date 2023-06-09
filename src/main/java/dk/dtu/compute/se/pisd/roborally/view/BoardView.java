@@ -39,14 +39,14 @@ import org.jetbrains.annotations.NotNull;
  */
 public class BoardView extends VBox implements ViewObserver {
 
-    private Board board;
+    private final Board board;
 
-    private GridPane mainBoardPane;
-    private SpaceView[][] spaces;
+    private final GridPane mainBoardPane;
+    private final SpaceView[][] spaces;
 
-    private PlayersView playersView;
+    private final PlayersView playersView;
 
-    private Label statusLabel;
+    private final Label statusLabel;
 
     //private SpaceEventHandler spaceEventHandler;
 

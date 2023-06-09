@@ -54,7 +54,7 @@ public class Board extends Subject {
     private final Space[][] spaces;
 
     @Expose
-    private ArrayList<CheckpointField> checkpoints = new ArrayList<>();
+    private final ArrayList<CheckpointField> checkpoints = new ArrayList<>();
 
 
     @Expose
@@ -76,7 +76,7 @@ public class Board extends Subject {
     @Expose
     private RebootField rebootField = null;
 
-    private ProgrammingDeck programmingDeck = new ProgrammingDeck();
+    private final ProgrammingDeck programmingDeck = new ProgrammingDeck();
 
 
 
@@ -209,10 +209,7 @@ public class Board extends Subject {
                 }
                 if(s.getPlayer() != null){
                     Optional<Player> p = players.stream().filter(x -> Objects.equals(x.getName(), s.getPlayer().getName())).findFirst();
-                    if(p.isPresent()){
-                        p.get().setSpace(spaces[s.x][s.y]);
-
-                    }
+                    p.ifPresent(player -> player.setSpace(spaces[s.x][s.y]));
 
                 }
             }

@@ -16,7 +16,7 @@ import java.util.*;
  */
 
 public class SpaceReader {
-    String fileName;
+    final String fileName;
 
     private boolean isCsv;
 

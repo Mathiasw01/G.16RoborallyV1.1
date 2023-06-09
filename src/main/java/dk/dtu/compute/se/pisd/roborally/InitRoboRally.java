@@ -39,7 +39,7 @@ public class InitRoboRally extends Application {
 
     static String saveGame = null;
 
-    public void start(Stage s) throws Exception {
+    public void start(Stage s) {
 
         // create the primary scene with a menu bar and a pane for
         // the board view (which initially is empty); it will be filled
@@ -327,7 +327,6 @@ public class InitRoboRally extends Application {
 
         EventHandler<ActionEvent> eventJ = ev -> {
             JSONObject jsonObject;
-
             try {
                 jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
             } catch (Exception e) {

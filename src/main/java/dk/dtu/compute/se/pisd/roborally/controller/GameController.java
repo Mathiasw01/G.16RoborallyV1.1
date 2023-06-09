@@ -31,8 +31,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -377,9 +375,8 @@ public class GameController {
 
     /**
      * Waits for other players to finish programming their robot, when playing online
-     * @throws InterruptedException
      */
-    private void waitForOtherPlayersToFinishProgramming() throws InterruptedException {
+    private void waitForOtherPlayersToFinishProgramming() {
         for (Player player : board.getPlayers()) {
             if (player.getName().equals(Connection.getPlayerToken())){
                 ClientConsume.sendProgram(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, player.getProgram());
@@ -479,12 +476,7 @@ public class GameController {
      */
     private void continuePrograms() {
         do {
-            try {
-                executeNextStep();
-            } catch (JsonProcessingException e){
-                System.out.println("help");
-                System.out.println(e.getMessage());
-            }
+            executeNextStep();
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
 
 
@@ -502,7 +494,7 @@ public class GameController {
      * increase the step by one. If the step is larger than the number of registers the players have, the
      * method will change the game's phase to the programing phase.
      */
-    private void executeNextStep() throws JsonProcessingException {
+    private void executeNextStep() {
         List<Player> players = board.getPlayers();
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
@@ -522,11 +514,7 @@ public class GameController {
                                 Thread interactionWaitThread = new Thread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        try {
-                                            awaitInteractive(currentPlayer, step);
-                                        } catch (JsonProcessingException e) {
-                                            throw new RuntimeException(e);
-                                        }
+                                        awaitInteractive(currentPlayer, step);
                                     }
                                 });
 
@@ -574,7 +562,7 @@ public class GameController {
         }
     }
 
-    private void awaitInteractive(Player currentPlayer, int step) throws JsonProcessingException {
+    private void awaitInteractive(Player currentPlayer, int step) {
         Command command;
         boolean continu = false;
         Interactive chosenInteractive = null;

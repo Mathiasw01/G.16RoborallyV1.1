@@ -22,7 +22,6 @@
 package dk.dtu.compute.se.pisd.roborally.view;
 
 import dk.dtu.compute.se.pisd.roborally.controller.AppController;
-import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -35,9 +34,9 @@ import javafx.scene.control.MenuItem;
  */
 public class RoboRallyMenuBar extends MenuBar {
 
-    private AppController appController;
+    private final AppController appController;
 
-    private Menu controlMenu;
+    private final Menu controlMenu;
     private Menu mapMenu;
     private MenuItem testMap;
     private MenuItem dizzy;
@@ -57,9 +56,9 @@ public class RoboRallyMenuBar extends MenuBar {
 
     private MenuItem stopGame;
 
-    private MenuItem exitApp;
+    private final MenuItem exitApp;
     private String map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap";
-    boolean isOnline;
+    final boolean isOnline;
 
     public RoboRallyMenuBar(AppController appController, boolean isOnline) {
         this.appController = appController;

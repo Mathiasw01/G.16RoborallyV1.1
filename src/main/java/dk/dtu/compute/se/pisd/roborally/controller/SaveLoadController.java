@@ -52,7 +52,7 @@ public class SaveLoadController {
         return gson.toJson(gc);
     }
 
-    public static void serializeAndSaveToServer(GameController gc, String fileName) throws IOException {
+    public static void serializeAndSaveToServer(GameController gc, String fileName) {
 
         ClientConsume.saveGame(fileName, serializeGameController(gc));
 
