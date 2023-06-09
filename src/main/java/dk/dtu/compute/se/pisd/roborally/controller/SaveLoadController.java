@@ -49,12 +49,6 @@ public class SaveLoadController {
     }
 
     private static String serializeGameController(GameController gc){
-        Gson gson = new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .setPrettyPrinting()
-                .registerTypeAdapterFactory(runtimeTypeAdapterFactory)
-                .create();
-
         return gson.toJson(gc);
     }
 
@@ -96,7 +90,22 @@ public class SaveLoadController {
         return null;
     }
 
-    public static GameController deserializeString(String str){
+    public static GameController deserializeGameControllerFromString(String str){
         return gson.fromJson(str, GameController.class);
+    }
+
+    public static Space[][] deserializeSpacesFromString(String str){
+        return gson.fromJson(str, Space[][].class);
+    }
+
+        public static void saveMapToJSON(Space[][] spaces, String filePath){
+         try {
+             BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+             writer.write(gson.toJson(spaces, Space[][].class));
+             writer.close();
+         }catch (IOException e){
+             System.out.println("Couldn't save map");
+         }
+
     }
 }
