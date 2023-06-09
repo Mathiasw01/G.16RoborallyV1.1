@@ -145,7 +145,7 @@ public class GameController {
         x = newCoordinates[0];
         y = newCoordinates[1];
 
-        if (backupflag && conPush) {
+        if (!backupflag && conPush) {
             newCoordinates = getNewCoordinates(conveyorHeading,x,y, backupflag);
             x = newCoordinates[0];
             y = newCoordinates[1];
