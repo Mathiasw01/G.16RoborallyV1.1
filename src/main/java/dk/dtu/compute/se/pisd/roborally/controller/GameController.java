@@ -157,16 +157,12 @@ public class GameController {
             }
         }
 
-        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player)) {
-            System.out.println(x + " " + y);
-            moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player2, conveyorHeading, conPush);
-            /*try {
-                moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player, conveyorHeading, conPush);
+        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player2)) {
+            try {
+                moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player2, conveyorHeading, conPush);
             } catch (NullPointerException e){
 
             }
-
-             */
             player.setSpace(space);
         }
     }
