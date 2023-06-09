@@ -18,7 +18,7 @@ class GameControllerTest {
 
     @BeforeEach
     void setUp() {
-        Board board = new Board(TEST_WIDTH, TEST_HEIGHT, "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/DizzyHighway");
+        Board board = new Board(TEST_WIDTH, TEST_HEIGHT, "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/unitTestMap");
         gameController = new GameController(board, false);
         ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
         for (int i = 0; i < 6; i++) {
@@ -117,6 +117,27 @@ class GameControllerTest {
     }
 
     @Test
+    void reboot2Players(){
+        Player player1 = gameController.board.getCurrentPlayer();
+        player1.setSpace(gameController.board.getSpace(0, 0));
+        player1.setHeading(Heading.WEST);
+        gameController.executeCommand(player1, Command.FORWARD);
+        Player player2 = gameController.board.getPlayer(1);
+        player2.setSpace(gameController.board.getSpace(0,5));
+        player2.setHeading(Heading.WEST);
+        gameController.executeCommand(player2, Command.FORWARD);
+
+        //Test if player 2 is on the reboot field
+        Assertions.assertEquals(gameController.board.getRebootField().getY(),player2.getSpace().y);
+        Assertions.assertEquals(gameController.board.getRebootField().getX(),player2.getSpace().x);
+
+        //Test if player 1 is below reboot field
+        Assertions.assertEquals(gameController.board.getRebootField().getY()+1,player1.getSpace().y);
+        Assertions.assertEquals(gameController.board.getRebootField().getX(),player1.getSpace().x);
+
+    }
+
+    @Test
     void laser() {
         setUp();
         gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(6, 4), false, gameController.board.getCurrentPlayer(), gameController.board.getCurrentPlayer().getHeading(), false);
@@ -134,7 +155,19 @@ class GameControllerTest {
     }
 
     @Test
-    void conveyor(){
+    void testOrangeConveyor(){
+        setUp();
+        gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(2,0),false,
+                gameController.board.getCurrentPlayer(),gameController.board.getCurrentPlayer().getHeading(),true);
+        System.out.println(gameController.board.getCurrentPlayer().getSpace().x);
+        System.out.println(gameController.board.getCurrentPlayer().getSpace().y);
+        gameController.executeBoardElement(gameController.board.getCurrentPlayer(),gameController.board.getStep());
+        //Tests if a conveyor moves a player correctly
+        Assertions.assertEquals(gameController.board.getSpace(3,0),gameController.board.getCurrentPlayer().getSpace());
+    }
+
+    @Test
+    void testBlueConveyor(){
         setUp();
         gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(4,0),false,
                 gameController.board.getCurrentPlayer(),gameController.board.getCurrentPlayer().getHeading(),true);
@@ -154,16 +187,34 @@ class GameControllerTest {
         //Tests if a player moves when trying to go through a wall
         Assertions.assertEquals(gameController.board.getSpace(1,2),gameController.board.getCurrentPlayer().getSpace());
     }
-    /*
+
+    @Test
+    void twowalls(){
+        setUp();
+        gameController.board.getCurrentPlayer().setSpace(gameController.board.getSpace(2,4));
+        gameController.board.getCurrentPlayer().setHeading(Heading.NORTH);
+        gameController.executeCommand(gameController.board.getCurrentPlayer(),Command.FORWARD);
+        //Tests if a player moves when trying to go through the first wall
+        Assertions.assertEquals(gameController.board.getSpace(2,4),gameController.board.getCurrentPlayer().getSpace());
+
+        //Tests if a player moves when trying to go through the second wall
+        gameController.board.getCurrentPlayer().setHeading(Heading.EAST);
+        gameController.executeCommand(gameController.board.getCurrentPlayer(),Command.FORWARD);
+        Assertions.assertEquals(gameController.board.getSpace(2,4),gameController.board.getCurrentPlayer().getSpace());
+
+
+    }
+
     @Test
     void winnerFound(){
         setUp();
         gameController.board.getCurrentPlayer().setSpace(gameController.board.getSpace(12,4));
         gameController.board.getCurrentPlayer().setHeading(Heading.NORTH);
         gameController.executeCommand(gameController.board.getCurrentPlayer(),Command.FORWARD);
-        Assertions.assertEquals(gameController.);
+        gameController.executeBoardElement(gameController.board.getCurrentPlayer(),gameController.board.getStep());
+        Assertions.assertEquals(gameController.board.getCurrentPlayer(), gameController.getWinner());
     }
-     */
+
 
     @Test
     void gears(){
