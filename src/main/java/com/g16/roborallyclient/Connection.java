@@ -1,7 +1,6 @@
 package com.g16.roborallyclient;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Connection {
 

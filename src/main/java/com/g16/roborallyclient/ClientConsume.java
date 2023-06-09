@@ -1,7 +1,5 @@
 package com.g16.roborallyclient;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
@@ -15,9 +13,6 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
-import javax.swing.text.GapContent;
-import java.util.*;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,9 +30,8 @@ public class ClientConsume {
         String endPoint = uri + "/lobby";
        // ResponseEntity<List<GameSession>> response = getListResponseEntity(endPoint);
         RestTemplate restTemplate = new RestTemplate();
-        String lobbies = restTemplate.getForObject(endPoint, String.class);
 
-        return lobbies;
+        return restTemplate.getForObject(endPoint, String.class);
     }
 
     @NotNull
@@ -52,26 +46,20 @@ public class ClientConsume {
         return response;
     }
 
-    public static Connection joinGame(String gameID) throws RestClientException {
+    public static void joinGame(String gameID) throws RestClientException {
         String endPoint = uri + "/game/join/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
-        GameSession gs = connection.gameSession;
         conn = connection;
         System.out.println("UUID: " + connection.userID);
-        return connection;
     }
 
-    public static Connection hostGame(String gameID) throws RestClientException{
+    public static void hostGame(String gameID) throws RestClientException{
         String endPoint = uri + "/game/host/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
-        GameSession gs = connection.gameSession;
-
         conn = connection;
         System.out.println("UUID: " + connection.userID);
-
-        return connection;
 
     }
 
@@ -79,16 +67,14 @@ public class ClientConsume {
         String endPoint = uri + "/map/";
         RestTemplate restTemplate = new RestTemplate();
 
-        List<String> maps = restTemplate.getForObject(endPoint, List.class);
-        return maps;
+        return restTemplate.getForObject(endPoint, List.class);
     }
 
     public static List<String> getServerSaves (){
         String endPoint = uri + "/storage/";
         RestTemplate restTemplate = new RestTemplate();
 
-        List<String> saves = restTemplate.getForObject(endPoint, List.class);
-        return saves;
+        return restTemplate.getForObject(endPoint, List.class);
     }
 
     public static String startGame(String gameID, String mapName){
@@ -145,8 +131,7 @@ public class ClientConsume {
     public static String[] executeProgrammedCards(String gameID, String userID){
         String endPoint = uri + "/game/getCards/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
-        String[] response = restTemplate.getForObject(endPoint, String[].class);
-        return response;
+        return restTemplate.getForObject(endPoint, String[].class);
     }
 
     public static void sendInteractiveCommand(String gameID, String uuid, String comm){
@@ -155,12 +140,9 @@ public class ClientConsume {
         restTemplate.postForObject(endPoint,comm,String.class);
     }
 
-    public static List<Interactive> getInteractive(String gameID, String uuid) throws JsonProcessingException {
+    public static List<Interactive> getInteractive(String gameID, String uuid) {
         String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
-        List<Interactive> interactives = getListResponseEntity(endPoint).getBody();
-
-
-       return interactives;
+        return getListResponseEntity(endPoint).getBody();
     }
 
     public static void saveGame(String saveName, String json) throws ResourceAccessException {

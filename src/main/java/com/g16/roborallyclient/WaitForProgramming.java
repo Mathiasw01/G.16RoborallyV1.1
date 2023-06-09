@@ -1,10 +1,6 @@
 package com.g16.roborallyclient;
 
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import javafx.scene.control.Alert;
-
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class WaitForProgramming implements Runnable{

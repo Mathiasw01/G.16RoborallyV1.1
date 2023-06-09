@@ -799,9 +799,6 @@ public class GameController {
     public boolean testIfLaserIsBlocked(int x, int y, Laser laser){
         int[] cords = getNewCoordinates(laser.getDirection(),x,y,true);
         Space space = board.getSpace(cords[0],cords[1]);
-        /*
-        #TODO Find out why space is null
-         */
         if(space == null){
             return false;
         }
