@@ -36,13 +36,11 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.web.bind.annotation.GetMapping;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
+
 
 
 /**
@@ -61,9 +59,8 @@ public class AppController implements Observer {
     private GameController gameController;
     private final ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
 
-    private List<CommandCard> discardPile;
 
-    private boolean isOnline = false;
+    private final boolean isOnline;
 
     public AppController(@NotNull RoboRally roboRally, boolean isOnline) {
         this.roboRally = roboRally;this.isOnline = isOnline;
@@ -161,15 +158,10 @@ public class AppController implements Observer {
 
     }
 
-    public void loadGameFromServer() {
-        //Implement
-    }
-
 
     /**
      * Load game
      * <p>
-     * TODO - implement
      */
     public void loadGame() {
         TextInputDialog dialog = new TextInputDialog("savegame_01");
@@ -179,7 +171,7 @@ public class AppController implements Observer {
 
 
         Optional<String> result = dialog.showAndWait();
-        if (!result.isPresent()){
+        if (result.isEmpty()){
             return;
         }
 
@@ -236,7 +228,7 @@ public class AppController implements Observer {
             alert.setContentText("Are you sure you want to exit RoboRally?");
             Optional<ButtonType> result = alert.showAndWait();
 
-            if (!result.isPresent() || result.get() != ButtonType.OK) {
+            if (result.isEmpty() || result.get() != ButtonType.OK) {
                 return; // return without exiting the application
             }
         }
