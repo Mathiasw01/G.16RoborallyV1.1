@@ -24,18 +24,12 @@ package dk.dtu.compute.se.pisd.roborally.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.g16.roborallyclient.*;
 import com.google.gson.annotations.Expose;
-import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +49,7 @@ public class GameController {
     final public Board board;
     private Heading originalHeading = null;
 
-    private boolean isOnline;
+    private final boolean isOnline;
 
     private boolean winnerFound = false;
     private Player winner;
@@ -71,7 +65,7 @@ public class GameController {
 
     /**
      * sets original heading
-     * @param originalHeading
+     * @param originalHeading original heading
      */
     public void setOriginalHeading(Heading originalHeading) {
         this.originalHeading = originalHeading;
@@ -79,8 +73,8 @@ public class GameController {
 
     /**
      * Gamecontrollers constructor
-     * @param board
-     * @param isOnline
+     * @param board board
+     * @param isOnline Is online
      */
     public GameController(@NotNull Board board, boolean isOnline) {
         this.board = board;
@@ -243,12 +237,8 @@ public class GameController {
                 }
                 if (prvWall != null){
                     if (backupflag) {
-                        if (prvWall.getDir().next().next() == heading) {
-                            return false;
-                        }
-                    } else if (prvWall.getDir() == heading){
-                        return false;
-                    }
+                        return prvWall.getDir().next().next() != heading;
+                    } else return prvWall.getDir() != heading;
                 }
                 return true;
             } else {
@@ -318,8 +308,8 @@ public class GameController {
     /**
      * Draws a card from the players programming deck, if the deck is empty, their discard pile gets shuffled into their
      * programmingdeck
-     * @param currentPLayer
-     * @return
+     * @param currentPLayer currentPlayer
+     * @return Returns the drans command card
      */
     public CommandCard drawCard(Player currentPLayer) {
         if (currentPLayer.getProgrammingDeck().isEmpty()) {
@@ -353,17 +343,11 @@ public class GameController {
 
     /**
      * Removes a single command card with a specific command, it's used when a damage card is played.
-     * @param discardPile
+     * @param discardPile The players discard pile
      * @param command The command that you want to be removed
      */
     public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
-        Iterator<CommandCard> discardIterator = discardPile.iterator();
-        while (discardIterator.hasNext()) {
-            CommandCard card = discardIterator.next();
-            if (card.command == command) {
-                discardIterator.remove();
-            }
-        }
+        discardPile.removeIf(card -> card.command == command);
     }
 
     /**
@@ -703,7 +687,7 @@ public class GameController {
 
     /**
      * Executes the board elements in different threads, so that they happen simultaneously for each robot.
-     * @param step
+     * @param step step
      */
     public void multiThreadExecute(int step){
         ExecutorService executor = Executors.newFixedThreadPool(board.getPlayers().size());
