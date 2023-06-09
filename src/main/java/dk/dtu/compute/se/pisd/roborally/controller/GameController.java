@@ -126,7 +126,6 @@ public class GameController {
         /*
         If the target space is free, move and return!
          */
-
         if (space.getPlayer() == null) {
             player.setSpace(space);
             return;
