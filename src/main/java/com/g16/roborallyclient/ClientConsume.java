@@ -157,14 +157,6 @@ public class ClientConsume {
 
     public static List<Interactive> getInteractive(String gameID, String uuid) throws JsonProcessingException {
         String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
-        /*
-        RestTemplate restTemplate = new RestTemplate();
-        String response = restTemplate.getForObject(endPoint, String.class);
-        System.out.println(response);
-        ObjectMapper mapper = new ObjectMapper();
-
-         */
-
         List<Interactive> interactives = getListResponseEntity(endPoint).getBody();
 
 

@@ -96,6 +96,9 @@ public class SpaceReader {
                         board.setRebootField(new RebootField(Heading.valueOf(result[3]),Integer.parseInt(result[1]),Integer.parseInt(result[2])));
                         space.addObjects(new RebootField(Heading.valueOf(result[3]),Integer.parseInt(result[1]),Integer.parseInt(result[2])));
                         break;
+                    case "PushPanel":
+                        space.addObjects(new PushPanel(Heading.valueOf(result[3]), new int[]{2, 4}));
+                        break;
                     default:
                         System.out.println("Unknown object in " + fileName);
                         System.out.println("On line " +lineNum);
