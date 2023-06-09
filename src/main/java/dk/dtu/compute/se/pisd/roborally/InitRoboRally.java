@@ -1,11 +1,9 @@
 package dk.dtu.compute.se.pisd.roborally;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import javafx.application.Application;
-import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
