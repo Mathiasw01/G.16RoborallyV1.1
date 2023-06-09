@@ -12,6 +12,7 @@ Wall;2;5;EAST
 Wall;1;7;SOUTH
 Wall;4;0;SOUTH
 Wall;5;0;SOUTH
+PushPanel;5;0;SOUTH
 Wall;6;0;SOUTH
 Wall;9;9;NORTH
 Wall;10;9;NORTH

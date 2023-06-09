@@ -496,46 +496,21 @@ public class GameController {
                                 board.setPhase(Phase.PLAYER_INTERACTION);
                                 return;
                             } else {
-                                /*
-                                do {
-                                    try {
-                                        TimeUnit.SECONDS.sleep(2);
-                                    } catch (InterruptedException e){
-                                        System.out.println("interrupt");
-                                    }
-                                } while (!ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).isChosen());
-                                 */
-                                boolean continu = false;
-                                Interactive chosenInteractive = null;
-                                    do {
-                                        List<Interactive> interactiveList = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
-
-                                        for (Interactive interactive : interactiveList) {
-                                            continu = currentPlayer.getPlayerNum() == interactive.getUserID() && interactive.isChosen() && String.valueOf(step).equals(interactive.getStep());
-                                            
-                                            if (continu) {
-                                                chosenInteractive = interactive;
-                                                break;
-                                            }
+                                board.setPhase(Phase.WAITING);
+                                Thread interactionWaitThread = new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            awaitInteractive(currentPlayer, step);
+                                        } catch (JsonProcessingException e) {
+                                            throw new RuntimeException(e);
                                         }
-                                        if (!continu) {
-                                            try {
-                                                TimeUnit.SECONDS.sleep(2);
-                                            } catch (InterruptedException e) {
-                                                System.out.println("interrupt");
-                                            }
-                                        }
-                                                
-                                    } while (!continu);
-                                    command = convertCommand(chosenInteractive.getCommand()).command;
-
-                                    /*
-                                    if (Objects.equals(interactiveList.get(i).getStep(), String.valueOf(step)) && currentPlayer.getPlayerNum() == (interactiveList.get(i).getUserID())){
-                                        command = convertCommand(interactiveList.get(i).getCommand()).command;
                                     }
-                                    
-                                     */
-                                
+                                });
+
+                                interactionWaitThread.start();
+                                return;
+
                             }
                         } else {
                             board.setPhase(Phase.PLAYER_INTERACTION);
@@ -546,23 +521,7 @@ public class GameController {
                         executeCommand(currentPlayer, command);
                     }
                 }
-                int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
-                if (nextPlayerNumber < board.getPlayersNumber()) {
-                    board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
-                } else {
-                    multiThreadExecute(step);
-                    step++;
-                    if (step < Player.NO_REGISTERS) {
-                        makeProgramFieldsVisible(step);
-                        board.setStep(step);
-                        board.setCurrentPlayer(board.getPlayer(0));
-                    } else {
-                        for (Player player: players) {
-                            player.setRebooting(false);
-                        }
-                        startProgrammingPhase();
-                    }
-                }
+                endturn(players, currentPlayer, step);
             } else {
                 // this should not happen
                 assert false;
@@ -571,6 +530,63 @@ public class GameController {
             // this should not happen
             assert false;
         }
+    }
+
+    private void endturn(List<Player> players, Player currentPlayer, int step) {
+        int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
+        if (nextPlayerNumber < board.getPlayersNumber()) {
+            board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
+        } else {
+            multiThreadExecute(step);
+            step++;
+            if (step < Player.NO_REGISTERS) {
+                makeProgramFieldsVisible(step);
+                board.setStep(step);
+                board.setCurrentPlayer(board.getPlayer(0));
+            } else {
+                for (Player player: players) {
+                    player.setRebooting(false);
+                }
+                startProgrammingPhase();
+            }
+        }
+    }
+
+    private void awaitInteractive(Player currentPlayer, int step) throws JsonProcessingException {
+        Command command;
+        boolean continu = false;
+        Interactive chosenInteractive = null;
+        do {
+            List<Interactive> interactiveList = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
+
+            for (Interactive interactive : interactiveList) {
+                continu = currentPlayer.getPlayerNum() == interactive.getUserID() && interactive.isChosen() && String.valueOf(step).equals(interactive.getStep());
+
+                if (continu) {
+                    chosenInteractive = interactive;
+                    break;
+                }
+            }
+            if (!continu) {
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                    System.out.println("interrupt");
+                }
+            }
+
+        } while (!continu);
+
+        command = convertCommand(chosenInteractive.getCommand()).command;
+
+        if (!currentPlayer.getRebooting()) {
+            executeCommand(currentPlayer, command);
+        }
+
+        board.setPhase(Phase.ACTIVATION);
+        endturn(board.getPlayers(), currentPlayer, step);
+
+
     }
 
     private void displayWinner(){
