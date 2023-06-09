@@ -1050,4 +1050,8 @@ public class GameController {
         }
         continuePrograms();
     }
+
+    public Player getWinner(){
+        return winner;
+    }
 }
