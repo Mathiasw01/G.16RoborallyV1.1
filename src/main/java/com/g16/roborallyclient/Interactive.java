@@ -2,11 +2,11 @@ package com.g16.roborallyclient;
 
 public class Interactive {
 
-    public String getUserID() {
+    public int getUserID() {
         return userID;
     }
 
-    public void setUserID(String userID) {
+    public void setUserID(int userID) {
         this.userID = userID;
     }
 
@@ -34,7 +34,7 @@ public class Interactive {
         this.command = command;
     }
 
-    private String userID;
+    private int userID;
 
     private String step;
 
@@ -42,7 +42,7 @@ public class Interactive {
 
     private String command;
 
-    public Interactive(String userID, String step, boolean chosen, String command){
+    public Interactive(int userID, String step, boolean chosen, String command){
         this.userID = userID;
         this.step = step;
         this.chosen = chosen;
@@ -50,7 +50,7 @@ public class Interactive {
     }
 
     public Interactive(){
-        this.userID = null;
+        this.userID = 0;
         this.step = null;
         this.chosen = false;
         this.command = null;
