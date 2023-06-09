@@ -118,7 +118,6 @@ class GameControllerTest {
 
     @Test
     void laser() {
-        setUp();
         gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(6, 4), false, gameController.board.getCurrentPlayer(), gameController.board.getCurrentPlayer().getHeading(), false);
         gameController.executeBoardElement(gameController.board.getCurrentPlayer(),gameController.board.getStep());
         Iterator<CommandCard> discardIterator = gameController.board.getCurrentPlayer().getDiscardPile().iterator();
@@ -135,7 +134,6 @@ class GameControllerTest {
 
     @Test
     void conveyor(){
-        setUp();
         gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(4,0),false,
                 gameController.board.getCurrentPlayer(),gameController.board.getCurrentPlayer().getHeading(),true);
         System.out.println(gameController.board.getCurrentPlayer().getSpace().x);
@@ -147,32 +145,52 @@ class GameControllerTest {
 
     @Test
     void walls(){
-        setUp();
         gameController.board.getCurrentPlayer().setSpace(gameController.board.getSpace(1,2));
         gameController.board.getCurrentPlayer().setHeading(Heading.NORTH);
         gameController.executeCommand(gameController.board.getCurrentPlayer(),Command.FORWARD);
         //Tests if a player moves when trying to go through a wall
         Assertions.assertEquals(gameController.board.getSpace(1,2),gameController.board.getCurrentPlayer().getSpace());
     }
-    /*
-    @Test
-    void winnerFound(){
-        setUp();
-        gameController.board.getCurrentPlayer().setSpace(gameController.board.getSpace(12,4));
-        gameController.board.getCurrentPlayer().setHeading(Heading.NORTH);
-        gameController.executeCommand(gameController.board.getCurrentPlayer(),Command.FORWARD);
-        Assertions.assertEquals(gameController.);
-    }
-     */
+
 
     @Test
     void gears(){
-        setUp();
         gameController.board.getCurrentPlayer().setSpace(gameController.board.getSpace(5,2));
         gameController.board.getCurrentPlayer().setHeading(Heading.EAST);
         gameController.executeBoardElement(gameController.board.getCurrentPlayer(),gameController.board.getStep());
         Assertions.assertEquals(Heading.SOUTH,gameController.board.getCurrentPlayer().getHeading());
     }
+
+    @Test
+    void laserIsblocked(){
+        gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(6, 4), false, gameController.board.getCurrentPlayer(), gameController.board.getCurrentPlayer().getHeading(), false);
+        gameController.board.getPlayer(1).setSpace(gameController.board.getSpace(6,3));
+        gameController.executeBoardElement(gameController.board.getCurrentPlayer(),gameController.board.getStep());
+        gameController.executeBoardElement(gameController.board.getPlayer(1),gameController.board.getStep());
+        Iterator<CommandCard> discardIterator = gameController.board.getCurrentPlayer().getDiscardPile().iterator();
+        int noOfSpamcards = 0;
+        while (discardIterator.hasNext()) {
+            CommandCard card = discardIterator.next();
+            if (card.command == Command.SPAM) {
+                noOfSpamcards++;
+            }
+        }
+        // Tests if a player doesnt get hit when the laser is block
+        Assertions.assertEquals(0,noOfSpamcards);
+
+        Iterator<CommandCard> discardIterator2 = gameController.board.getPlayer(1).getDiscardPile().iterator();
+        int noOfSpamcards2 = 0;
+        while (discardIterator2.hasNext()) {
+            CommandCard card = discardIterator2.next();
+            if (card.command == Command.SPAM) {
+                noOfSpamcards2++;
+            }
+        }
+        // Tests if the player blocking the laser gets hit, and get a spam card in their discard pile.
+        Assertions.assertEquals(1,noOfSpamcards2);
+    }
+
+
 
 
 
