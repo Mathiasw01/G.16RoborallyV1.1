@@ -1,30 +1,23 @@
 package com.g16.roborallyclient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.Command;
-import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
 import javax.swing.text.GapContent;
-import java.util.Arrays;
+import java.util.*;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -48,12 +41,12 @@ public class ClientConsume {
     }
 
     @NotNull
-    private static ResponseEntity<List<GameSession>> getListResponseEntity(String endPoint) {
+    private static ResponseEntity<List<Interactive>> getListResponseEntity(String endPoint) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("accept", "application/json");
         HttpEntity httpEntity = new HttpEntity<>(null, headers);
-        ResponseEntity<List<GameSession>> response = restTemplate.exchange(endPoint, HttpMethod.GET, httpEntity,
+        ResponseEntity<List<Interactive>> response = restTemplate.exchange(endPoint, HttpMethod.GET, httpEntity,
                 new ParameterizedTypeReference<>() {
                 });
         return response;
@@ -90,6 +83,14 @@ public class ClientConsume {
         return maps;
     }
 
+    public static List<String> getServerSaves (){
+        String endPoint = uri + "/storage/";
+        RestTemplate restTemplate = new RestTemplate();
+
+        List<String> saves = restTemplate.getForObject(endPoint, List.class);
+        return saves;
+    }
+
     public static String startGame(String gameID, String mapName){
         String endPoint = uri + "/game/start/" + gameID + "?mapName=" + mapName + "&uuid=" + conn.userID;
         RestTemplate restTemplate = new RestTemplate();
@@ -110,7 +111,7 @@ public class ClientConsume {
         String endPoint = uri + "/game/update/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
         String str = restTemplate.getForObject(endPoint, String.class);
-        return SaveLoadController.deserializeString(str);
+        return SaveLoadController.deserializeGameControllerFromString(str);
     }
 
     public static String getPlayerToken(String gameID, String userID){
@@ -148,21 +149,26 @@ public class ClientConsume {
         return response;
     }
 
-    public static void sendInteractiveCommand(String gameID, String uuid, String comm, String step){
-        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid + "&step=" + step;
+    public static void sendInteractiveCommand(String gameID, String uuid, String comm){
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.postForObject(endPoint,comm,String.class);
     }
 
-    public static Interactive getInteractive(String gameID, String uuid, String step) throws JsonProcessingException {
-        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid + "&step=" + step;
+    public static List<Interactive> getInteractive(String gameID, String uuid) throws JsonProcessingException {
+        String endPoint = uri + "/game/interactive/" + gameID + "?uuid=" +uuid;
+        /*
         RestTemplate restTemplate = new RestTemplate();
         String response = restTemplate.getForObject(endPoint, String.class);
         System.out.println(response);
         ObjectMapper mapper = new ObjectMapper();
 
+         */
 
-        return mapper.readValue(response, Interactive.class);
+        List<Interactive> interactives = getListResponseEntity(endPoint).getBody();
+
+
+       return interactives;
     }
 
     public static void saveGame(String saveName, String json) throws ResourceAccessException {

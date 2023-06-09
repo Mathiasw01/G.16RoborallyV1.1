@@ -22,10 +22,7 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.g16.roborallyclient.ClientConsume;
-import com.g16.roborallyclient.Connection;
-import com.g16.roborallyclient.GameSession;
-import com.g16.roborallyclient.WaitForProgramming;
+import com.g16.roborallyclient.*;
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.*;
@@ -329,8 +326,6 @@ public class GameController {
      * @param command The command that you want to be removed
      */
     public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
-
-
         Iterator<CommandCard> discardIterator = discardPile.iterator();
         while (discardIterator.hasNext()) {
             CommandCard card = discardIterator.next();
@@ -381,8 +376,6 @@ public class GameController {
     }
 
     public void executeCommandsFromServer(String[] cards){
-
-
         int playerIndex = 0;
 
 
@@ -502,6 +495,7 @@ public class GameController {
                                 board.setPhase(Phase.PLAYER_INTERACTION);
                                 return;
                             } else {
+                                /*
                                 do {
                                     try {
                                         TimeUnit.SECONDS.sleep(2);
@@ -509,8 +503,38 @@ public class GameController {
                                         System.out.println("interrupt");
                                     }
                                 } while (!ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).isChosen());
-                                String respone = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).getCommand();
-                                command = convertCommand(respone).command;
+                                 */
+                                boolean continu = false;
+                                Interactive chosenInteractive = null;
+                                    do {
+                                        List<Interactive> interactiveList = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
+
+                                        for (Interactive interactive : interactiveList) {
+                                            continu = currentPlayer.getPlayerNum() == interactive.getUserID() && interactive.isChosen() && String.valueOf(step).equals(interactive.getStep());
+                                            
+                                            if (continu) {
+                                                chosenInteractive = interactive;
+                                                break;
+                                            }
+                                        }
+                                        if (!continu) {
+                                            try {
+                                                TimeUnit.SECONDS.sleep(2);
+                                            } catch (InterruptedException e) {
+                                                System.out.println("interrupt");
+                                            }
+                                        }
+                                                
+                                    } while (!continu);
+                                    command = convertCommand(chosenInteractive.getCommand()).command;
+
+                                    /*
+                                    if (Objects.equals(interactiveList.get(i).getStep(), String.valueOf(step)) && currentPlayer.getPlayerNum() == (interactiveList.get(i).getUserID())){
+                                        command = convertCommand(interactiveList.get(i).getCommand()).command;
+                                    }
+                                    
+                                     */
+                                
                             }
                         } else {
                             board.setPhase(Phase.PLAYER_INTERACTION);
@@ -935,8 +959,13 @@ public class GameController {
         executeCommand(board.getCurrentPlayer(),command);
         int step = board.getStep();
         if (isOnline) {
-            String comm = ClientConsume.conn.userID + ":" +  step + ":" + "Done" + ":" + command.displayName;
-            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, comm, String.valueOf(step));
+            for (int i = 0; i < board.getPlayersNumber(); i++){
+                if (Objects.equals(Connection.getPlayerToken(), board.getPlayer(i).getName())){
+                    String comm = i+1 + ":" +  step + ":" + "Done" + ":" + command.displayName;
+                    ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, comm);
+                    break;
+                }
+            }
         }
         board.setPhase(Phase.ACTIVATION);
         int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;

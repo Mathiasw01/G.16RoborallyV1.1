@@ -288,4 +288,8 @@ public class AppController implements Observer {
 
     }
 
+    public void saveMap(){
+        SaveLoadController.saveMapToJSON(gameController.board.getSpaces(),"src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/jsonTest" );
+    }
+
 }

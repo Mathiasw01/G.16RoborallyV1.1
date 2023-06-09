@@ -23,7 +23,6 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
@@ -212,7 +211,7 @@ public class Board extends Subject {
                     Optional<Player> p = players.stream().filter(x -> Objects.equals(x.getName(), s.getPlayer().getName())).findFirst();
                     if(p.isPresent()){
                         p.get().setSpace(spaces[s.x][s.y]);
-                        System.out.println("Test");
+
                     }
 
                 }
@@ -254,6 +253,11 @@ public class Board extends Subject {
             return null;
         }
     }
+
+    public Space[][] getSpaces() {
+        return spaces;
+    }
+
     /**
      * Get counter
      * <p>

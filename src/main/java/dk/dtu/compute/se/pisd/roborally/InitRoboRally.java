@@ -1,9 +1,11 @@
 package dk.dtu.compute.se.pisd.roborally;
 
+import com.fasterxml.jackson.core.JsonParseException;
 import com.g16.roborallyclient.ClientConsume;
 import com.g16.roborallyclient.Connection;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import javafx.application.Application;
+import javafx.geometry.NodeOrientation;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -12,6 +14,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.TilePane;
 import javafx.scene.layout.VBox;
 import javafx.event.ActionEvent;
@@ -19,7 +22,10 @@ import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import org.json.JSONObject;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.client.ResourceAccessException;
+import org.springframework.web.client.RestClientException;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -27,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class InitRoboRally extends Application {
 
     private static final int MIN_APP_WIDTH = 300;
+    private static final int MIN_APP_HEIGHT = 400;
 
     public void init() throws Exception {
         super.init();
@@ -53,6 +60,7 @@ public class InitRoboRally extends Application {
         EventHandler<ActionEvent> event = ev -> new RoboRally(new String[]{"offline"}, s);
         EventHandler<ActionEvent> event1 = ev -> startMultiplayer(s);
 
+
         S.setOnAction(event);
         M.setOnAction(event1);
 
@@ -68,6 +76,7 @@ public class InitRoboRally extends Application {
         s.setScene(primaryScene);
         s.setResizable(false);
         s.sizeToScene();
+        s.setWidth(MIN_APP_WIDTH);
         s.show();
     }
 
@@ -141,22 +150,44 @@ public class InitRoboRally extends Application {
 
 
     private static void loadGame(String gameID, Stage s){
-        TextField saveInput = new TextField("savegame_01");
+        ListView savesList = new ListView();
+        savesList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         Button b = new Button("Continue");
-        TilePane r = new TilePane(Orientation.VERTICAL);
-        r.setAlignment(Pos.CENTER);
-        r.setVgap(10);
+
+        List<String> saves;
+        try {
+            saves = ClientConsume.getServerSaves();
+        } catch (Exception e ){
+            Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot load saves from server!");
+            ccServerAlert.showAndWait();
+            ClientConsume.hostGame(gameID);
+            return;
+        }
+
+        for(String save : saves){
+            savesList.getItems().add(save);
+        }
+
+
+
 
         EventHandler<ActionEvent> continueGame = ev -> {
-            saveGame = saveInput.getText();
+            saveGame = savesList.getSelectionModel().getSelectedItem().toString();
             startGame(gameID, null, s);
         };
 
         b.setOnAction(continueGame);
 
-        Label l = new Label("Enter savegame name");
-        r.getChildren().addAll(l, saveInput, b);
-        vbox(s,r);
+        Label l = new Label("Select a save game");
+
+        VBox vbox = new VBox(l, savesList, b);
+        vbox.setAlignment(Pos.CENTER);
+        Scene primaryScene = new Scene(vbox);
+        s.setScene(primaryScene);
+        s.setResizable(false);
+        s.sizeToScene();
+        s.setWidth(MIN_APP_WIDTH);
+        s.show();
 
 
     }
@@ -215,6 +246,10 @@ public class InitRoboRally extends Application {
             ccServerAlert.showAndWait();
             ClientConsume.hostGame(gameID);
             return;
+        } catch (HttpMessageNotReadableException | RestClientException e){
+            Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot create lobby. Lobby with the same name might already exist.");
+            ccServerAlert.showAndWait();
+            ClientConsume.hostGame(gameID);
         }
 
         s.setTitle("Start");
@@ -285,9 +320,11 @@ public class InitRoboRally extends Application {
         Label l2 = new Label("Waiting for game to start");
 
         ListView listView = new ListView();
+        ListView playerListView = new ListView();
         listView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
-        jsonObject(s, l, listView);
+        jsonObject(s, l, listView,playerListView);
+
 
         EventHandler<ActionEvent> eventJ = ev -> {
             JSONObject jsonObject;
@@ -348,7 +385,7 @@ public class InitRoboRally extends Application {
 
         EventHandler<ActionEvent> eventR = ev -> {
             listView.getItems().clear();
-            jsonObject(s, l, listView);
+            jsonObject(s, l, listView, playerListView);
         };
 
         J.setOnAction(eventJ);
@@ -358,7 +395,14 @@ public class InitRoboRally extends Application {
         tilePane2.getChildren().addAll(l1, J, R);
         tilePane3.getChildren().add(l2);
 
-        VBox vbox = new VBox(tilePane1, listView, tilePane2);
+        HBox inlineLists = new HBox(listView, playerListView);
+        inlineLists.setAlignment(Pos.CENTER);
+        playerListView.setFocusTraversable(false);
+
+        listView.setMaxWidth(MIN_APP_WIDTH+50);
+        playerListView.setMaxWidth(50);
+
+        VBox vbox = new VBox(tilePane1, inlineLists, tilePane2);
         vbox.setMinWidth(MIN_APP_WIDTH);
         Scene primaryScene = new Scene(vbox);
         s.setScene(primaryScene);
@@ -367,7 +411,7 @@ public class InitRoboRally extends Application {
         s.show();
     }
 
-    private static void jsonObject(Stage s, Label l, ListView listView) {
+    private static void jsonObject(Stage s, Label l, ListView listView, ListView playerListView) {
         JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(ClientConsume.getLobbies().trim());
@@ -386,6 +430,7 @@ public class InitRoboRally extends Application {
             while(keys.hasNext()) {
                 String key = keys.next();
                 listView.getItems().add(key);
+                playerListView.getItems().add(jsonObject.get(key)+"/6");
             }
         }
     }
