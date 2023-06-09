@@ -331,7 +331,6 @@ public class GameController {
             CommandCard card = discardIterator.next();
             if (card.command == command) {
                 discardIterator.remove();
-
             }
         }
     }
@@ -618,7 +617,7 @@ public class GameController {
      * @param  player  The player on which the command should be executed
      * @param  command The command that should be executed on the player.
      */
-    private void executeCommand(@NotNull Player player, Command command) {
+    public void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
             // XXX This is a very simplistic way of dealing with some basic cards and
             //     their execution. This should eventually be done in a more elegant way
@@ -677,7 +676,7 @@ public class GameController {
         }
     }
 
-    private void executeBoardElement(Player player, int step) {
+    public void executeBoardElement(Player player, int step) {
         if(player.getSpace() == null){
             return;
         }

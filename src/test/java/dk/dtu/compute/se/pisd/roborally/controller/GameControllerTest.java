@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.Iterator;
+
 class GameControllerTest {
 
     private final int TEST_WIDTH = 13;
@@ -14,22 +16,19 @@ class GameControllerTest {
     private GameController gameController;
 
 
-
-
     @BeforeEach
     void setUp() {
         Board board = new Board(TEST_WIDTH, TEST_HEIGHT, "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/DizzyHighway");
-        gameController = new GameController(board);
+        gameController = new GameController(board, false);
         ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
         for (int i = 0; i < 6; i++) {
-            Player player = new Player(board, null,"Player " + i, i+1,programmingDeckInit.init());
+            Player player = new Player(board, null, "Player " + i, i + 1, programmingDeckInit.init());
             board.addPlayer(player);
             player.setSpace(board.getSpace(i, i));
             player.setHeading(Heading.values()[i % Heading.values().length]);
         }
         board.setCurrentPlayer(board.getPlayer(0));
     }
-
 
 
     @AfterEach
@@ -53,7 +52,7 @@ class GameControllerTest {
 
         //Test set player turn
         gameController.board.setCurrentPlayer(player2);
-        Assertions.assertEquals(player2, board.getCurrentPlayer(), "Current player should be " + player2.getName() +"!");
+        Assertions.assertEquals(player2, board.getCurrentPlayer(), "Current player should be " + player2.getName() + "!");
 
         //Test player 2 pushing player 1
         player2.setHeading(Heading.EAST);
@@ -65,7 +64,6 @@ class GameControllerTest {
         //Test player 2 position, test player 1
         Assertions.assertEquals(player2, board.getSpace(0, 4).getPlayer(), "Player " + player2.getName() + " should beSpace (0,4)!");
         Assertions.assertEquals(player1, board.getSpace(1, 4).getPlayer(), "Player " + player1.getName() + " should beSpace (0,4)!");
-
 
 
     }
@@ -83,7 +81,7 @@ class GameControllerTest {
     }
 
     @Test
-    void executeCommand(){
+    void executeCommand() {
         Board board = gameController.board;
         Player current = board.getCurrentPlayer();
         gameController.executeCommand(current, Command.MOVE_THREE);
@@ -91,14 +89,91 @@ class GameControllerTest {
 
         //Test move three
         Assertions.assertEquals(current,
-                gameController.board.getSpace(0,3).getPlayer(),"Player"+ current.getName() +"should beSpace(0,3)!");
+                gameController.board.getSpace(0, 3).getPlayer(), "Player" + current.getName() + "should beSpace(0,3)!");
         //Test Uturn
         Assertions.assertEquals(Heading.NORTH, current.getHeading(), "Player 0 should be heading SOUTH!");
         //Test MOVE_BACK
-        gameController.executeCommand(current,Command.MOVE_BACK);
+        gameController.executeCommand(current, Command.MOVE_BACK);
         Assertions.assertEquals(current,
-                gameController.board.getSpace(0,4).getPlayer(),"Player"+current.getName()+"should beSpace(0,4)!");
+                gameController.board.getSpace(0, 4).getPlayer(), "Player" + current.getName() + "should beSpace(0,4)!");
 
     }
+
+    @Test
+    void reboot() {
+        Board board = gameController.board;
+        Player currentPlayer = board.getCurrentPlayer();
+        currentPlayer.setSpace(board.getSpace(0, 0));
+        currentPlayer.setHeading(Heading.WEST);
+        gameController.executeCommand(currentPlayer, Command.FORWARD);
+        // Tests if a player gets teleported to the reboot field after being rebooted
+        Assertions.assertEquals(board.getRebootField().getY(),currentPlayer.getSpace().y);
+        Assertions.assertEquals(board.getRebootField().getX(),currentPlayer.getSpace().x );
+        // Tests if a player get set as rebooting after being rebooted
+        Assertions.assertEquals( true,currentPlayer.getRebooting());
+        //Tests if a player can execute commands after being rebooted
+        gameController.executeCommand(currentPlayer, Command.RIGHT);
+        Assertions.assertEquals( Heading.WEST,currentPlayer.getHeading());
+    }
+
+    @Test
+    void laser() {
+        setUp();
+        gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(6, 4), false, gameController.board.getCurrentPlayer(), gameController.board.getCurrentPlayer().getHeading(), false);
+        gameController.executeBoardElement(gameController.board.getCurrentPlayer(),gameController.board.getStep());
+        Iterator<CommandCard> discardIterator = gameController.board.getCurrentPlayer().getDiscardPile().iterator();
+        int noOfSpamcards = 0;
+        while (discardIterator.hasNext()) {
+            CommandCard card = discardIterator.next();
+            if (card.command == Command.SPAM) {
+                noOfSpamcards++;
+            }
+        }
+        // tests if a player get a spam card in their discard pile when they get hit by laser
+        Assertions.assertEquals(1,noOfSpamcards);
+    }
+
+    @Test
+    void conveyor(){
+        setUp();
+        gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(4,0),false,
+                gameController.board.getCurrentPlayer(),gameController.board.getCurrentPlayer().getHeading(),true);
+        System.out.println(gameController.board.getCurrentPlayer().getSpace().x);
+        System.out.println(gameController.board.getCurrentPlayer().getSpace().y);
+        gameController.executeBoardElement(gameController.board.getCurrentPlayer(),gameController.board.getStep());
+        //Tests if a conveyor moves a player correctly
+        Assertions.assertEquals(gameController.board.getSpace(4,2),gameController.board.getCurrentPlayer().getSpace());
+    }
+
+    @Test
+    void walls(){
+        setUp();
+        gameController.board.getCurrentPlayer().setSpace(gameController.board.getSpace(1,2));
+        gameController.board.getCurrentPlayer().setHeading(Heading.NORTH);
+        gameController.executeCommand(gameController.board.getCurrentPlayer(),Command.FORWARD);
+        //Tests if a player moves when trying to go through a wall
+        Assertions.assertEquals(gameController.board.getSpace(1,2),gameController.board.getCurrentPlayer().getSpace());
+    }
+    /*
+    @Test
+    void winnerFound(){
+        setUp();
+        gameController.board.getCurrentPlayer().setSpace(gameController.board.getSpace(12,4));
+        gameController.board.getCurrentPlayer().setHeading(Heading.NORTH);
+        gameController.executeCommand(gameController.board.getCurrentPlayer(),Command.FORWARD);
+        Assertions.assertEquals(gameController.);
+    }
+     */
+
+    @Test
+    void gears(){
+        setUp();
+        gameController.board.getCurrentPlayer().setSpace(gameController.board.getSpace(5,2));
+        gameController.board.getCurrentPlayer().setHeading(Heading.EAST);
+        gameController.executeBoardElement(gameController.board.getCurrentPlayer(),gameController.board.getStep());
+        Assertions.assertEquals(Heading.SOUTH,gameController.board.getCurrentPlayer().getHeading());
+    }
+
+
 
 }
