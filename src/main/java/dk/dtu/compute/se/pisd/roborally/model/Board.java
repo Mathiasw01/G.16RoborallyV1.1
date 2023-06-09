@@ -76,10 +76,6 @@ public class Board extends Subject {
     @Expose
     private RebootField rebootField = null;
 
-    private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
-
-
-
 
     /**
      * Creates a new board
@@ -155,6 +151,7 @@ public class Board extends Subject {
 
         int currentPlayerIndex = 0;
         for (int i = 0; i < savedBoard.getPlayersNumber(); i++) {
+            ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
             Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1), i+1, programmingDeckInit.init());
             Player savedPlayer = savedBoard.getPlayer(i);
 
@@ -209,10 +206,7 @@ public class Board extends Subject {
                 }
                 if(s.getPlayer() != null){
                     Optional<Player> p = players.stream().filter(x -> Objects.equals(x.getName(), s.getPlayer().getName())).findFirst();
-                    if(p.isPresent()){
-                        p.get().setSpace(spaces[s.x][s.y]);
-
-                    }
+                    p.ifPresent(player -> player.setSpace(spaces[s.x][s.y]));
 
                 }
             }
