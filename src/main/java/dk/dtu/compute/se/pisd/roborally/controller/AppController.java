@@ -57,7 +57,7 @@ public class AppController implements Observer {
     final private RoboRally roboRally;
 
     private GameController gameController;
-    private final ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
+    private final ProgrammingDeck programmingDeck = new ProgrammingDeck();
 
 
     private final boolean isOnline;
@@ -98,7 +98,7 @@ public class AppController implements Observer {
             int no = result.get();
 
             for (int i = 0; i < no; i++) {
-                Player player = new Player(board, PLAYER_COLORS.get(i),"Player " + (i + 1),i+1, programmingDeckInit.init());
+                Player player = new Player(board, PLAYER_COLORS.get(i),"Player " + (i + 1),i+1, programmingDeck.init());
                 board.addPlayer(player);
                 spaceReader.initPlayers(board,player, i);
             }

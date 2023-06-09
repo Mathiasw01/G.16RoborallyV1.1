@@ -2,7 +2,6 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import com.google.gson.annotations.Expose;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 /**
  * Conveyor field

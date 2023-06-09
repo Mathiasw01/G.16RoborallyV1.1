@@ -7,7 +7,6 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Space Reader
@@ -19,7 +18,7 @@ import java.util.stream.Collectors;
 public class SpaceReader {
     String fileName;
 
-    private boolean isCsv = false;
+    private boolean isCsv;
 
     public SpaceReader(String fileName){
         this.fileName = fileName;
@@ -127,31 +126,30 @@ public class SpaceReader {
             Space[][] spaces = SaveLoadController.deserializeSpacesFromString(mapJson);
 
 
-            for(int i = 0; i < spaces.length; i++){
-                for(int n = 0; n < spaces[i].length; n++){
-                    Space savedSpace = spaces[i][n];
-                    Space targetSpace = board.getSpace(savedSpace.x,savedSpace.y);
+            for (Space[] space : spaces) {
+                for (Space savedSpace : space) {
+                    Space targetSpace = board.getSpace(savedSpace.x, savedSpace.y);
 
-                    for(FieldObject spaceObject: savedSpace.getObjects()){
-                        if(spaceObject instanceof Conveyor conveyor){
-                            if (conveyor.isDouble()){
+                    for (FieldObject spaceObject : savedSpace.getObjects()) {
+                        if (spaceObject instanceof Conveyor conveyor) {
+                            if (conveyor.isDouble()) {
                                 targetSpace.addObjects(new Conveyor(Color.BLUE, conveyor.getDirection()));
                             } else {
                                 targetSpace.addObjects(new Conveyor(Color.ORANGE, conveyor.getDirection()));
                             }
-                        } else if (spaceObject instanceof  StartField) {
+                        } else if (spaceObject instanceof StartField) {
                             targetSpace.addObjects(new StartField());
-                        }  else if (spaceObject instanceof  CheckpointField cp) {
+                        } else if (spaceObject instanceof CheckpointField cp) {
                             CheckpointField cpf = new CheckpointField(cp.getCheckpointNumber());
                             targetSpace.addObjects(cpf);
                             board.addCheckpoint(cpf);
-                        }  else if (spaceObject instanceof  Gear gear) {
+                        } else if (spaceObject instanceof Gear gear) {
                             targetSpace.addObjects(new Gear(gear.getDirection()));
-                        }   else if (spaceObject instanceof  Wall wall) {
+                        } else if (spaceObject instanceof Wall wall) {
                             targetSpace.addObjects(new Wall(wall.getDir()));
-                        } else if (spaceObject instanceof  Laser laser) {
+                        } else if (spaceObject instanceof Laser laser) {
                             targetSpace.addObjects(new Laser(laser.getDirection(), laser.getTYPE()));
-                        } else if (spaceObject instanceof  RebootField rebootField) {
+                        } else if (spaceObject instanceof RebootField rebootField) {
                             rebootField = new RebootField(rebootField.getDirection(), rebootField.getX(), rebootField.getY());
                             targetSpace.addObjects(rebootField);
                             board.setRebootField(rebootField);

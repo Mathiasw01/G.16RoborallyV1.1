@@ -76,7 +76,7 @@ public class Board extends Subject {
     @Expose
     private RebootField rebootField = null;
 
-    private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
+    private ProgrammingDeck programmingDeck = new ProgrammingDeck();
 
 
 
@@ -155,7 +155,7 @@ public class Board extends Subject {
 
         int currentPlayerIndex = 0;
         for (int i = 0; i < savedBoard.getPlayersNumber(); i++) {
-            Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1), i+1, programmingDeckInit.init());
+            Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1), i+1, programmingDeck.init());
             Player savedPlayer = savedBoard.getPlayer(i);
 
             player.setHeading(savedPlayer.getHeading());

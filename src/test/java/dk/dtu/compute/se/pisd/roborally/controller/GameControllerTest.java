@@ -20,9 +20,9 @@ class GameControllerTest {
     void setUp() {
         Board board = new Board(TEST_WIDTH, TEST_HEIGHT, "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/unitTestMap");
         gameController = new GameController(board, false);
-        ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
+        ProgrammingDeck programmingDeck = new ProgrammingDeck();
         for (int i = 0; i < 6; i++) {
-            Player player = new Player(board, null, "Player " + i, i + 1, programmingDeckInit.init());
+            Player player = new Player(board, null, "Player " + i, i + 1, programmingDeck.init());
             board.addPlayer(player);
             player.setSpace(board.getSpace(i, i));
             player.setHeading(Heading.values()[i % Heading.values().length]);
