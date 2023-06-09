@@ -98,8 +98,11 @@ public class GameController {
      */
     public void moveCurrentPlayerToSpace(Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         board.setCounter(board.getCounter() + 1);
-        ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
-        ArrayList<FieldObject> currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
+        if (space == null){
+            return;
+        }
+        ArrayList<FieldObject>  walls = space.findObjectsOfType(Wall.class);
+        ArrayList<FieldObject>  currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
 
         if (originalHeading == null) {
             if (conPush){
@@ -123,6 +126,7 @@ public class GameController {
         /*
         If the target space is free, move and return!
          */
+
         if (space.getPlayer() == null) {
             player.setSpace(space);
             return;
@@ -145,7 +149,7 @@ public class GameController {
         x = newCoordinates[0];
         y = newCoordinates[1];
 
-        if (backupflag && conPush) {
+        if (!backupflag && conPush) {
             newCoordinates = getNewCoordinates(conveyorHeading,x,y, backupflag);
             x = newCoordinates[0];
             y = newCoordinates[1];
@@ -157,16 +161,9 @@ public class GameController {
             }
         }
 
-        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player)) {
+        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player2)) {
             System.out.println(x + " " + y);
             moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player2, conveyorHeading, conPush);
-            /*try {
-                moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player, conveyorHeading, conPush);
-            } catch (NullPointerException e){
-
-            }
-
-             */
             player.setSpace(space);
         }
     }
