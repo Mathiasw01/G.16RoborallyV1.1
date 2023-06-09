@@ -96,7 +96,7 @@ public class GameController {
      * @param conveyorHeading The heading of a conveyor if the player is getting moved by a conveyor
      * @param conPush boolean to show whether youre getting pushed by a conveyor
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
+    public void moveCurrentPlayerToSpace(Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         board.setCounter(board.getCounter() + 1);
         ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
         ArrayList<FieldObject> currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
@@ -157,13 +157,19 @@ public class GameController {
             }
         }
 
-        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player2)) {
+        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player)) {
             System.out.println(x + " " + y);
-            moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player, conveyorHeading, conPush);
+            moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player2, conveyorHeading, conPush);
+            /*try {
+                moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player, conveyorHeading, conPush);
+            } catch (NullPointerException e){
+
+            }
+
+             */
             player.setSpace(space);
         }
     }
-
 
     private boolean isWallBlocking(Wall wall, boolean backupflag, boolean ownField){
         if(wall == null){
