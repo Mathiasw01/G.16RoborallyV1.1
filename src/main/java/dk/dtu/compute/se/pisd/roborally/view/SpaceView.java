@@ -114,10 +114,10 @@ public class SpaceView extends StackPane implements ViewObserver {
             gearGfx.setWidth(SPACE_WIDTH);
             gearGfx.setHeight(SPACE_HEIGHT);
             if (gear.getDirection() == Direction.RIGHT){
-                Image greenGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rightGear.png");
+                Image greenGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rGear.png");
                 gearGfx.setFill(new ImagePattern(greenGear,0,0,1,1,true));
             } else {
-                Image redGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/leftgear.png");
+                Image redGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/lGear.png");
                 gearGfx.setFill(new ImagePattern(redGear,0,0,1,1,true));
             }
             this.getChildren().add(gearGfx);
