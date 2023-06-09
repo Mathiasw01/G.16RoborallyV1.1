@@ -707,9 +707,6 @@ public class GameController {
                         winnerFound = true;
                         winner = player;
 
-                        //ALERT DOESN'T WORK AS IT IS NOT IN JAVA FX THREAD
-                        // FIX FIX FIX
-
                     }
                 }
             }
