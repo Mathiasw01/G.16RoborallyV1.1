@@ -37,34 +37,36 @@ class GameControllerTest {
     }
 
     @Test
-    void moveCurrentPlayerToSpace() {
-        Board board = gameController.board;
-        Player player1 = board.getPlayer(0);
-        Player player2 = board.getPlayer(1);
+    void testPush(){
 
-
-        //Test moving player 1
-        gameController.moveCurrentPlayerToSpace(board.getSpace(0, 4), false, player1, null, false);
-        Assertions.assertEquals(player1, board.getSpace(0, 4).getPlayer(), "Player " + player1.getName() + " should beSpace (0,4)!");
-
-        //Test original field empty
-        Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
-
-        //Test set player turn
-        gameController.board.setCurrentPlayer(player2);
-        Assertions.assertEquals(player2, board.getCurrentPlayer(), "Current player should be " + player2.getName() + "!");
-
-        //Test player 2 pushing player 1
+        Player player1 = gameController.board.getCurrentPlayer();
+        player1.setSpace(gameController.board.getSpace(1, 1));
+        player1.setHeading(Heading.EAST);
+        Player player2 = gameController.board.getPlayer(1);
+        player2.setSpace(gameController.board.getSpace(0,1));
         player2.setHeading(Heading.EAST);
-        gameController.moveCurrentPlayerToSpace(board.getSpace(0, 4), false, player2, null, false);
+        gameController.executeCommand(player2, Command.FORWARD);
+        Assertions.assertEquals(gameController.board.getSpace(2,1), player1.getSpace());
+        Assertions.assertEquals(gameController.board.getSpace(1,1), player2.getSpace());
 
-        //Test player 2 source field empty
-        Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
+        gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(1,1), false,player1,null,false);
+        Assertions.assertEquals(gameController.board.getSpace(1,1), player1.getSpace());
+        Assertions.assertEquals(gameController.board.getSpace(2,1), player2.getSpace());
 
-        //Test player 2 position, test player 1
-        Assertions.assertEquals(player2, board.getSpace(0, 4).getPlayer(), "Player " + player2.getName() + " should beSpace (0,4)!");
-        Assertions.assertEquals(player1, board.getSpace(1, 4).getPlayer(), "Player " + player1.getName() + " should beSpace (0,4)!");
+    }
 
+    @Test
+    void testBackUpPush(){
+
+        Player player1 = gameController.board.getCurrentPlayer();
+        player1.setSpace(gameController.board.getSpace(1, 1));
+        player1.setHeading(Heading.EAST);
+        Player player2 = gameController.board.getPlayer(1);
+        player2.setSpace(gameController.board.getSpace(2,1));
+        player2.setHeading(Heading.EAST);
+        gameController.executeCommand(player2, Command.MOVE_BACK);
+        Assertions.assertEquals(gameController.board.getSpace(0,1), player1.getSpace());
+        Assertions.assertEquals(gameController.board.getSpace(1,1), player2.getSpace());
 
     }
 
@@ -113,7 +115,7 @@ class GameControllerTest {
         Assertions.assertEquals( true,currentPlayer.getRebooting());
         //Tests if a player can execute commands after being rebooted
         gameController.executeCommand(currentPlayer, Command.RIGHT);
-        Assertions.assertEquals( Heading.WEST,currentPlayer.getHeading());
+        Assertions.assertEquals(Heading.WEST,currentPlayer.getHeading());
     }
 
     @Test

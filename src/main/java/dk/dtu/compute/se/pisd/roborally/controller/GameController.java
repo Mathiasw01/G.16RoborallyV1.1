@@ -98,8 +98,11 @@ public class GameController {
      */
     public void moveCurrentPlayerToSpace(Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         board.setCounter(board.getCounter() + 1);
-        ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
-        ArrayList<FieldObject> currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
+        if (space == null){
+            return;
+        }
+        ArrayList<FieldObject>  walls = space.findObjectsOfType(Wall.class);
+        ArrayList<FieldObject>  currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
 
         if (originalHeading == null) {
             if (conPush){
@@ -158,11 +161,8 @@ public class GameController {
         }
 
         if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player2)) {
-            try {
-                moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player2, conveyorHeading, conPush);
-            } catch (NullPointerException e){
-
-            }
+            System.out.println(x + " " + y);
+            moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player2, conveyorHeading, conPush);
             player.setSpace(space);
         }
     }
