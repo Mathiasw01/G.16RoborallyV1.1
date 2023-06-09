@@ -1,30 +1,21 @@
 package com.g16.roborallyclient;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import dk.dtu.compute.se.pisd.roborally.model.Command;
-import dk.dtu.compute.se.pisd.roborally.model.CommandCard;
 import dk.dtu.compute.se.pisd.roborally.model.CommandCardField;
 import dk.dtu.compute.se.pisd.roborally.model.Player;
 import org.jetbrains.annotations.NotNull;
-import org.json.JSONObject;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
-import javax.swing.text.GapContent;
-import java.util.Arrays;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -56,6 +47,7 @@ public class ClientConsume {
         ResponseEntity<List<GameSession>> response = restTemplate.exchange(endPoint, HttpMethod.GET, httpEntity,
                 new ParameterizedTypeReference<>() {
                 });
+
         return response;
     }
 
@@ -70,6 +62,7 @@ public class ClientConsume {
     }
 
     public static Connection hostGame(String gameID) throws RestClientException{
+
         String endPoint = uri + "/game/host/" + gameID;
         RestTemplate restTemplate = new RestTemplate();
         Connection connection = restTemplate.getForObject(endPoint, Connection.class);
@@ -88,6 +81,14 @@ public class ClientConsume {
 
         List<String> maps = restTemplate.getForObject(endPoint, List.class);
         return maps;
+    }
+
+    public static List<String> getServerSaves (){
+        String endPoint = uri + "/storage/";
+        RestTemplate restTemplate = new RestTemplate();
+
+        List<String> saves = restTemplate.getForObject(endPoint, List.class);
+        return saves;
     }
 
     public static String startGame(String gameID, String mapName){
@@ -110,7 +111,7 @@ public class ClientConsume {
         String endPoint = uri + "/game/update/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
         String str = restTemplate.getForObject(endPoint, String.class);
-        return SaveLoadController.deserializeString(str);
+        return SaveLoadController.deserializeGameControllerFromString(str);
     }
 
     public static String getPlayerToken(String gameID, String userID){
