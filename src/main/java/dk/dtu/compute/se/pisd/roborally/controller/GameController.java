@@ -101,9 +101,6 @@ public class GameController {
         ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
         ArrayList<FieldObject> currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
 
-        /*
-         * Stops current player from moving if there is a wall in the way
-         */
         if (originalHeading == null) {
             if (conPush){
                 setOriginalHeading(conveyorHeading);
@@ -137,7 +134,6 @@ public class GameController {
          * Stops if there is a wall in the way
          */
         handleRobotCollision(space, backupflag, player, conveyorHeading, conPush);
-
     }
 
     private void handleRobotCollision(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
@@ -149,24 +145,21 @@ public class GameController {
         x = newCoordinates[0];
         y = newCoordinates[1];
 
-        if (!backupflag && conveyorHeading == null){
+        if (backupflag && conPush) {
+            newCoordinates = getNewCoordinates(conveyorHeading,x,y, backupflag);
+            x = newCoordinates[0];
+            y = newCoordinates[1];
+        } else {
             if (player2CurrentSpaceWall != null) {
                 if (getOriginalHeading() == player2CurrentSpaceWall.getDir()) {
                     return;
                 }
             }
-        } else {
-            newCoordinates = getNewCoordinates(conveyorHeading,x,y, backupflag);
-            x = newCoordinates[0];
-            y = newCoordinates[1];
         }
 
-        if(board.getSpace(x,y) == null){
-            return;
-        }
-
-        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player)) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player2, conveyorHeading, conPush);
+        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player2)) {
+            System.out.println(x + " " + y);
+            moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player, conveyorHeading, conPush);
             player.setSpace(space);
         }
     }
@@ -218,7 +211,7 @@ public class GameController {
     public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player) {
         if (space == null) {
             reboot(player);
-            return false;
+            return true;
         }
         player = space.getPlayer();
         int x = space.x;
