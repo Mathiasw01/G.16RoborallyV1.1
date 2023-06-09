@@ -61,23 +61,40 @@ public class GameController {
     private Player winner;
 
 
+    /**
+     *
+     * @return original heading
+     */
     public Heading getOriginalHeading() {
         return originalHeading;
     }
 
+    /**
+     * sets original heading
+     * @param originalHeading
+     */
     public void setOriginalHeading(Heading originalHeading) {
         this.originalHeading = originalHeading;
     }
 
+    /**
+     * Gamecontrollers constructor
+     * @param board
+     * @param isOnline
+     */
     public GameController(@NotNull Board board, boolean isOnline) {
         this.board = board;
         this.isOnline = isOnline;
     }
 
+
     /**
      * Moves current player to space if possible
-     * <p>
-     * Moves current player to the parsed space if the space is empty
+     * @param space The space you want to move the player to
+     * @param backupflag a boolean to show whether the player is moving forwards or backwards
+     * @param player The player that you want to move
+     * @param conveyorHeading The heading of a conveyor if the player is getting moved by a conveyor
+     * @param conPush boolean to show whether youre getting pushed by a conveyor
      */
     public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         board.setCounter(board.getCounter() + 1);
@@ -266,7 +283,7 @@ public class GameController {
                     CommandCardField field = player.getCardField(j);
                   //field.setCard(generateRandomCommandCard());
                     /* Get new cards from server...*/
-                        field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
+                        field.setCard(drawCard(player));
                     field.setVisible(true);
                 }
             }
@@ -278,6 +295,9 @@ public class GameController {
 
     }
 
+    /**
+     * Starts the programming phase when playing online
+     */
     public void startProgrammingPhaseFromOnline() {
         board.setPhase(Phase.PROGRAMMING);
         board.setCurrentPlayer(board.getPlayer(0));
@@ -300,7 +320,13 @@ public class GameController {
         }
     }
 
-    public CommandCard drawCard(List<CommandCard> deck, Player currentPLayer) {
+    /**
+     * Draws a card from the players programming deck, if the deck is empty, their discard pile gets shuffled into their
+     * programmingdeck
+     * @param currentPLayer
+     * @return
+     */
+    public CommandCard drawCard(Player currentPLayer) {
         if (currentPLayer.getProgrammingDeck().isEmpty()) {
             shuffleDeck(currentPLayer.getProgrammingDeck(), currentPLayer.getDiscardPile());
         }
@@ -309,11 +335,21 @@ public class GameController {
         return topCard;
     }
 
+    /**
+     * Removes a card from a players programming and adds it to thier discard pile.
+     * @param player The player whose card you want to revome
+     * @param card The card that you want to remove
+     */
     public void discardCard(Player player, CommandCard card) {
         player.getProgrammingDeck().remove(card);
         player.getDiscardPile().add(card);
     }
 
+    /**
+     * Shuffles a players discard pile in to their programming deck
+     * @param deck The players programming deck
+     * @param discardPile The players discard pile
+     */
     public void shuffleDeck(List<CommandCard> deck, List<CommandCard> discardPile) {
         deck.addAll(discardPile);
         discardPile.clear();
@@ -360,6 +396,10 @@ public class GameController {
 
     }
 
+    /**
+     * Waits for other players to finish programming their robot, when playing online
+     * @throws InterruptedException
+     */
     private void waitForOtherPlayersToFinishProgramming() throws InterruptedException {
         for (Player player : board.getPlayers()) {
             if (player.getName().equals(Connection.getPlayerToken())){
@@ -375,6 +415,10 @@ public class GameController {
 
     }
 
+    /**
+     * It executes the commands that the players have programmed their robots to do.
+     * @param cards All the players commands in a string, it gets them from the server.
+     */
     public void executeCommandsFromServer(String[] cards){
         int playerIndex = 0;
 
@@ -662,6 +706,10 @@ public class GameController {
         }
     }
 
+    /**
+     * Executes the board elements in different threads, so that they happen simultaneously for each robot.
+     * @param step
+     */
     public void multiThreadExecute(int step){
         ExecutorService executor = Executors.newFixedThreadPool(board.getPlayers().size());
 
@@ -676,6 +724,11 @@ public class GameController {
         }
     }
 
+    /**
+     * Exeutes the board elements
+     * @param player player
+     * @param step step
+     */
     public void executeBoardElement(Player player, int step) {
         if(player.getSpace() == null){
             return;
@@ -741,6 +794,13 @@ public class GameController {
         }
     }
 
+    /**
+     * Tests if a lasers path is blocked
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param laser The laser
+     * @return Returns a boolean that tells you if a laser is blocked
+     */
     public boolean testIfLaserIsBlocked(int x, int y, Laser laser){
         int[] cords = getNewCoordinates(laser.getDirection(),x,y,true);
         Space space = board.getSpace(cords[0],cords[1]);

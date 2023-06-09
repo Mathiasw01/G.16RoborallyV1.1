@@ -160,7 +160,7 @@ public class InitRoboRally extends Application {
         } catch (Exception e ){
             Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot load saves from server!");
             ccServerAlert.showAndWait();
-            ClientConsume.hostGame(gameID);
+            startMultiplayer(s);
             return;
         }
 
@@ -244,12 +244,13 @@ public class InitRoboRally extends Application {
         } catch (ResourceAccessException e){
             Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot connect to server!");
             ccServerAlert.showAndWait();
-            ClientConsume.hostGame(gameID);
+            startMultiplayer(s);
             return;
         } catch (HttpMessageNotReadableException | RestClientException e){
             Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot create lobby. Lobby with the same name might already exist.");
             ccServerAlert.showAndWait();
-            ClientConsume.hostGame(gameID);
+            startMultiplayer(s);
+            return;
         }
 
         s.setTitle("Start");
@@ -378,13 +379,14 @@ public class InitRoboRally extends Application {
             try {
                 gameLaunch(selected, s);
             } catch (Exception e){
-                startMultiplayer(s);
                 System.out.println("Error");
+                startMultiplayer(s);
             }
         };
 
         EventHandler<ActionEvent> eventR = ev -> {
             listView.getItems().clear();
+            playerListView.getItems().clear();
             jsonObject(s, l, listView, playerListView);
         };
 
