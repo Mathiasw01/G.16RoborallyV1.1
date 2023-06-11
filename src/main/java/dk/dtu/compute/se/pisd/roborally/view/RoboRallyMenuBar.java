@@ -34,15 +34,19 @@ import javafx.scene.control.MenuItem;
  */
 public class RoboRallyMenuBar extends MenuBar {
 
-    private AppController appController;
+    private final AppController appController;
 
-    private Menu controlMenu;
+    private final Menu controlMenu;
     private Menu mapMenu;
     private MenuItem testMap;
     private MenuItem dizzy;
     private MenuItem octane;
 
+    private MenuItem jsonTest;
+
     private MenuItem saveGame;
+
+    private MenuItem saveMap;
 
     private MenuItem newGame;
 
@@ -52,9 +56,9 @@ public class RoboRallyMenuBar extends MenuBar {
 
     private MenuItem stopGame;
 
-    private MenuItem exitApp;
+    private final MenuItem exitApp;
     private String map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/testMap";
-    boolean isOnline;
+    final boolean isOnline;
 
     public RoboRallyMenuBar(AppController appController, boolean isOnline) {
         this.appController = appController;
@@ -89,6 +93,15 @@ public class RoboRallyMenuBar extends MenuBar {
             });
             mapMenu.getItems().add(octane);
 
+            jsonTest = new MenuItem("Json test");
+            jsonTest.setOnAction(e -> {
+                mapMenu.setText("Json test");
+                this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/jsonTest";
+            });
+            mapMenu.getItems().add(jsonTest);
+
+
+
             newGame = new MenuItem("New Game");
             newGame.setOnAction(e -> this.appController.newGame(map));
             controlMenu.getItems().add(newGame);
@@ -104,6 +117,10 @@ public class RoboRallyMenuBar extends MenuBar {
             loadGame = new MenuItem("Load Game");
             loadGame.setOnAction(e -> this.appController.loadGame());
             controlMenu.getItems().add(loadGame);
+
+            saveMap = new MenuItem("Save Map");
+            saveMap.setOnAction(e -> appController.saveMap());
+            controlMenu.getItems().add(saveMap);
 
 
         } else {
@@ -144,5 +161,8 @@ public class RoboRallyMenuBar extends MenuBar {
         }
 
     }
+
+
+
 
 }

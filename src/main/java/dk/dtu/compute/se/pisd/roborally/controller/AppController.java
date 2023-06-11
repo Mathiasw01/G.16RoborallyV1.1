@@ -36,13 +36,11 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.web.bind.annotation.GetMapping;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Scanner;
+
 
 
 /**
@@ -59,11 +57,10 @@ public class AppController implements Observer {
     final private RoboRally roboRally;
 
     private GameController gameController;
-    private final ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
+    private final ProgrammingDeck programmingDeck = new ProgrammingDeck();
 
-    private List<CommandCard> discardPile;
 
-    private boolean isOnline = false;
+    private final boolean isOnline;
 
     public AppController(@NotNull RoboRally roboRally, boolean isOnline) {
         this.roboRally = roboRally;this.isOnline = isOnline;
@@ -101,7 +98,7 @@ public class AppController implements Observer {
             int no = result.get();
 
             for (int i = 0; i < no; i++) {
-                Player player = new Player(board, PLAYER_COLORS.get(i),"Player " + (i + 1),i+1, programmingDeckInit.init());
+                Player player = new Player(board, PLAYER_COLORS.get(i),"Player " + (i + 1),i+1, programmingDeck.init());
                 board.addPlayer(player);
                 spaceReader.initPlayers(board,player, i);
             }
@@ -143,33 +140,24 @@ public class AppController implements Observer {
 
     public void saveGameToServer() {
 
-        try {
-            TextInputDialog dialog = new TextInputDialog("savegame_01");
-            dialog.setTitle("Save game to server");
-            dialog.setHeaderText("Save game to server");
-            dialog.setContentText("Please enter the name of the save file");
+        TextInputDialog dialog = new TextInputDialog("savegame_01");
+        dialog.setTitle("Save game to server");
+        dialog.setHeaderText("Save game to server");
+        dialog.setContentText("Please enter the name of the save file");
 
-            Optional<String> result = dialog.showAndWait();
-            if (result.isEmpty()){
-                return;
-            }
-            SaveLoadController.serializeAndSaveToServer(gameController, result.get());
-        } catch (IOException ioe){
-            System.out.println("Couldn't save game as file doesnt exist!!!");
+        Optional<String> result = dialog.showAndWait();
+        if (result.isEmpty()){
+            return;
         }
+        SaveLoadController.serializeAndSaveToServer(gameController, result.get());
 
 
-    }
-
-    public void loadGameFromServer() {
-        //Implement
     }
 
 
     /**
      * Load game
      * <p>
-     * TODO - implement
      */
     public void loadGame() {
         TextInputDialog dialog = new TextInputDialog("savegame_01");
@@ -179,7 +167,7 @@ public class AppController implements Observer {
 
 
         Optional<String> result = dialog.showAndWait();
-        if (!result.isPresent()){
+        if (result.isEmpty()){
             return;
         }
 
@@ -236,7 +224,7 @@ public class AppController implements Observer {
             alert.setContentText("Are you sure you want to exit RoboRally?");
             Optional<ButtonType> result = alert.showAndWait();
 
-            if (!result.isPresent() || result.get() != ButtonType.OK) {
+            if (result.isEmpty() || result.get() != ButtonType.OK) {
                 return; // return without exiting the application
             }
         }
@@ -282,10 +270,14 @@ public class AppController implements Observer {
 
 
 
-        gameController.startProgrammingPhase();
+        gameController.startProgrammingPhaseFromOnline();
 
         roboRally.createBoardView(gameController);
 
+    }
+
+    public void saveMap(){
+        SaveLoadController.saveMapToJSON(gameController.board.getSpaces(),"src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/jsonTest" );
     }
 
 }

@@ -27,8 +27,6 @@ import dk.dtu.compute.se.pisd.roborally.model.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
@@ -116,10 +114,10 @@ public class SpaceView extends StackPane implements ViewObserver {
             gearGfx.setWidth(SPACE_WIDTH);
             gearGfx.setHeight(SPACE_HEIGHT);
             if (gear.getDirection() == Direction.RIGHT){
-                Image greenGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rightGear.png");
+                Image greenGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/rGear.png");
                 gearGfx.setFill(new ImagePattern(greenGear,0,0,1,1,true));
             } else {
-                Image redGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/leftgear.png");
+                Image redGear = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/lGear.png");
                 gearGfx.setFill(new ImagePattern(redGear,0,0,1,1,true));
             }
             this.getChildren().add(gearGfx);
@@ -267,34 +265,7 @@ public class SpaceView extends StackPane implements ViewObserver {
             }
             this.getChildren().add(laserShot);
         }
-        //Walls
-        /*if( wall != null) {
-            Image wallSprite = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/wall.png");
-            Rectangle wallGfx = new Rectangle();
-            wallGfx.setWidth(SPACE_WIDTH);
-            wallGfx.setHeight(SPACE_WIDTH*0.222);
-            wallGfx.setFill(new ImagePattern(wallSprite,0,0,1,1,true));
 
-            switch (wall.getDir()) {
-                case SOUTH:
-                    wallGfx.setTranslateY(SPACE_WIDTH*0.45);
-                    break;
-                case NORTH:
-                    wallGfx.setTranslateY(-SPACE_WIDTH*0.45);
-                    break;
-                case EAST:
-                    wallGfx.setRotate(90);
-                    wallGfx.setTranslateX(SPACE_WIDTH*0.45);
-                    break;
-                case WEST:
-                    wallGfx.setRotate(90);
-                    wallGfx.setTranslateX(-SPACE_WIDTH*0.45);
-                    break;
-            }
-
-            this.getChildren().add(wallGfx);
-        }*/
-        /*
         PushPanel pushPanel = (PushPanel) space.findObjectOfType(PushPanel.class);
         if (pushPanel != null) {
             Rectangle pushpannelGfx = new Rectangle();
@@ -316,16 +287,11 @@ public class SpaceView extends StackPane implements ViewObserver {
                     pushpannelGfx.setTranslateX(-20);
                     break;
             }
-            if (conveyor.getColor().equals(Color.BLUE)) {
-                pushpannelGfx.setFill(Color.ROYALBLUE);
-            }else {
-                pushpannelGfx.setFill(Color.FORESTGREEN);
-            }
-            this.getChildren().add(pushpannelGfx);
+            pushpannelGfx.setFill(Color.FORESTGREEN);
+
             this.getChildren().add(pushpannelGfx);
 
         }
-         */
     }
 
 

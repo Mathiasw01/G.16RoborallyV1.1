@@ -61,11 +61,11 @@ public class CardFieldView extends GridPane implements ViewObserver {
     final public static Background BG_ACTIVE = new Background(new BackgroundFill(Color.YELLOW, null, null));
     final public static Background BG_DONE = new Background(new BackgroundFill(Color.GREENYELLOW,  null, null));
 
-    private CommandCardField field;
+    private final CommandCardField field;
 
-    private Label label;
+    private final Label label;
 
-    private GameController gameController;
+    private final GameController gameController;
 
     public CardFieldView(@NotNull GameController gameController, @NotNull CommandCardField field) {
         this.gameController = gameController;

@@ -26,13 +26,12 @@ public class CheckpointField extends FieldObject{
         this.checkpointNumber = checkpointNumber;
     }
 
-    public boolean addPlayerIfUnobtained(Player player){
+    public void addPlayerIfUnobtained(Player player){
         if(playersObtained.contains(player)){
-            return false;
+            return;
         }
 
         playersObtained.add(player);
-        return true;
     }
 
     /**

@@ -5,7 +5,7 @@ public class PushPanel extends MovementField{
         return activation;
     }
 
-    int[] activation;
+    final int[] activation;
     public PushPanel(Heading direction, int[] activation) {
         super(direction);
         this.activation=activation;

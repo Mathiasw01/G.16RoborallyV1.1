@@ -22,26 +22,15 @@
 package dk.dtu.compute.se.pisd.roborally.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.g16.roborallyclient.ClientConsume;
-import com.g16.roborallyclient.Connection;
-import com.g16.roborallyclient.GameSession;
-import com.g16.roborallyclient.WaitForProgramming;
+import com.g16.roborallyclient.*;
 import com.google.gson.annotations.Expose;
-import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.model.*;
-import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -58,38 +47,55 @@ public class GameController {
     final public Board board;
     private Heading originalHeading = null;
 
-    private boolean isOnline;
+    private final boolean isOnline;
 
     private boolean winnerFound = false;
     private Player winner;
 
 
+    /**
+     *
+     * @return original heading
+     */
     public Heading getOriginalHeading() {
         return originalHeading;
     }
 
+    /**
+     * sets original heading
+     * @param originalHeading original heading
+     */
     public void setOriginalHeading(Heading originalHeading) {
         this.originalHeading = originalHeading;
     }
 
+    /**
+     * Gamecontrollers constructor
+     * @param board board
+     * @param isOnline Is online
+     */
     public GameController(@NotNull Board board, boolean isOnline) {
         this.board = board;
         this.isOnline = isOnline;
     }
 
+
     /**
      * Moves current player to space if possible
-     * <p>
-     * Moves current player to the parsed space if the space is empty
+     * @param space The space you want to move the player to
+     * @param backupflag a boolean to show whether the player is moving forwards or backwards
+     * @param player The player that you want to move
+     * @param conveyorHeading The heading of a conveyor if the player is getting moved by a conveyor
+     * @param conPush boolean to show whether youre getting pushed by a conveyor
      */
-    public void moveCurrentPlayerToSpace(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
+    public void moveCurrentPlayerToSpace(Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
         board.setCounter(board.getCounter() + 1);
-        ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
-        ArrayList<FieldObject> currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
+        if (space == null){
+            return;
+        }
+        ArrayList<FieldObject>  walls = space.findObjectsOfType(Wall.class);
+        ArrayList<FieldObject>  currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
 
-        /*
-         * Stops current player from moving if there is a wall in the way
-         */
         if (originalHeading == null) {
             if (conPush){
                 setOriginalHeading(conveyorHeading);
@@ -123,7 +129,6 @@ public class GameController {
          * Stops if there is a wall in the way
          */
         handleRobotCollision(space, backupflag, player, conveyorHeading, conPush);
-
     }
 
     private void handleRobotCollision(@NotNull Space space, boolean backupflag, Player player, Heading conveyorHeading, boolean conPush) {
@@ -135,28 +140,24 @@ public class GameController {
         x = newCoordinates[0];
         y = newCoordinates[1];
 
-        if (!backupflag && conveyorHeading == null){
+        if (!backupflag && conPush) {
+            newCoordinates = getNewCoordinates(conveyorHeading,x,y, backupflag);
+            x = newCoordinates[0];
+            y = newCoordinates[1];
+        } else {
             if (player2CurrentSpaceWall != null) {
                 if (getOriginalHeading() == player2CurrentSpaceWall.getDir()) {
                     return;
                 }
             }
-        } else {
-            newCoordinates = getNewCoordinates(conveyorHeading,x,y, backupflag);
-            x = newCoordinates[0];
-            y = newCoordinates[1];
         }
 
-        if(board.getSpace(x,y) == null){
-            return;
-        }
-
-        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player)) {
-            moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player2, conveyorHeading, conPush);
+        if (canPush(board.getSpace(x,y), conPush ? conveyorHeading :originalHeading, backupflag, player2)) {
+            System.out.println(x + " " + y);
+            moveCurrentPlayerToSpace(board.getSpace(x,y), backupflag, player2, conveyorHeading, conPush);
             player.setSpace(space);
         }
     }
-
 
     private boolean isWallBlocking(Wall wall, boolean backupflag, boolean ownField){
         if(wall == null){
@@ -204,7 +205,7 @@ public class GameController {
     public boolean canPush(Space space, Heading heading,  boolean backupflag, Player player) {
         if (space == null) {
             reboot(player);
-            return false;
+            return true;
         }
         player = space.getPlayer();
         int x = space.x;
@@ -234,12 +235,8 @@ public class GameController {
                 }
                 if (prvWall != null){
                     if (backupflag) {
-                        if (prvWall.getDir().next().next() == heading) {
-                            return false;
-                        }
-                    } else if (prvWall.getDir() == heading){
-                        return false;
-                    }
+                        return prvWall.getDir().next().next() != heading;
+                    } else return prvWall.getDir() != heading;
                 }
                 return true;
             } else {
@@ -269,14 +266,50 @@ public class GameController {
                     CommandCardField field = player.getCardField(j);
                   //field.setCard(generateRandomCommandCard());
                     /* Get new cards from server...*/
-                        field.setCard(drawCard(board.getCurrentPlayer().getProgrammingDeck(),player));
+                        field.setCard(drawCard(player));
+                    field.setVisible(true);
+                }
+            }
+        }
+
+        if(isOnline){
+            ClientConsume.saveCardState(board.getPlayers());
+        }
+
+    }
+
+    /**
+     * Starts the programming phase when playing online
+     */
+    public void startProgrammingPhaseFromOnline() {
+        board.setPhase(Phase.PROGRAMMING);
+        board.setCurrentPlayer(board.getPlayer(0));
+        board.setStep(0);
+
+        for (int i = 0; i < board.getPlayersNumber(); i++) {
+            Player player = board.getPlayer(i);
+            if (player != null) {
+                for (int j = 0; j < Player.NO_REGISTERS; j++) {
+                    CommandCardField field = player.getProgramField(j);
+                    field.setVisible(true);
+                }
+                for (int j = 0; j < Player.NO_CARDS; j++) {
+                    CommandCardField field = player.getCardField(j);
+                    //field.setCard(generateRandomCommandCard());
+                    /* Get new cards from server...*/
                     field.setVisible(true);
                 }
             }
         }
     }
 
-    public CommandCard drawCard(List<CommandCard> deck, Player currentPLayer) {
+    /**
+     * Draws a card from the players programming deck, if the deck is empty, their discard pile gets shuffled into their
+     * programmingdeck
+     * @param currentPLayer currentPlayer
+     * @return Returns the drans command card
+     */
+    public CommandCard drawCard(Player currentPLayer) {
         if (currentPLayer.getProgrammingDeck().isEmpty()) {
             shuffleDeck(currentPLayer.getProgrammingDeck(), currentPLayer.getDiscardPile());
         }
@@ -285,11 +318,21 @@ public class GameController {
         return topCard;
     }
 
+    /**
+     * Removes a card from a players programming and adds it to thier discard pile.
+     * @param player The player whose card you want to revome
+     * @param card The card that you want to remove
+     */
     public void discardCard(Player player, CommandCard card) {
         player.getProgrammingDeck().remove(card);
         player.getDiscardPile().add(card);
     }
 
+    /**
+     * Shuffles a players discard pile in to their programming deck
+     * @param deck The players programming deck
+     * @param discardPile The players discard pile
+     */
     public void shuffleDeck(List<CommandCard> deck, List<CommandCard> discardPile) {
         deck.addAll(discardPile);
         discardPile.clear();
@@ -298,20 +341,11 @@ public class GameController {
 
     /**
      * Removes a single command card with a specific command, it's used when a damage card is played.
-     * @param discardPile
+     * @param discardPile The players discard pile
      * @param command The command that you want to be removed
      */
     public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
-
-
-        Iterator<CommandCard> discardIterator = discardPile.iterator();
-        while (discardIterator.hasNext()) {
-            CommandCard card = discardIterator.next();
-            if (card.command == command) {
-                discardIterator.remove();
-
-            }
-        }
+        discardPile.removeIf(card -> card.command == command);
     }
 
     /**
@@ -329,6 +363,7 @@ public class GameController {
         board.setStep(0);
 
         if(isOnline){
+            ClientConsume.saveCardState(board.getPlayers());
             board.setPhase(Phase.WAITING);
             waitForOtherPlayersToFinishProgramming();
         } else {
@@ -338,7 +373,10 @@ public class GameController {
 
     }
 
-    private void waitForOtherPlayersToFinishProgramming() throws InterruptedException {
+    /**
+     * Waits for other players to finish programming their robot, when playing online
+     */
+    private void waitForOtherPlayersToFinishProgramming() {
         for (Player player : board.getPlayers()) {
             if (player.getName().equals(Connection.getPlayerToken())){
                 ClientConsume.sendProgram(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, player.getProgram());
@@ -353,9 +391,11 @@ public class GameController {
 
     }
 
+    /**
+     * It executes the commands that the players have programmed their robots to do.
+     * @param cards All the players commands in a string, it gets them from the server.
+     */
     public void executeCommandsFromServer(String[] cards){
-
-
         int playerIndex = 0;
 
 
@@ -436,11 +476,7 @@ public class GameController {
      */
     private void continuePrograms() {
         do {
-            try {
-                executeNextStep();
-            } catch (JsonProcessingException e){
-                System.out.println("help");
-            }
+            executeNextStep();
         } while (board.getPhase() == Phase.ACTIVATION && !board.isStepMode());
 
 
@@ -458,7 +494,7 @@ public class GameController {
      * increase the step by one. If the step is larger than the number of registers the players have, the
      * method will change the game's phase to the programing phase.
      */
-    private void executeNextStep() throws JsonProcessingException {
+    private void executeNextStep() {
         List<Player> players = board.getPlayers();
         Player currentPlayer = board.getCurrentPlayer();
         if (board.getPhase() == Phase.ACTIVATION && currentPlayer != null) {
@@ -474,28 +510,17 @@ public class GameController {
                                 board.setPhase(Phase.PLAYER_INTERACTION);
                                 return;
                             } else {
-                                do {
-                                    try {
-                                        TimeUnit.SECONDS.sleep(2);
-                                    } catch (InterruptedException e){
-                                        System.out.println("interrupt");
+                                board.setPhase(Phase.WAITING);
+                                Thread interactionWaitThread = new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        awaitInteractive(currentPlayer, step);
                                     }
-                                } while (!ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).isChosen());
-                                String respone = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, String.valueOf(step)).getCommand();
-                                command = convertCommand(respone).command;
+                                });
 
-                                /*
-                                String response;
-                                do {
-                                    try {
-                                        TimeUnit.SECONDS.sleep(2);
-                                    } catch (InterruptedException e){
-                                        System.out.println("interrupt");
-                                    }
-                                    response = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
-                                } while (response.equals("wait"));
+                                interactionWaitThread.start();
+                                return;
 
-                                 */
                             }
                         } else {
                             board.setPhase(Phase.PLAYER_INTERACTION);
@@ -506,30 +531,7 @@ public class GameController {
                         executeCommand(currentPlayer, command);
                     }
                 }
-                int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
-                if (nextPlayerNumber < board.getPlayersNumber()) {
-                    board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
-                } else {
-                    multiThreadExecute(step);
-                    /*
-                    if (winnerFound){
-                        displayWinner();
-                        return;
-                    }
-
-                     */
-                    step++;
-                    if (step < Player.NO_REGISTERS) {
-                        makeProgramFieldsVisible(step);
-                        board.setStep(step);
-                        board.setCurrentPlayer(board.getPlayer(0));
-                    } else {
-                        for (Player player: players) {
-                            player.setRebooting(false);
-                        }
-                        startProgrammingPhase();
-                    }
-                }
+                endturn(players, currentPlayer, step);
             } else {
                 // this should not happen
                 assert false;
@@ -538,6 +540,63 @@ public class GameController {
             // this should not happen
             assert false;
         }
+    }
+
+    private void endturn(List<Player> players, Player currentPlayer, int step) {
+        int nextPlayerNumber = board.getPlayerNumber(currentPlayer) + 1;
+        if (nextPlayerNumber < board.getPlayersNumber()) {
+            board.setCurrentPlayer(board.getPlayer(nextPlayerNumber));
+        } else {
+            multiThreadExecute(step);
+            step++;
+            if (step < Player.NO_REGISTERS) {
+                makeProgramFieldsVisible(step);
+                board.setStep(step);
+                board.setCurrentPlayer(board.getPlayer(0));
+            } else {
+                for (Player player: players) {
+                    player.setRebooting(false);
+                }
+                startProgrammingPhase();
+            }
+        }
+    }
+
+    private void awaitInteractive(Player currentPlayer, int step) {
+        Command command;
+        boolean continu = false;
+        Interactive chosenInteractive = null;
+        do {
+            List<Interactive> interactiveList = ClientConsume.getInteractive(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID);
+
+            for (Interactive interactive : interactiveList) {
+                continu = currentPlayer.getPlayerNum() == interactive.getUserID() && interactive.isChosen() && String.valueOf(step).equals(interactive.getStep());
+
+                if (continu) {
+                    chosenInteractive = interactive;
+                    break;
+                }
+            }
+            if (!continu) {
+                try {
+                    TimeUnit.SECONDS.sleep(2);
+                } catch (InterruptedException e) {
+                    System.out.println("interrupt");
+                }
+            }
+
+        } while (!continu);
+
+        command = convertCommand(chosenInteractive.getCommand()).command;
+
+        if (!currentPlayer.getRebooting()) {
+            executeCommand(currentPlayer, command);
+        }
+
+        board.setPhase(Phase.ACTIVATION);
+        endturn(board.getPlayers(), currentPlayer, step);
+
+
     }
 
     private void displayWinner(){
@@ -569,7 +628,7 @@ public class GameController {
      * @param  player  The player on which the command should be executed
      * @param  command The command that should be executed on the player.
      */
-    private void executeCommand(@NotNull Player player, Command command) {
+    public void executeCommand(@NotNull Player player, Command command) {
         if (player != null && player.board == board && command != null) {
             // XXX This is a very simplistic way of dealing with some basic cards and
             //     their execution. This should eventually be done in a more elegant way
@@ -614,6 +673,10 @@ public class GameController {
         }
     }
 
+    /**
+     * Executes the board elements in different threads, so that they happen simultaneously for each robot.
+     * @param step step
+     */
     public void multiThreadExecute(int step){
         ExecutorService executor = Executors.newFixedThreadPool(board.getPlayers().size());
 
@@ -628,7 +691,12 @@ public class GameController {
         }
     }
 
-    private void executeBoardElement(Player player, int step) {
+    /**
+     * Exeutes the board elements
+     * @param player player
+     * @param step step
+     */
+    public void executeBoardElement(Player player, int step) {
         if(player.getSpace() == null){
             return;
         }
@@ -658,9 +726,6 @@ public class GameController {
                         //Player won!
                         winnerFound = true;
                         winner = player;
-
-                        //ALERT DOESN'T WORK AS IT IS NOT IN JAVA FX THREAD
-                        // FIX FIX FIX
 
                     }
                 }
@@ -696,12 +761,16 @@ public class GameController {
         }
     }
 
+    /**
+     * Tests if a lasers path is blocked
+     * @param x x coordinate
+     * @param y y coordinate
+     * @param laser The laser
+     * @return Returns a boolean that tells you if a laser is blocked
+     */
     public boolean testIfLaserIsBlocked(int x, int y, Laser laser){
         int[] cords = getNewCoordinates(laser.getDirection(),x,y,true);
         Space space = board.getSpace(cords[0],cords[1]);
-        /*
-        #TODO Find out why space is null
-         */
         if(space == null){
             return false;
         }
@@ -927,8 +996,13 @@ public class GameController {
         executeCommand(board.getCurrentPlayer(),command);
         int step = board.getStep();
         if (isOnline) {
-            String comm = ClientConsume.conn.userID + ":" +  step + ":" + "Done" + ":" + command.displayName;
-            ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, comm, String.valueOf(step));
+            for (int i = 0; i < board.getPlayersNumber(); i++){
+                if (Objects.equals(Connection.getPlayerToken(), board.getPlayer(i).getName())){
+                    String comm = i+1 + ":" +  step + ":" + "Done" + ":" + command.displayName;
+                    ClientConsume.sendInteractiveCommand(ClientConsume.conn.gameSession.gameID, ClientConsume.conn.userID, comm);
+                    break;
+                }
+            }
         }
         board.setPhase(Phase.ACTIVATION);
         int nextPlayerNumber = board.getPlayerNumber(board.getCurrentPlayer()) + 1;
@@ -946,5 +1020,9 @@ public class GameController {
             }
         }
         continuePrograms();
+    }
+
+    public Player getWinner(){
+        return winner;
     }
 }

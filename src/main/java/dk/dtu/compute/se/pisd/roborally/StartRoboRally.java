@@ -21,27 +21,13 @@
  */
 package dk.dtu.compute.se.pisd.roborally;
 
-import com.g16.roborallyclient.ClientConsume;
-import com.g16.roborallyclient.Connection;
-import dk.dtu.compute.se.pisd.roborally.controller.GameController;
-import javafx.scene.control.Alert;
-import org.json.JSONObject;
-import org.springframework.web.client.ResourceAccessException;
-import org.springframework.web.client.RestClientException;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This is a class for starting up the RoboRally application. This is a
  * workaround for a strange quirk in the Open JavaFX project launcher,
  * which prevents starting a JavaFX application in IntelliJ directly:
- *
  *   https://stackoverflow.com/questions/52569724/javafx-11-create-a-jar-file-with-gradle/52571719#52571719
- *
  * @author Ekkart Kindler, ekki@dtu.dk
  */
 public class StartRoboRally {

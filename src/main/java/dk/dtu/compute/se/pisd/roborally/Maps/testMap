@@ -1,5 +1,5 @@
 P;1;1
-P;2;3
+P;1;2
 P;2;4
 P;2;5
 P;2;6
@@ -8,4 +8,4 @@ Wall;7;1;EAST
 Wall;7;1;SOUTH
 Wall;3;3;SOUTH
 #;Checkpoints
-CheckPoint;2;1;1
+CheckPoint;2;0;1

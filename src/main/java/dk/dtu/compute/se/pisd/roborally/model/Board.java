@@ -23,7 +23,6 @@ package dk.dtu.compute.se.pisd.roborally.model;
 
 import com.google.gson.annotations.Expose;
 import dk.dtu.compute.se.pisd.designpatterns.observer.Subject;
-import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import javafx.scene.paint.Color;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,7 +54,7 @@ public class Board extends Subject {
     private final Space[][] spaces;
 
     @Expose
-    private ArrayList<CheckpointField> checkpoints = new ArrayList<>();
+    private final ArrayList<CheckpointField> checkpoints = new ArrayList<>();
 
 
     @Expose
@@ -77,7 +76,7 @@ public class Board extends Subject {
     @Expose
     private RebootField rebootField = null;
 
-    private ProgrammingDeckInit programmingDeckInit = new ProgrammingDeckInit();
+    private final ProgrammingDeck programmingDeck = new ProgrammingDeck();
 
 
 
@@ -156,7 +155,7 @@ public class Board extends Subject {
 
         int currentPlayerIndex = 0;
         for (int i = 0; i < savedBoard.getPlayersNumber(); i++) {
-            Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1), i+1, programmingDeckInit.init());
+            Player player = new Player(this, PLAYER_COLORS.get(i), "Player " + (i + 1), i+1, programmingDeck.init());
             Player savedPlayer = savedBoard.getPlayer(i);
 
             player.setHeading(savedPlayer.getHeading());
@@ -210,10 +209,7 @@ public class Board extends Subject {
                 }
                 if(s.getPlayer() != null){
                     Optional<Player> p = players.stream().filter(x -> Objects.equals(x.getName(), s.getPlayer().getName())).findFirst();
-                    if(p.isPresent()){
-                        p.get().setSpace(spaces[s.x][s.y]);
-                        System.out.println("Test");
-                    }
+                    p.ifPresent(player -> player.setSpace(spaces[s.x][s.y]));
 
                 }
             }
@@ -254,6 +250,11 @@ public class Board extends Subject {
             return null;
         }
     }
+
+    public Space[][] getSpaces() {
+        return spaces;
+    }
+
     /**
      * Get counter
      * <p>

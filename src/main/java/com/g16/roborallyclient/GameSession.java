@@ -1,8 +1,6 @@
 package com.g16.roborallyclient;
 
-import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import dk.dtu.compute.se.pisd.roborally.RoboRally;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 
 public class GameSession {
