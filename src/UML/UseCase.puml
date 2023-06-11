@@ -1,23 +1,16 @@
 @startuml
-'https://plantuml.com/use-case-diagram
-title Use case diagram
 left to right direction
-actor user
-'actor user2
+skinparam packageStyle rectangle
+actor player
+'actor player2
 
-  user -- (join game):2..6
-  user -- (host game):2..6
-  '(host game) -- user2
-  '(join game) -- user2
-
-  (load game)..>(host game):<<extend>>
-  (join game) -> (play game)
-  (host game) -> (join game)
-
-
-  (play game) -> (quit game)
-
-  (play game)..> (programming robot):<<include>>
-  (quit game)..> (save game):<<include>>
+rectangle PlayGame {
+  player -- (PlayGame)
+  (PlayGame) .> (new game) : <<include>>
+  (load game) .> (PlayGame) #blue;line.dashed;text:blue : <<extends>>
+  (PlayGame) .> (join game) : <<include>>
+  (save game) .> (PlayGame) #blue;line.dashed;text:blue : <<extends>>
+  '(PlayGame) -- player2
+}
 
 @enduml
