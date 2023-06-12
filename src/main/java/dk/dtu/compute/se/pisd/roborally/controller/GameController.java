@@ -705,7 +705,9 @@ public class GameController {
                 if (((Conveyor) object).getCOLOR().equals(Color.BLUE)) {
                     moveBoardElement(player, object);
                     for (FieldObject object2 : player.getSpace().getObjects()) {
-                        moveBoardElement(player, object2);
+                        if (!(object2 instanceof CheckpointField)){
+                            moveBoardElement(player, object2);
+                        }
                     }
                 } else if (((Conveyor) object).getCOLOR().equals(Color.GREEN)) {
                     moveBoardElement(player, object);

@@ -177,19 +177,6 @@ public class SpaceView extends StackPane implements ViewObserver {
             this.getChildren().add(rebootGFX);
         }
 
-        //Checkpoints
-        if(checkpoint != null){
-            Circle cpGfx = new Circle();
-            cpGfx.setRadius(SPACE_WIDTH*0.5);
-            Image checkpoints = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/checkpoints.jpg");
-            if (checkpoint.getCheckpointNumber() <= 4) {
-                cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 0, 4, 2, true));
-            } else {
-                cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 1, 4, 2, true));
-            }
-            this.getChildren().add(cpGfx);
-        }
-
         //Start
         if(startField != null){
             Circle startGfx = new Circle();
@@ -264,6 +251,20 @@ public class SpaceView extends StackPane implements ViewObserver {
                 laserShot.setFill(new ImagePattern(laser, 0, 0, 1, 1, true));
             }
             this.getChildren().add(laserShot);
+        }
+
+
+        //Checkpoints
+        if(checkpoint != null){
+            Circle cpGfx = new Circle();
+            cpGfx.setRadius(SPACE_WIDTH*0.5);
+            Image checkpoints = new Image("File:src/main/java/dk/dtu/compute/se/pisd/roborally/Sprites/checkpoints.jpg");
+            if (checkpoint.getCheckpointNumber() <= 4) {
+                cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 0, 4, 2, true));
+            } else {
+                cpGfx.setFill(new ImagePattern(checkpoints, -checkpoint.getCheckpointNumber()+1, 1, 4, 2, true));
+            }
+            this.getChildren().add(cpGfx);
         }
 
         PushPanel pushPanel = (PushPanel) space.findObjectOfType(PushPanel.class);
