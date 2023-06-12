@@ -1,0 +1,22 @@
+@startuml
+'https://plantuml.com/state-diagram
+state fork_state <<fork>>
+
+[*] --> ProgrammingPhase
+ProgrammingPhase--> ActivationPhase
+ActivationPhase -right->fork_state
+fork_state-->executeBoardElement1
+executeBoardElement : Player n
+fork_state-->executeBoardElement2
+executeBoardElement1 : Player 1
+fork_state-->executeBoardElement
+executeBoardElement2 : Player 2
+
+state join_state <<join>>
+executeBoardElement1 --> join_state
+executeBoardElement2 --> join_state
+executeBoardElement --> join_state
+join_state -up-> ActivationPhase : winnerNotFound
+join_state ---> [*] : winnerFound
+
+@enduml

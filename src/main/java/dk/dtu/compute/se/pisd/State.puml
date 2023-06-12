@@ -1,9 +1,0 @@
-@startuml
-'https://plantuml.com/state-diagram
-[*] --> UpgradePhase
-UpgradePhase -->PromgrammingPhase
-PromgrammingPhase-->ActivationPhase
-ActivationPhase-->UpgradePhase :WinnerNotFound
-ActivationPhase-->GameOver: WinnerFound
-GameOver-->[*]
-@enduml
