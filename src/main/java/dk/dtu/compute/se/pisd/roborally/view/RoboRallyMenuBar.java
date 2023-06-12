@@ -41,6 +41,7 @@ public class RoboRallyMenuBar extends MenuBar {
     private MenuItem testMap;
     private MenuItem dizzy;
     private MenuItem octane;
+    private MenuItem twister;
 
     private MenuItem jsonTest;
 
@@ -92,6 +93,13 @@ public class RoboRallyMenuBar extends MenuBar {
                 this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/High Octane";
             });
             mapMenu.getItems().add(octane);
+
+            twister = new MenuItem("Twister");
+            twister.setOnAction(e -> {
+                this.map = "src/main/java/dk/dtu/compute/se/pisd/roborally/Maps/Twister";
+                mapMenu.setText("Twister");
+            });
+            mapMenu.getItems().add(twister);
 
             jsonTest = new MenuItem("Json test");
             jsonTest.setOnAction(e -> {
@@ -161,8 +169,4 @@ public class RoboRallyMenuBar extends MenuBar {
         }
 
     }
-
-
-
-
 }

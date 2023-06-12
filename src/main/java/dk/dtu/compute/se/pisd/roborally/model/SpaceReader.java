@@ -74,11 +74,6 @@ public class SpaceReader {
                     case "Wall":
                         space.addObjects(new Wall(Heading.valueOf(result[3])));
                         break;
-                    case "CheckPoint":
-                        CheckpointField newCheckpoint = new CheckpointField(Integer.parseInt(result[3]));
-                        space.addObjects(newCheckpoint);
-                        board.addCheckpoint(newCheckpoint);
-                        break;
                     case "BlueCon":
                         space.addObjects(new Conveyor(Color.BLUE,Heading.valueOf(result[3])));
                         break;
@@ -97,6 +92,11 @@ public class SpaceReader {
                         break;
                     case "PushPanel":
                         space.addObjects(new PushPanel(Heading.valueOf(result[3]), new int[]{2, 4}));
+                        break;
+                    case "CheckPoint":
+                        CheckpointField newCheckpoint = new CheckpointField(Integer.parseInt(result[3]));
+                        space.addObjects(newCheckpoint);
+                        board.addCheckpoint(newCheckpoint);
                         break;
                     default:
                         System.out.println("Unknown object in " + fileName);
