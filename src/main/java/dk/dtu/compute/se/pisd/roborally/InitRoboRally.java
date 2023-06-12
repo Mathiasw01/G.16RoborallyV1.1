@@ -132,7 +132,7 @@ public class InitRoboRally extends Application {
         TilePane r = new TilePane(Orientation.VERTICAL);
         r.setAlignment(Pos.CENTER);
         r.setVgap(10);
-        Label l = new Label("Do you want to start a new game or continue an existing game?");
+        Label l = new Label("Do you want to start a new game\nor continue an existing game?");
         saveGame = null;
 
         EventHandler<ActionEvent> newGame = ev -> chooseMap(gameID,  s);
@@ -280,7 +280,6 @@ public class InitRoboRally extends Application {
                     System.out.println("You need to be at least 2 players!");
                     Alert notEnoughAlert = new Alert(Alert.AlertType.WARNING, "You need to be at least 2 players!");
                     notEnoughAlert.showAndWait();
-                    startGame(gameID, map, s);
                 }
             }
         };
