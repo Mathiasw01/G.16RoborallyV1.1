@@ -2,7 +2,7 @@
 left to right direction
 skinparam packageStyle rectangle
 actor player
-'actor player2
+actor player2
 
 rectangle PlayGame {
   player -- (PlayGame)
@@ -10,7 +10,7 @@ rectangle PlayGame {
   (load game) .> (PlayGame) #blue;line.dashed;text:blue : <<extends>>
   (PlayGame) .> (join game) : <<include>>
   (save game) .> (PlayGame) #blue;line.dashed;text:blue : <<extends>>
-  '(PlayGame) -- player2
+  (PlayGame) -- player2
 }
 
 @enduml
