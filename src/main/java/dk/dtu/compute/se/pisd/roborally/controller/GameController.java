@@ -801,7 +801,6 @@ public class GameController {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
         int y=currentSpace.y;
-        // Husk outofbounds fejl
         int[] newCoordinates = getNewCoordinates(player.getHeading(),x,y,false);
         x = newCoordinates[0];
         y = newCoordinates[1];
