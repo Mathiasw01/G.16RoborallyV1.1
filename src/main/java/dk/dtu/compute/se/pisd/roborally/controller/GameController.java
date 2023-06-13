@@ -340,14 +340,9 @@ public class GameController {
      * @param command The command that you want to be removed
      */
     public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
-        while (discardPile.iterator().hasNext()) {
-            CommandCard card = discardPile.iterator().next();
-            if (card.command == command) {
-                discardPile.remove(card);
-                break;
-            }
+            discardPile.removeIf(card -> card.command == command);
         }
-    }
+
 
     /**
      * Finish programming phase and start activation phase
@@ -825,13 +820,10 @@ public class GameController {
         int x = board.getRebootField().getX();
         int y = board.getRebootField().getY();
         player.setHeading(board.getRebootField().getDirection());
-
         if (board.getSpace(x,y).getPlayer() != null){
             moveForward(board.getSpace(x,y).getPlayer());
         }
-
         player.setSpace(board.getSpace(x, y));
-
         player.setRebooting(true);
         player.getDiscardPile().add(new CommandCard(Command.SPAM));
         player.getDiscardPile().add(new CommandCard(Command.SPAM));
@@ -849,18 +841,15 @@ public class GameController {
         int x=currentSpace.x;
         int y=currentSpace.y;
         boolean backupflag = false;
-        // Husk outofbounds fejl
         int[] newCoordinates = getNewCoordinates(((MovementField)fieldObject).getDirection(),x,y,backupflag);
         x = newCoordinates[0];
         y = newCoordinates[1];
-        //System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection(), true);
         } else {
             reboot(player);
             System.out.println("OUT OF BOUNDS");
         }
-
     }
 
     /**

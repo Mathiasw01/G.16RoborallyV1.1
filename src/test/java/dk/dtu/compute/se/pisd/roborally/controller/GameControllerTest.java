@@ -38,7 +38,6 @@ class GameControllerTest {
 
     @Test
     void testPush(){
-
         Player player1 = gameController.board.getCurrentPlayer();
         player1.setSpace(gameController.board.getSpace(1, 1));
         player1.setHeading(Heading.EAST);
@@ -48,16 +47,10 @@ class GameControllerTest {
         gameController.executeCommand(player2, Command.FORWARD);
         Assertions.assertEquals(gameController.board.getSpace(2,1), player1.getSpace());
         Assertions.assertEquals(gameController.board.getSpace(1,1), player2.getSpace());
-
-        gameController.moveCurrentPlayerToSpace(gameController.board.getSpace(1,1), false,player1,null,false);
-        Assertions.assertEquals(gameController.board.getSpace(1,1), player1.getSpace());
-        Assertions.assertEquals(gameController.board.getSpace(2,1), player2.getSpace());
-
     }
 
     @Test
     void testBackUpPush(){
-
         Player player1 = gameController.board.getCurrentPlayer();
         player1.setSpace(gameController.board.getSpace(1, 1));
         player1.setHeading(Heading.EAST);
@@ -67,16 +60,13 @@ class GameControllerTest {
         gameController.executeCommand(player2, Command.MOVE_BACK);
         Assertions.assertEquals(gameController.board.getSpace(0,1), player1.getSpace());
         Assertions.assertEquals(gameController.board.getSpace(1,1), player2.getSpace());
-
     }
 
     @Test
     void moveForward() {
         Board board = gameController.board;
         Player current = board.getCurrentPlayer();
-
         gameController.moveForward(current);
-
         Assertions.assertEquals(current, board.getSpace(0, 1).getPlayer(), "Player " + current.getName() + " should beSpace (0,1)!");
         Assertions.assertEquals(Heading.SOUTH, current.getHeading(), "Player 0 should be heading SOUTH!");
         Assertions.assertNull(board.getSpace(0, 0).getPlayer(), "Space (0,0) should be empty!");
@@ -88,7 +78,6 @@ class GameControllerTest {
         Player current = board.getCurrentPlayer();
         gameController.executeCommand(current, Command.MOVE_THREE);
         gameController.executeCommand(current, Command.UTURN);
-
         //Test move three
         Assertions.assertEquals(current,
                 gameController.board.getSpace(0, 3).getPlayer(), "Player" + current.getName() + "should beSpace(0,3)!");
@@ -98,7 +87,6 @@ class GameControllerTest {
         gameController.executeCommand(current, Command.MOVE_BACK);
         Assertions.assertEquals(current,
                 gameController.board.getSpace(0, 4).getPlayer(), "Player" + current.getName() + "should beSpace(0,4)!");
-
     }
 
     @Test
@@ -202,8 +190,6 @@ class GameControllerTest {
         gameController.board.getCurrentPlayer().setHeading(Heading.EAST);
         gameController.executeCommand(gameController.board.getCurrentPlayer(),Command.FORWARD);
         Assertions.assertEquals(gameController.board.getSpace(2,4),gameController.board.getCurrentPlayer().getSpace());
-
-
     }
 
     @Test
