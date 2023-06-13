@@ -345,7 +345,13 @@ public class GameController {
      * @param command The command that you want to be removed
      */
     public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
-        discardPile.removeIf(card -> card.command == command);
+        while (discardPile.iterator().hasNext()) {
+            CommandCard card = discardPile.iterator().next();
+            if (card.command == command) {
+                discardPile.remove(card);
+                break;
+            }
+        }
     }
 
     /**
