@@ -3,10 +3,12 @@
 
 start
 if (Choose type of player) then (Singleplayer)
-      :New game;
+      if () then (Load game)
+      :Select saved file;
+      else (New game)
       :Select map;
       :Select how many players;
-
+      endif
 else (Multiplayer)
       if () then (host)
       :Input gameID;
