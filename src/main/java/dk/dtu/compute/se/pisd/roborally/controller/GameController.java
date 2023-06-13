@@ -797,7 +797,6 @@ public class GameController {
         Space currentSpace=player.getSpace();
         int x=currentSpace.x;
         int y=currentSpace.y;
-        // Husk outofbounds fejl
         int[] newCoordinates = getNewCoordinates(player.getHeading(),x,y,false);
         x = newCoordinates[0];
         y = newCoordinates[1];
@@ -819,11 +818,15 @@ public class GameController {
     private void reboot(Player player){
         int x = board.getRebootField().getX();
         int y = board.getRebootField().getY();
+        originalHeading = null;
         player.setHeading(board.getRebootField().getDirection());
+
         if (board.getSpace(x,y).getPlayer() != null){
             moveForward(board.getSpace(x,y).getPlayer());
         }
+
         player.setSpace(board.getSpace(x, y));
+
         player.setRebooting(true);
         player.getDiscardPile().add(new CommandCard(Command.SPAM));
         player.getDiscardPile().add(new CommandCard(Command.SPAM));
@@ -841,15 +844,18 @@ public class GameController {
         int x=currentSpace.x;
         int y=currentSpace.y;
         boolean backupflag = false;
+        // Husk outofbounds fejl
         int[] newCoordinates = getNewCoordinates(((MovementField)fieldObject).getDirection(),x,y,backupflag);
         x = newCoordinates[0];
         y = newCoordinates[1];
+        System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection(), true);
         } else {
             reboot(player);
             System.out.println("OUT OF BOUNDS");
         }
+
     }
 
     /**
