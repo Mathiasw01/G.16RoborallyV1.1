@@ -1,8 +1,8 @@
 @startuml
 'https://plantuml.com/state-diagram
 start
-:ProgrammingPhase;
-repeat :ActivationPhase;
+repeat :ProgrammingPhase;
+:ActivationPhase;
 fork
 :__executeBoardElement 1__
 player 1;
