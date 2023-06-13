@@ -1,10 +1,33 @@
 @startuml
-'https://plantuml.com/activity-diagram-be
-(*) -->"Draw action cards"
- --> "Program robot"
---> "Execute program"
---> [Robot moves] "Interact with field"
---> (*)
+'https://plantuml.com/activity-diagram-beta
 
+start
+if (Choose type of player) then (Singleplayer)
+      :New game;
+      :Select map;
+      :Select how many players;
 
+else (Multiplayer)
+      if () then (host)
+      :Input gameID;
+        if (Load game or Create a new game?) then (Load game)
+        :Select saved file;
+        else(New game)
+        :Select map;
+        endif
+      else (join)
+      :Choose server;
+      endif
+      :Wait for players to join;
+endif
+
+repeat:Draw action cards;
+    :Program robot;
+    :Execute program;
+    ->Robot moves;
+    :Interact with field;
+repeat while (winner found?) is (no)
+  -> yes;
+
+stop
 @enduml
