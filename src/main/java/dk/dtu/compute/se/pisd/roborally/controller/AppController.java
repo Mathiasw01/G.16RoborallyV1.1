@@ -53,13 +53,9 @@ public class AppController implements Observer {
 
     final private List<Integer> PLAYER_NUMBER_OPTIONS = Arrays.asList(2, 3, 4, 5, 6);
     final private List<String> PLAYER_COLORS = Arrays.asList("red", "green", "blue", "orange", "grey", "magenta");
-
     final private RoboRally roboRally;
-
     private GameController gameController;
     private final ProgrammingDeck programmingDeck = new ProgrammingDeck();
-
-
     private final boolean isOnline;
 
     public AppController(@NotNull RoboRally roboRally, boolean isOnline) {
@@ -81,7 +77,6 @@ public class AppController implements Observer {
         dialog.setHeaderText("Select number of players");
         Optional<Integer> result = dialog.showAndWait();
 
-
         if (result.isPresent()) {
             if (gameController != null) {
                 // The UI should not allow this, but in case this happens anyway.
@@ -102,7 +97,6 @@ public class AppController implements Observer {
                 board.addPlayer(player);
                 spaceReader.initPlayers(board,player, i);
             }
-
 
             // XXX: V2
             // board.setCurrentPlayer(board.getPlayer(0));

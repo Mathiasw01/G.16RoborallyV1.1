@@ -30,8 +30,7 @@ import java.util.concurrent.TimeUnit;
 
 public class InitRoboRally extends Application {
 
-    private static final int MIN_APP_WIDTH = 300;
-    private static final int MIN_APP_HEIGHT = 400;
+    private static final int MIN_APP_WIDTH = 400;
 
     public void init() throws Exception {
         super.init();
@@ -40,30 +39,25 @@ public class InitRoboRally extends Application {
     static String saveGame = null;
 
     public void start(Stage s) {
-
         // create the primary scene with a menu bar and a pane for
         // the board view (which initially is empty); it will be filled
         // when the user creates a new game or loads a game
         s.setTitle("InitRoboRally");
         Button S = new Button("Singleplayer");
-
         Button M = new Button("Multiplayer");
-
         Label l = new Label("Choose a gamemode");
-
         TilePane r = new TilePane(Orientation.VERTICAL);
         r.setAlignment(Pos.CENTER);
         r.setVgap(10);
 
+        // sets the event to happen when the corresponding button is pressed
         EventHandler<ActionEvent> event = ev -> new RoboRally(new String[]{"offline"}, s);
         EventHandler<ActionEvent> event1 = ev -> startMultiplayer(s);
-
-
         S.setOnAction(event);
         M.setOnAction(event1);
 
+        // adds buttons and labels to the UI
         r.getChildren().addAll(l, S, M);
-
         vbox(s, r);
     }
 

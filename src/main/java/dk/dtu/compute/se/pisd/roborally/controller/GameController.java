@@ -42,16 +42,12 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class GameController {
-
     @Expose
     final public Board board;
     private Heading originalHeading = null;
-
     private final boolean isOnline;
-
     private boolean winnerFound = false;
     private Player winner;
-
 
     /**
      *
@@ -78,7 +74,6 @@ public class GameController {
         this.board = board;
         this.isOnline = isOnline;
     }
-
 
     /**
      * Moves current player to space if possible
@@ -345,7 +340,13 @@ public class GameController {
      * @param command The command that you want to be removed
      */
     public void removeOneCardWithCommand(List<CommandCard> discardPile, Command command) {
-        discardPile.removeIf(card -> card.command == command);
+        while (discardPile.iterator().hasNext()) {
+            CommandCard card = discardPile.iterator().next();
+            if (card.command == command) {
+                discardPile.remove(card);
+                break;
+            }
+        }
     }
 
     /**

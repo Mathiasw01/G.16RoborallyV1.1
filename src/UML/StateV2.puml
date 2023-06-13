@@ -1,0 +1,20 @@
+@startuml
+'https://plantuml.com/state-diagram
+start
+repeat :ProgrammingPhase;
+:ActivationPhase;
+fork
+:__executeBoardElement 1__
+player 1;
+fork again
+:__executeBoardElement 2__
+player 2;
+fork again
+:__executeBoardElement n__
+player n;
+end fork
+repeat while (winner found?) is (no)
+-> yes;
+stop
+
+@enduml
