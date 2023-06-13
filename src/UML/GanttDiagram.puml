@@ -1,12 +1,13 @@
 @startgantt
-[Prototype design] lasts 21 days
-[Test prototype] lasts 10 days
--- All tasks --
-[Requirements (1 day)] lasts 1 day
-[T2 (5 days)] lasts 5 days
-[T2 (5 days)] ends D+6
+Project starts 2023-06-01
 
-[T3 (1 week)] lasts 1 week
-[T4 (1 week and 4 days)] lasts 1 week and 4 days
-[T5 (2 weeks)] lasts 2 weeks
+[Project planning] lasts 1 days and is colored in purple
+[Analysis] starts at [Project planning]'s end and lasts 4 day and is colored in green
+[Design] starts  at [Project planning]'s end and lasts 6 day and is colored in yellow
+[Implementation] starts D+4 and lasts 5 day and is colored in red
+[Testing] starts D+6 and lasts 6 day and is colored in orange
+[Report] starts D+7 and lasts 7 day and is colored in magenta
+[Code freeze] happens at [Implementation]'s end and is colored in red
+[Project submission] happens at [Report]'s end and is colored in magenta
+
 @endgantt
