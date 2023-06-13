@@ -823,6 +823,7 @@ public class GameController {
     private void reboot(Player player){
         int x = board.getRebootField().getX();
         int y = board.getRebootField().getY();
+        originalHeading = null;
         player.setHeading(board.getRebootField().getDirection());
 
         if (board.getSpace(x,y).getPlayer() != null){
@@ -852,7 +853,7 @@ public class GameController {
         int[] newCoordinates = getNewCoordinates(((MovementField)fieldObject).getDirection(),x,y,backupflag);
         x = newCoordinates[0];
         y = newCoordinates[1];
-        //System.out.println(x+ " " +y);
+        System.out.println(x+ " " +y);
         if(board.getSpace(x,y) != null) {
             moveCurrentPlayerToSpace(board.getSpace(x, y), backupflag, player, ((MovementField)fieldObject).getDirection(), true);
         } else {
