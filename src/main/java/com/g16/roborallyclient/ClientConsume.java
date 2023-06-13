@@ -20,8 +20,8 @@ import java.util.Optional;
 
 public class ClientConsume {
    //static String uri = "http://10.209.211.242:8081";
-   static final String uri = "http://10.209.211.220:8081";
-   // static String uri = "http://localhost:8081";
+   static String uri = "http://10.209.211.220:8081";
+   //static String uri = "http://localhost:8081";
 
 
    public static Connection conn;
@@ -91,8 +91,6 @@ public class ClientConsume {
         return restTemplate.getForObject(endPoint, String.class);
     }
 
-
-
     public static GameController updateBoard(String gameID, String userID){
         String endPoint = uri + "/game/update/" + gameID + "?uuid=" +userID;
         RestTemplate restTemplate = new RestTemplate();
@@ -158,7 +156,6 @@ public class ClientConsume {
         }
 
     }
-
 
     public static void saveCardState(List<Player> players){
 

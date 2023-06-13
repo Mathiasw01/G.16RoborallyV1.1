@@ -42,16 +42,12 @@ import java.util.concurrent.TimeUnit;
  *
  */
 public class GameController {
-
     @Expose
     final public Board board;
     private Heading originalHeading = null;
-
     private final boolean isOnline;
-
     private boolean winnerFound = false;
     private Player winner;
-
 
     /**
      *
@@ -78,7 +74,6 @@ public class GameController {
         this.board = board;
         this.isOnline = isOnline;
     }
-
 
     /**
      * Moves current player to space if possible
