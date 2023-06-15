@@ -178,7 +178,7 @@ public class Board extends Subject {
                         if (conveyor.isDouble()){
                             spaces[s.x][s.y].addObjects(new Conveyor(Color.BLUE, conveyor.getDirection()));
                         } else {
-                            spaces[s.x][s.y].addObjects(new Conveyor(Color.ORANGE, conveyor.getDirection()));
+                            spaces[s.x][s.y].addObjects(new Conveyor(Color.GREEN, conveyor.getDirection()));
                         }
                     } else if (fo instanceof  StartField sf) {
                         spaces[s.x][s.y].addObjects(new StartField());
