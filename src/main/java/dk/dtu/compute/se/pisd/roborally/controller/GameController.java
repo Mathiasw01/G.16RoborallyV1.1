@@ -88,8 +88,8 @@ public class GameController {
         if (space == null){
             return;
         }
-        ArrayList<FieldObject>  walls = space.findObjectsOfType(Wall.class);
-        ArrayList<FieldObject>  currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
+        ArrayList<? extends FieldObject>  walls = space.findObjectsOfType(Wall.class);
+        ArrayList<? extends FieldObject>  currentSpaceWalls = player.getSpace().findObjectsOfType(Wall.class);
 
         if (originalHeading == null) {
             if (conPush){

@@ -84,16 +84,20 @@ public class Space extends Subject {
     public ArrayList<FieldObject> getObjects() {
         return objects;
     }
-    public FieldObject findObjectOfType(Class<?> objectType){
-        for (FieldObject object: objects) {
-            if (object.getClass() == objectType) return object;
+    public <T extends FieldObject> T findObjectOfType(Class<T> objectType) {
+        for (FieldObject object : objects) {
+            if (object.getClass() == objectType) {
+                return objectType.cast(object);
+            }
         }
         return null;
     }
-    public ArrayList<FieldObject> findObjectsOfType(Class<?> objectType){
-        ArrayList<FieldObject> numObjects = new ArrayList<>();
-        for (FieldObject object: objects) {
-            if (object.getClass() == objectType) numObjects.add(object);
+    public <T extends FieldObject> ArrayList<T> findObjectsOfType(Class<T> objectType) {
+        ArrayList<T> numObjects = new ArrayList<>();
+        for (FieldObject object : objects) {
+            if (object.getClass() == objectType) {
+                numObjects.add(objectType.cast(object));
+            }
         }
         return numObjects;
     }

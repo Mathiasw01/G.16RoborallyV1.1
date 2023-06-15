@@ -101,7 +101,7 @@ public class SpaceView extends StackPane implements ViewObserver {
 
 
     private void drawFieldObjects(){
-        ArrayList<FieldObject> walls = space.findObjectsOfType(Wall.class);
+        ArrayList<? extends FieldObject> walls = space.findObjectsOfType(Wall.class);
         Conveyor conveyor = (Conveyor)space.findObjectOfType(Conveyor.class);
         Gear gear = (Gear) space.findObjectOfType(Gear.class);
         CheckpointField checkpoint = (CheckpointField) space.findObjectOfType(CheckpointField.class);
