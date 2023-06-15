@@ -772,7 +772,6 @@ public class GameController {
         if(space == null){
             return false;
         }
-        System.out.println(space.x + space.y);
         for (FieldObject object : space.getObjects()){
             if (object instanceof Laser l){
                 if (l.getTYPE().equals("EMITER") && space.getPlayer() == null){
