@@ -3,7 +3,7 @@ package com.g16.roborallyclient;
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
 import java.util.concurrent.TimeUnit;
 
-public class WaitForProgramming implements Runnable{
+public class WaitForProgramming implements Runnable {
     private volatile String[] cards;
     private final GameController gc;
 

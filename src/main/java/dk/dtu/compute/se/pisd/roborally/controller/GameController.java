@@ -383,8 +383,6 @@ public class GameController {
         WaitForProgramming waitForProgramming = new WaitForProgramming(this, cards);
         Thread thread = new Thread(waitForProgramming);
         thread.start();
-
-
     }
 
     /**
@@ -698,14 +696,14 @@ public class GameController {
         }
         for (FieldObject object : player.getSpace().getObjects()) {
             if (object instanceof Conveyor) {
-                if (((Conveyor) object).getCOLOR().equals(Color.BLUE)) {
+                if (((Conveyor) object).isDouble()) {
                     moveBoardElement(player, object);
                     for (FieldObject object2 : player.getSpace().getObjects()) {
                         if (!(object2 instanceof CheckpointField)){
                             moveBoardElement(player, object2);
                         }
                     }
-                } else if (((Conveyor) object).getCOLOR().equals(Color.GREEN)) {
+                } else {
                     moveBoardElement(player, object);
                 }
             }
