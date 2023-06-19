@@ -13,9 +13,12 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import dk.dtu.compute.se.pisd.roborally.controller.SaveLoadController;
+
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 
 public class ClientConsume {
@@ -66,7 +69,6 @@ public class ClientConsume {
     public static List<String> getMap (){
         String endPoint = uri + "/map/";
         RestTemplate restTemplate = new RestTemplate();
-
         return restTemplate.getForObject(endPoint, List.class);
     }
 

@@ -1,6 +1,8 @@
 package com.g16.roborallyclient;
 
 import dk.dtu.compute.se.pisd.roborally.controller.GameController;
+
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
 public class WaitForProgramming implements Runnable {
@@ -28,5 +30,4 @@ public class WaitForProgramming implements Runnable {
         } while (cards[0].equals("500"));
         gc.executeCommandsFromServer(cards);
     }
-
 }
