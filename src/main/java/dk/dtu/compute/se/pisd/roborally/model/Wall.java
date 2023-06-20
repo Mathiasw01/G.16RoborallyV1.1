@@ -20,3 +20,5 @@ public class Wall extends FieldObject{
         return dir;
     }
 }
+
+

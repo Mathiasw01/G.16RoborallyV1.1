@@ -26,6 +26,8 @@ import org.springframework.web.client.RestClientException;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class InitRoboRally extends Application {
@@ -148,7 +150,10 @@ public class InitRoboRally extends Application {
 
         List<String> saves;
         try {
-            saves = ClientConsume.getServerSaves();
+            CompletableFuture<List<String>> savess = CompletableFuture.supplyAsync(() -> ClientConsume.getServerSaves());
+
+            saves = savess.get();
+           // saves = ClientConsume.getServerSaves();
         } catch (Exception e ){
             Alert ccServerAlert = new Alert(Alert.AlertType.WARNING, "Cannot load saves from server!");
             ccServerAlert.showAndWait();
